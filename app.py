@@ -96,26 +96,20 @@ def inputJudge(page,limit,total,err):
         if int(page) > all_page:
             err = "输入页数超过数据最大页数"
     return err
+    
+# 病人信息展示页面
+@app.route('/patient_info_show')
+def patient_info_show():
+    return render_template('patient_info.html',page_data=json.dumps([]))
 
-# 病人信息展示
+
 @app.route('/patient_info')
 def patient_info():
     page = request.args.get('page')  # 页数
     limit = request.args.get('limit')  # 每页显示的数量
-    err="false" #返回错误信息
-    if page is None and limit is None:
-        err="true"
-        return render_template('patient_info.html',page_data=json.dumps([]),err=err )
-    else:
-        sql_total_count = "select count(*) from dwd_patient_info"  # 总的记录数
-        cursor.execute(sql_total_count)  # 执行sql语句
-        patient_total_count = cursor.fetchall()  # 取数据
-
-        err = inputJudge(page, limit, int(patient_total_count[0][0]), err)
-        if err != "false":
-            print(err)
-            return render_template('patient_info.html', page_data=json.dumps([]), err=err)
-
+    sql_total_count = "select count(*) from dwd_patient_info"  # 总的记录数
+    cursor.execute(sql_total_count)  # 执行sql语句
+    patient_total_count = cursor.fetchall()  # 取数据
     offset = (int(page) - 1) * int(limit)  # 起始行
     sql = "select * from dwd_patient_info limit " + str(offset) + ',' + str(limit)  # 一页数据
     cursor.execute(sql)  # 执行sql语句
@@ -140,7 +134,7 @@ def patient_info():
         json_data['data'] = one_page_data
     json_data=json.dumps(json_data,ensure_ascii=False)
     print(json_data)
-    return render_template('patient_info.html', page_data=json_data, err=err)
+    return json_data
     
 
 if __name__ == '__main__':
