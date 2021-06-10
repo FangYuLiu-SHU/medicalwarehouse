@@ -75,6 +75,28 @@ def data_statistic():
     return render_template('datastatistic.html', data_json=data_json)
 
 
+def inputJudge(page,limit,total,err):
+    if page != "":
+        if page.isdigit() == False:
+            err = "输入不合法，请输入一个整数"
+        elif int(page) < 1:
+            err = "输入错误，请输入大于0的整数"
+    elif page == "":
+        err = "输入为空，请输入页数"
+
+    if limit == "":
+        err = "输入为空，请输入每页显示的数量"
+    else:
+        if limit.isdigit() == False:
+            err = "输入不合法，请输入一个整数"
+        elif int(limit) < 1  :
+            err = "每页显示数量至少为1"
+    if page.isdigit() == True and limit.isdigit() == True:
+        all_page = total / int(limit) + 1  # 数据总共页数
+        if int(page) > all_page:
+            err = "输入页数超过数据最大页数"
+    return err
+
 # 病人信息展示
 @app.route('/patient_info')
 def patient_info():
