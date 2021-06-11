@@ -111,8 +111,8 @@
           <div class="layui-input-block">
             <select name="sex" lay-filter="aihao">
               <option value="" selected>请选择性别</option>
-              <option value="0">男</option>
-              <option value="1">女</option>
+              <option value="1">男</option>
+              <option value="2">女</option>
             </select>
           </div>
         </div>
@@ -121,8 +121,8 @@
           <div class="layui-input-block">
             <select name="symptoms" lay-filter="aihao">
               <option value="" selected>请选择</option>
-              <option value="0">肾阳虚</option>
-              <option value="1">肾阴虚</option>
+              <option value="1">肾阳虚</option>
+              <option value="2">肾阴虚</option>
             </select>
           </div>
         </div>
@@ -208,137 +208,148 @@
     <script type="text/javascript" src="../static/layui/layui.js"></script>
     <script src="../static/js/jQuery.js"></script>
     <script>
-      function getTable(page, limit) {
-        $.ajax({
-          type: "GET",
-          url: `http://127.0.0.1:5000/patient_info?page=${page}&limit=${limit}`,
-          success: function (returnData) {
-            const { data: arrData, code, total } = JSON.parse(returnData);
-            const data = arrData.map((e) => {
-              e.sex = e.sex === "2" ? "女" : "男";
-              e.symptoms_type = e.symptoms_type === "1" ? "肾阳虚" : "肾阴虚";
-              return e;
-            });
-            // 打印数据
-            // console.log(getdata)
-            // 引入表格与分页组件
-            layui.use(["laypage", "table", "layer"], function () {
-              let laypage = layui.laypage;
-              const TABLE = layui.table;
-              // 表格组件
-              TABLE.render({
-                elem: ".info_table", // 定位表格ID
-                title: "用户数据表",
-                toolbar: "#headBar",
-                cols: [
-                  [
-                    {
-                      field: "id",
-                      title: "编号",
-                      width: 80,
-                      sort: true,
-                      align: "center",
-                    },
-                    { field: "sex", title: "性别", width: 80, align: "center" },
-                    {
-                      field: "age",
-                      title: "年龄",
-                      width: 80,
-                      sort: true,
-                      align: "center",
-                    },
-                    {
-                      field: "serum_creatinine",
-                      title: "血肌酐",
-                      width: 110,
-                      align: "center",
-                    },
-                    {
-                      field: "eGFR",
-                      title: "eGFR",
-                      width: 177,
-                      align: "center",
-                    },
-                    { field: "symptoms_type", title: "症型", align: "center" },
-                    { field: "tongue", title: "舌", align: "center" },
-                    { field: "pulse", title: "脉", align: "center" },
-                    {
-                      field: "detail",
-                      title: "详细",
-                      width: 80,
-                      toolbar: ".colBar",
-                      align: "center",
-                    },
-                  ],
-                ],
-                data, // 上面异步获取的数据，必填
-                limit, // 每一页自定义数据条数
-                done: function () {
-                  // 分页组件
-                  getPage(total, laypage, limit, page);
+      function renderTable(tableData) {
+        // 渲染表格，tableData：后端返回的数据
+        const { data: arrData, code, total } = JSON.parse(tableData);
+        const data = arrData.map((e) => {
+          e.sex = e.sex === "2" ? "女" : "男";
+          e.symptoms_type = e.symptoms_type === "1" ? "肾阳虚" : "肾阴虚";
+          return e;
+        });
+        layui.use(["laypage", "table", "layer"], function () {
+          let laypage = layui.laypage;
+          const TABLE = layui.table;
+          // 表格组件
+          TABLE.render({
+            elem: ".info_table", // 定位表格ID
+            title: "用户数据表",
+            toolbar: "#headBar", // 表格头工具栏
+            cols: [
+              [
+                {
+                  field: "id",
+                  title: "编号",
+                  width: 80,
+                  sort: true,
+                  align: "center",
                 },
-              });
-              TABLE.on("toolbar(test)", function (obj) {
-                layer.open({
-                  type: 1,
-                  shadeClose: true,
-                  title: "查询页面",
-                  content: $(".detail_query"),
-                });
-              });
+                { field: "sex", title: "性别", width: 80, align: "center" },
+                {
+                  field: "age",
+                  title: "年龄",
+                  width: 80,
+                  sort: true,
+                  align: "center",
+                },
+                {
+                  field: "serum_creatinine",
+                  title: "血肌酐",
+                  width: 110,
+                  align: "center",
+                },
+                {
+                  field: "eGFR",
+                  title: "eGFR",
+                  width: 177,
+                  align: "center",
+                },
+                { field: "symptoms_type", title: "症型", align: "center" },
+                { field: "tongue", title: "舌", align: "center" },
+                { field: "pulse", title: "脉", align: "center" },
+                {
+                  field: "detail",
+                  title: "详细",
+                  width: 80,
+                  toolbar: ".colBar",
+                  align: "center",
+                },
+              ],
+            ],
+            data, 
+            limit: queryObj.limit, // 每一页数据条数
+            done: function () {
+              // 分页组件
+              getPage(total, laypage);
+            },
+          });
+          TABLE.on("toolbar(test)", function (obj) {
+            // 点击查询按钮后的弹出层，用于更细节的查询
+            layer_idx = layer.open({
+              type: 1,
+              shadeClose: true,
+              title: "查询页面",
+              content: $(".detail_query"),
             });
+          });
+        });
+      }
+      function getTable(postData) {
+        $.ajax({
+          type: "POST",
+          url: `http://127.0.0.1:5000/patient_info_by_condition`,
+          data: postData,
+          success: function (returnData) {
+            renderTable(returnData);
           },
         });
       }
-      function getPage(total, laypage, limit, page) {
+      function getPage(total, laypage) {
+        // 设置分页
         laypage.render({
           elem: "demo", // 根据ID定位
           count: total, // 获取的数据总数
-          limit, // 每页默认显示的数量，同上
+          limit: queryObj.limit, // 每页默认显示的数量，同上
           layout: ["prev", "page", "next", "limit"],
-          curr: page, // 页码
+          curr: queryObj.page, // 页码
           jump: function (obj, first) {
             if (!first) {
-              getTable(obj.curr, obj.limit);
+              queryObj.page = obj.curr; // 设置当前页位置
+              queryObj.limit = obj.limit; // 设置每页的数据条数
+              getTable(queryObj);
             }
           },
         });
       }
-      layui.use("form", function () {
-        const FORM = layui.form;
+      layui.use(["form", "layer"], function () {
+        const FORM = layui.form, LAYER = layui.layer;
         FORM.verify({
           isNumber: (value) => {
-            if(Number.isNaN(Number(value))) {
-              return "请输入数字"
+            if (Number.isNaN(Number(value))) {
+              return "请输入数字";
             }
-          }
-        })
+          },
+        });
         FORM.on("submit(*)", (data) => {
-          const {field} = data;
-          const TEST_DATA = {
+          const { field } = data;
+          const QUERY_DATA = {
             id: field.id,
             sex: field.sex,
             symptoms: field.symptoms,
             age: JSON.stringify([field.age_min, field.age_max]),
             serum_creatinine: JSON.stringify([field.ser_min, field.ser_max]),
-            eGFR: JSON.stringify([field.eGFR_min, field.eGFR_max])
-          }
-          console.log(TEST_DATA);
-          /*
-          $.ajax({
-            type: "POST",
-            url: `http://127.0.0.1:5000/test`,
-            data: TEST_DATA,
-            success: function (data) {
-              console.log(data);
-            }
-          })
-          */
+            eGFR: JSON.stringify([field.eGFR_min, field.eGFR_max]),
+            page: 1,
+            limit: 10,
+          };
+          queryObj = QUERY_DATA
+          getTable(queryObj);
+          LAYER.close(layer_idx)
           return false;
         });
       });
-
-      getTable(1, 10);
+      
+      let layer_idx = 0; // layer的index参数，用于控制弹出层（查询用）的关闭
+      let queryObj = {
+        id: "",
+        sex: "",
+        symptoms: "",
+        age: JSON.stringify(["", ""]),
+        serum_creatinine: JSON.stringify(["", ""]),
+        eGFR: JSON.stringify(["", ""]),
+        page: 1,
+        limit: 10,
+      } // 查询字符串，用于获取病人的数据
+      getTable(queryObj); // 获得表格数据，第一次调用默认获得所有病人的信息（第一页）
     </script>
   </body>
 </html>

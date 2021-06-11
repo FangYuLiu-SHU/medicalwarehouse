@@ -133,7 +133,6 @@ def patient_info():
     return json_data
 
 
-
 @app.route('/patient_info_by_condition',methods=['POST'])
 def patient_info_by_condition():
     page = request.form.get('page')  # 页数
@@ -184,7 +183,12 @@ def patient_info_by_condition():
             'tongue': str(result[6]),
             'pulse': str(result[7]).strip(),
         })
-    result_data = json.dumps(result_data, ensure_ascii=False)
+    rData = {
+        "total": 100,
+        "code": 0,
+        "data": result_data
+    }
+    result_data = json.dumps(rData, ensure_ascii=False)
     return result_data
 
 if __name__ == '__main__':
