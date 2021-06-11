@@ -29,6 +29,20 @@
       .colBar {
         margin-top: -5000px;
       }
+      .max {
+        width: 25%;
+        display: inline-block;
+      }
+      .min {
+        width: 25%;
+        display: inline-block;
+      }
+      .max::placeholder {
+        font-size: 8px;
+      }
+      .min::placeholder {
+        font-size: 8px;
+      }
     </style>
   </head>
   <body>
@@ -70,7 +84,120 @@
       <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
     </div>
     <div id="headBar">
-      <button class="layui-btn layui-btn-normal header-button">查询</button>
+      <button
+        class="layui-btn layui-btn-normal header-button"
+        lay-event="detail"
+      >
+        查询
+      </button>
+    </div>
+    <div class="detail_query" style="padding: 20px">
+      <form class="layui-form" lay-filter="query_form">
+        <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+        <div class="layui-form-item">
+          <label class="layui-form-label">患者id</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name=""
+              placeholder="请输入"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">性别</label>
+          <div class="layui-input-block">
+            <select name="interest" lay-filter="aihao">
+              <option value="" selected>请选择性别</option>
+              <option value="0">男</option>
+              <option value="1">女</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">症型</label>
+          <div class="layui-input-block">
+            <select name="interest" lay-filter="aihao">
+              <option value="" selected>请选择</option>
+              <option value="0">肾阳虚</option>
+              <option value="1">肾阴虚</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">年龄</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name=""
+              placeholder="最小值"
+              autocomplete="off"
+              class="layui-input min"
+            />
+            <span>-</span>
+            <input
+              type="text"
+              name=""
+              placeholder="最大值"
+              autocomplete="off"
+              class="layui-input max"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">血肌酐</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name=""
+              placeholder="最小值"
+              autocomplete="off"
+              class="layui-input min"
+            />
+            <span>-</span>
+            <input
+              type="text"
+              name=""
+              placeholder="最大值"
+              autocomplete="off"
+              class="layui-input max"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">eGFR</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name=""
+              placeholder="最小值"
+              autocomplete="off"
+              class="layui-input min"
+            />
+            <span>-</span>
+            <input
+              type="text"
+              name=""
+              placeholder="最大值"
+              autocomplete="off"
+              class="layui-input max"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn submit_query" lay-submit lay-filter="*">
+              立即提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">
+              重置
+            </button>
+          </div>
+        </div>
+        <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+      </form>
     </div>
     <script type="text/javascript" src="../static/layui/layui.js"></script>
     <script src="../static/js/jQuery.js"></script>
@@ -82,8 +209,9 @@
           success: function (returnData) {
             const { data: arrData, code, total } = JSON.parse(returnData);
             const data = arrData.map((e) => {
-              e[0].sex = e[0].sex === "2" ? "女": "男"
-              return e[0]
+              e.sex = e.sex === "2" ? "女" : "男";
+              e.symptoms_type = e.symptoms_type === "1" ? "肾阳虚" : "肾阴虚";
+              return e;
             });
             // 打印数据
             // console.log(getdata)
@@ -144,6 +272,14 @@
                   getPage(total, laypage, limit, page);
                 },
               });
+              TABLE.on("toolbar(test)", function (obj) {
+                layer.open({
+                  type: 1,
+                  shadeClose: true,
+                  title: "查询页面",
+                  content: $(".detail_query"),
+                });
+              });
             });
           },
         });
@@ -156,16 +292,42 @@
           layout: ["prev", "page", "next", "limit"],
           curr: page, // 页码
           jump: function (obj, first) {
-            if(!first) {
-              getTable(obj.curr, obj.limit)
+            if (!first) {
+              getTable(obj.curr, obj.limit);
             }
           },
         });
       }
-      getTable(1, 10);
-      document.getElementById("headBar").addEventListener("click", () => {
+      layui.use("form", function () {
+        const FORM = layui.form;
+        FORM.on("submit(*)", (data) => {
+          const $INPUT = $("input");
+          const TEST_DATA = {
+            id: $INPUT[0].value,
+            sex: "",
+            symptoms: "",
+            age: [$INPUT[3].value, $INPUT[4].value],
+            serum_creatinine: [$INPUT[5].value, $INPUT[6].value],
+            eGFR: [$INPUT[7].value, $INPUT[8].value]
+          }
+          if($INPUT[1].value === "男") TEST_DATA.sex = "1";
+          if($INPUT[1].value === "女") TEST_DATA.sex = "2";
+          if($INPUT[2].value === "肾阳虚") TEST_DATA.symptoms = "1";
+          if($INPUT[2].value === "肾阴阳虚") TEST_DATA.symptoms = "2";
+          
+          $.ajax({
+          type: "POST",
+          url: `http://127.0.0.1:5000/test`,
+          data: TEST_DATA,
+          success: function (data) {
+            console.log(data);
+          }
+          })
+          return false;
+        });
+      });
 
-      })
+      getTable(1, 10);
     </script>
   </body>
 </html>

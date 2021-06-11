@@ -96,7 +96,7 @@ def inputJudge(page,limit,total,err):
         if int(page) > all_page:
             err = "输入页数超过数据最大页数"
     return err
-    
+
 # 病人信息展示页面
 @app.route('/patient_info_show')
 def patient_info_show():
@@ -133,7 +133,7 @@ def patient_info():
     json_data['data'] = one_page_data
     json_data=json.dumps(json_data,ensure_ascii=False)
     return json_data
-    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
