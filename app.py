@@ -133,5 +133,59 @@ def patient_info():
     return json_data
 
 
+
+@app.route('/patient_info_by_condition',methods=['POST'])
+def patient_info_by_condition():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None:
+        page=1
+    if limit is None:
+        limit=1
+    id = request.form.get('id')  # 编号
+    sex = request.form.get('sex')  # 性别
+    age = json.loads(request.form.get('age'))  # 年龄
+    serum_creatinine = json.loads(request.form.get('serum_creatinine'))  # 血肌酐
+    eGFR = json.loads(request.form.get('eGFR'))
+    symptoms = request.form.get('symptoms')  # 症型(1=肾阳虚，2=肾阴虚)
+    sql = "select * from dwd_patient_info where 1=1 "
+    if id!="":
+        sql+="and id='" + str(id) + "'"
+    if sex!="":
+        sql += "and sex='" + str(sex) + "'"
+    if age[0]!="":
+        sql += "and age>'" + str(age[0]) + "'"
+    if age[1]!="":
+        sql += "and age<'" +  str(age[1]) + "'"
+    if serum_creatinine[0]!="":
+        sql += "and serum_creatinine>'" + str(serum_creatinine[0]) + "'"
+    if serum_creatinine[1]!="":
+        sql += "and serum_creatinine<'" +  str(serum_creatinine[1]) + "'"
+    if eGFR[0]!="":
+        sql += "and eGFR>'" + str(eGFR[0]) + "'"
+    if eGFR[1]!="":
+        sql += "and eGFR<'" +  str(eGFR[1]) + "'"
+    if symptoms!="":
+        sql += "and symptoms_type='" + str(symptoms) + "'"
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    sql+="limit "+str(offset)+','+str(limit)
+    print(sql)
+    cursor.execute(sql)  # 执行sql语句
+    data = cursor.fetchall()  # 获取数据
+    result_data = []
+    for result in data:
+        result_data.append({
+            'id': str(result[0]),
+            'sex': str(result[1]),
+            'age': str(result[2]),
+            'serum_creatinine': str(result[3]),
+            'eGFR': str(result[4]),
+            'symptoms_type': str(result[5]),
+            'tongue': str(result[6]),
+            'pulse': str(result[7]).strip(),
+        })
+    result_data = json.dumps(result_data, ensure_ascii=False)
+    return result_data
+
 if __name__ == '__main__':
     app.run(debug=True)
