@@ -1,9 +1,268 @@
 <!DOCTYPE html>
-<html style="height: 100%">
-<head>
-    <meta charset="utf-8">
-</head>
-<body style="height: 100%; margin: 0">
-	医疗数据仓库
-</body>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>test</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      .layui-form-label{
+        width: 110px!important;
+        font-size: 14px;
+      }
+      .layui-input-block{
+        min-height: 50px!important;
+        margin-bottom: 10px;
+      }
+      .layui-select{
+        height: 35px;
+      }
+    </style>
+  </head>
+  <body>
+      <div class="layui-body" style="left: 0">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+          <legend>医疗数据统计分析</legend>
+        </fieldset>
+        <div id="container1" style="height: 75%;position: relative">
+          <div id="age_ana" style="width: 33%; height: 100%;float: left">年龄分布</div>
+          <div id="sex_ana" style="width: 33%; height: 100%;float: left">性别分布</div>
+          <div id="symptom_ana" style="width: 33%; height: 100%;float: left">症状统计</div>
+        </div>
+
+        <div class="layui-form-item" style="width: 100%;margin-top: 10px;">
+        <div class="layui-row">
+          <div class="layui-col-xs3">
+              <label class="layui-form-label" >年龄</label>
+                <div class="layui-input-block" >
+                  <select name="age" lay-filter="infodis" style="width: 75%;" class="layui-select" >
+                    <option value="" style="font-size: 14px;" >请选择</option>
+                    <option value="0" style="font-size: 14px;" >0~30</option>
+                    <option value="1" style="font-size: 14px;" >31~50</option>
+                    <option value="2" style="font-size: 14px;" >51~70</option>
+                    <option value="3" style="font-size: 14px;" >70~100</option>
+                    <option value="4" style="font-size: 14px;">all</option>
+                  </select>
+              </div>
+            </div>
+          <div class="layui-col-xs3">
+              <label class="layui-form-label" >性别</label>
+              <div class="layui-input-block" >
+              <select name="sex" lay-filter="infodis" style="width: 75%" class="layui-select" >
+              <option value="" style="font-size: 14px;">请选择</option>
+              <option value="1" style="font-size: 14px;">男</option>
+              <option value="2" style="font-size: 14px;">女</option>
+              <option value="4" style="font-size: 14px;">all</option>
+            </select>
+            </div>
+            </div>
+          <div class="layui-col-xs3">
+              <label class="layui-form-label" >症状</label>
+              <div class="layui-input-block" >
+              <select name="symptoms" lay-filter="infodis" style="width: 75%" class="layui-select" >
+              <option value="" style="font-size: 14px;">请选择</option>
+              <option value="1" style="font-size: 14px;">肾阳虚</option>
+              <option value="2" style="font-size: 14px;">肾阴虚</option>
+              <option value="4" style="font-size: 14px;">all</option>
+            </select>
+            </div>
+            </div>
+          <div class="layui-col-xs3">
+            <div class="layui-input-block" >
+                <button type="button" class="layui-btn layui-btn-primary layui-border-green"  lay-filter="commit">提交</button>
+            </div>
+          </div>
+      </div>
+    </div>
+    </div>
+      <script src="../static/layui/layui.js"></script>
+      <script type="text/javascript" src="/static/js/echarts.js"></script>
+      <script type="text/javascript" src="/static/js/function.js"></script>
+<!--      <script>-->
+<!--        layui.use('form', function(){-->
+<!--        var form = layui.form;-->
+<!--          //监听提交-->
+<!--          form.on('submit(commit)', function(data){-->
+<!--            layer.msg(JSON.stringify(data.field));-->
+<!--            return false;-->
+<!--          });-->
+<!--        });-->
+<!--      </script>-->
+      <script type="text/javascript">
+        var data_static={{data_json | tojson}};
+        data_static=JSON.parse(data_static);
+        var num_patient=data_static.num_patient;
+        var num_male=data_static.num_male;
+        var num_female=data_static.num_female;
+        var num_pos=data_static.num_pos;
+        var num_neg=data_static.num_neg;
+        var age_distribute=data_static.age_distribute;
+        var age_num=[];
+        var age_type=[];
+        var yMax = 150;
+        var dataShadow = [];
+        for(var key in age_distribute){
+            // document.write(key,age_distribute[key]);
+            age_num.push(age_distribute[key]);
+            age_type.push(key);
+            dataShadow.push(yMax);
+        }
+
+        // document.write(age_dis);
+        var age_dom = document.getElementById('age_ana');
+        var age_chart = echarts.init(age_dom);
+        var age_option={
+            title: {
+              text: '患者年龄分布',
+              left: 'center'
+          },
+            tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c}人 '
+        },
+            xAxis: {
+                data: age_type,
+                axisLabel: {
+                    inside: false,
+                    textStyle: {
+                        color: '#120d0d'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                z: 10
+            },
+            yAxis: {
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside'
+                }
+            ],
+            series: [
+                {
+                	name: '年龄段：',
+                    type: 'bar',
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#a0020d'},
+                                {offset: 0.5, color: '#be010e'},
+                                {offset: 1, color: '#be010e'}
+                            ]
+                        )
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#037ea3'},
+                                    {offset: 0.7, color: '#0091ab'},
+                                    {offset: 1, color: '#0571ae'}
+                                ]
+                            )
+                        }
+                    },
+                    data: age_num
+                }
+            ]
+
+                };
+        age_chart.setOption(age_option);
+
+        var sex_dom = document.getElementById('sex_ana');
+        var sex_chart = echarts.init(sex_dom);
+        var sex_option={
+          title: {
+              text: '患者性别分布',
+              left: 'center'
+          },
+          tooltip: {
+              trigger: 'item'
+          },
+          legend: {
+              orient: 'vertical',
+              left: 'left',
+          },
+          series: [
+              {
+                  // name: '访问来源',
+                  type: 'pie',
+                  radius: '60%',
+                  data: [
+                      {value: num_male, name: '男性'},
+                      {value: num_female, name: '女性'},
+                  ],
+                  emphasis: {
+                      itemStyle: {
+                          shadowBlur: 10,
+                          shadowOffsetX: 0,
+                          shadowColor: 'rgba(0,0,0,0.5)'
+                      }
+                  }
+              }
+          ]
+        };
+        sex_chart.setOption(sex_option)
+
+        var symptom_dom = document.getElementById('symptom_ana');
+        var symptom_chart = echarts.init(symptom_dom);
+        var symptom_option={
+          title: {
+              text: '患者症状分布',
+              left: 'center'
+          },
+          tooltip: {
+              trigger: 'item'
+          },
+          legend: {
+              orient: 'vertical',
+              left: 'left',
+          },
+          series: [
+              {
+                  type: 'pie',
+                  radius: '60%',
+                  data: [
+                      {value: num_pos, name: '肾阳虚'},
+                      {value: num_neg, name: '肾阴虚'},
+                  ],
+                  emphasis: {
+                      itemStyle: {
+                          shadowBlur: 10,
+                          shadowOffsetX: 0,
+                          shadowColor: 'rgba(0,0,0,0.5)'
+                      }
+                  }
+              }
+          ]
+        };
+        symptom_chart.setOption(symptom_option)
+
+
+      </script>
+
+  </body>
+
 </html>

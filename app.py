@@ -103,6 +103,7 @@ def patient_info_show():
     return render_template('patient_info.html',page_data=json.dumps([]))
 
 
+
 @app.route('/patient_info')
 def patient_info():
     page = request.args.get('page')  # 页数
@@ -117,8 +118,7 @@ def patient_info():
     json_data = {}
     one_page_data = []
     for result in data:
-        each_person = []
-        each_person.append({
+        one_page_data.append({
             'id': str(result[0]),
             'sex': str(result[1]),
             'age': str(result[2]),
@@ -128,12 +128,10 @@ def patient_info():
             'tongue': str(result[6]),
             'pulse': str(result[7]).strip(),
         })
-        one_page_data.append(each_person)
-        json_data["code"] = str(0)
-        json_data['total'] = patient_total_count[0][0]
-        json_data['data'] = one_page_data
+    json_data["code"] = str(0)
+    json_data['total'] = patient_total_count[0][0]
+    json_data['data'] = one_page_data
     json_data=json.dumps(json_data,ensure_ascii=False)
-    print(json_data)
     return json_data
     
 
