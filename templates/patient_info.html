@@ -1,15 +1,171 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
-<!--刘艳霞 2020.10.23-->
-<head>
-    <meta charset="UTF-8">
+  <!--刘艳霞 2020.10.23-->
+  <head>
+    <meta charset="UTF-8" />
     <title>谣言源检测</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all" />
+    <style>
+      .search {
+        width: 80%;
+        margin: 0 auto;
+      }
+      .bar-head-form {
+        margin-bottom: 0;
+      }
+      .header-input {
+        height: 35px;
+        width: 20%;
+        display: inline-block;
+      }
+      .header-button {
+        height: 33px;
+        line-height: 35px;
+        border: 0;
+      }
+      #headBar {
+        margin-top: -5000px;
+      }
+      .colBar {
+        margin-top: -5000px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layui-layout layui-layout-admin">
+      <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">某系统</div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+          <li class="layui-nav-item layui-hide-xs"><a href="">信息展示</a></li>
+          <li class="layui-nav-item layui-hide-xs layui-nav-itemed">
+            <a href="">查询</a>
+          </li>
+          <li class="layui-nav-item layui-hide-xs"><a href="">预测</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+          <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+            <a href="javascript:;"> tester </a>
+            <dl class="layui-nav-child">
+              <dd><a href="">Your Profile</a></dd>
+              <dd><a href="">Settings</a></dd>
+              <dd><a href="">Sign out</a></dd>
+            </dl>
+          </li>
+          <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+            <a href="javascript:;">
+              <i class="layui-icon layui-icon-more-vertical"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="layui-body" style="left: 0">
+        <div class="search">
+          <table class="search_table" lay-filter="test"></table>
+          <div id="demo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="colBar">
+      <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    </div>
+    <div id="headBar">
+      <button class="layui-btn layui-btn-normal header-button">查询</button>
+    </div>
     <script type="text/javascript" src="../static/layui/layui.js"></script>
-    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <script src="../static/js/jQuery.js"></script>
+    <script>
+      function getTable(page, limit) {
+        $.ajax({
+          type: "GET",
+          url: `http://127.0.0.1:5000/patient_info?page=${page}&limit=${limit}`,
+          success: function (returnData) {
+            const { data: arrData, code, total } = JSON.parse(returnData);
+            const data = arrData.map((e) => {
+              e[0].sex = e[0].sex === "2" ? "女": "男"
+              return e[0]
+            });
+            // 打印数据
+            // console.log(getdata)
+            // 引入表格与分页组件
+            layui.use(["laypage", "table", "layer"], function () {
+              let laypage = layui.laypage;
+              const TABLE = layui.table;
+              // 表格组件
+              TABLE.render({
+                elem: ".search_table", // 定位表格ID
+                title: "用户数据表",
+                toolbar: "#headBar",
+                cols: [
+                  [
+                    {
+                      field: "id",
+                      title: "编号",
+                      width: 80,
+                      sort: true,
+                      align: "center",
+                    },
+                    { field: "sex", title: "性别", width: 80, align: "center" },
+                    {
+                      field: "age",
+                      title: "年龄",
+                      width: 80,
+                      sort: true,
+                      align: "center",
+                    },
+                    {
+                      field: "serum_creatinine",
+                      title: "血肌酐",
+                      width: 110,
+                      align: "center",
+                    },
+                    {
+                      field: "eGFR",
+                      title: "eGFR",
+                      width: 177,
+                      align: "center",
+                    },
+                    { field: "symptoms_type", title: "症型", align: "center" },
+                    { field: "tongue", title: "舌", align: "center" },
+                    { field: "pulse", title: "脉", align: "center" },
+                    {
+                      field: "detail",
+                      title: "详细",
+                      width: 80,
+                      toolbar: ".colBar",
+                      align: "center",
+                    },
+                  ],
+                ],
+                data, // 上面异步获取的数据，必填
+                limit, // 每一页自定义数据条数
+                done: function () {
+                  // 分页组件
+                  getPage(total, laypage, limit, page);
+                },
+              });
+            });
+          },
+        });
+      }
+      function getPage(total, laypage, limit, page) {
+        laypage.render({
+          elem: "demo", // 根据ID定位
+          count: total, // 获取的数据总数
+          limit, // 每页默认显示的数量，同上
+          layout: ["prev", "page", "next", "limit"],
+          curr: page, // 页码
+          jump: function (obj, first) {
+            if(!first) {
+              getTable(obj.curr, obj.limit)
+            }
+          },
+        });
+      }
+      getTable(1, 10);
+      document.getElementById("headBar").addEventListener("click", () => {
 
-</head>
-<body>
-病人基本信息
-
-</body>
+      })
+    </script>
+  </body>
 </html>
