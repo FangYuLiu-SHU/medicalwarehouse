@@ -6,7 +6,7 @@
     <title>谣言源检测</title>
     <link rel="stylesheet" href="../static/layui/css/layui.css" media="all" />
     <style>
-      .search {
+      .info {
         width: 80%;
         margin: 0 auto;
       }
@@ -74,8 +74,8 @@
         </ul>
       </div>
       <div class="layui-body" style="left: 0">
-        <div class="search">
-          <table class="search_table" lay-filter="test"></table>
+        <div class="info">
+          <table class="info_table" lay-filter="test"></table>
           <div id="demo"></div>
         </div>
       </div>
@@ -99,7 +99,7 @@
           <div class="layui-input-block">
             <input
               type="text"
-              name=""
+              name="id"
               placeholder="请输入"
               autocomplete="off"
               class="layui-input"
@@ -109,7 +109,7 @@
         <div class="layui-form-item">
           <label class="layui-form-label">性别</label>
           <div class="layui-input-block">
-            <select name="interest" lay-filter="aihao">
+            <select name="sex" lay-filter="aihao">
               <option value="" selected>请选择性别</option>
               <option value="0">男</option>
               <option value="1">女</option>
@@ -119,7 +119,7 @@
         <div class="layui-form-item">
           <label class="layui-form-label">症型</label>
           <div class="layui-input-block">
-            <select name="interest" lay-filter="aihao">
+            <select name="symptoms" lay-filter="aihao">
               <option value="" selected>请选择</option>
               <option value="0">肾阳虚</option>
               <option value="1">肾阴虚</option>
@@ -131,18 +131,20 @@
           <div class="layui-input-block">
             <input
               type="text"
-              name=""
+              name="age_min"
               placeholder="最小值"
               autocomplete="off"
               class="layui-input min"
+              lay-verify="isNumber"
             />
             <span>-</span>
             <input
               type="text"
-              name=""
+              name="age_max"
               placeholder="最大值"
               autocomplete="off"
               class="layui-input max"
+              lay-verify="isNumber"
             />
           </div>
         </div>
@@ -151,18 +153,20 @@
           <div class="layui-input-block">
             <input
               type="text"
-              name=""
+              name="ser_min"
               placeholder="最小值"
               autocomplete="off"
               class="layui-input min"
+              lay-verify="isNumber"
             />
             <span>-</span>
             <input
               type="text"
-              name=""
+              name="ser_max"
               placeholder="最大值"
               autocomplete="off"
               class="layui-input max"
+              lay-verify="isNumber"
             />
           </div>
         </div>
@@ -171,18 +175,20 @@
           <div class="layui-input-block">
             <input
               type="text"
-              name=""
+              name="eGFR_min"
               placeholder="最小值"
               autocomplete="off"
               class="layui-input min"
+              lay-verify="isNumber"
             />
             <span>-</span>
             <input
               type="text"
-              name=""
+              name="eGFR_max"
               placeholder="最大值"
               autocomplete="off"
               class="layui-input max"
+              lay-verify="isNumber"
             />
           </div>
         </div>
@@ -221,7 +227,7 @@
               const TABLE = layui.table;
               // 表格组件
               TABLE.render({
-                elem: ".search_table", // 定位表格ID
+                elem: ".info_table", // 定位表格ID
                 title: "用户数据表",
                 toolbar: "#headBar",
                 cols: [
@@ -300,29 +306,34 @@
       }
       layui.use("form", function () {
         const FORM = layui.form;
+        FORM.verify({
+          isNumber: (value) => {
+            if(Number.isNaN(Number(value))) {
+              return "请输入数字"
+            }
+          }
+        })
         FORM.on("submit(*)", (data) => {
-          const $INPUT = $("input");
+          const {field} = data;
           const TEST_DATA = {
-            id: $INPUT[0].value,
-            sex: "",
-            symptoms: "",
-            age: [$INPUT[3].value, $INPUT[4].value],
-            serum_creatinine: [$INPUT[5].value, $INPUT[6].value],
-            eGFR: [$INPUT[7].value, $INPUT[8].value]
+            id: field.id,
+            sex: field.sex,
+            symptoms: field.symptoms,
+            age: JSON.stringify([field.age_min, field.age_max]),
+            serum_creatinine: JSON.stringify([field.ser_min, field.ser_max]),
+            eGFR: JSON.stringify([field.eGFR_min, field.eGFR_max])
           }
-          if($INPUT[1].value === "男") TEST_DATA.sex = "1";
-          if($INPUT[1].value === "女") TEST_DATA.sex = "2";
-          if($INPUT[2].value === "肾阳虚") TEST_DATA.symptoms = "1";
-          if($INPUT[2].value === "肾阴阳虚") TEST_DATA.symptoms = "2";
-          
+          console.log(TEST_DATA);
+          /*
           $.ajax({
-          type: "POST",
-          url: `http://127.0.0.1:5000/test`,
-          data: TEST_DATA,
-          success: function (data) {
-            console.log(data);
-          }
+            type: "POST",
+            url: `http://127.0.0.1:5000/test`,
+            data: TEST_DATA,
+            success: function (data) {
+              console.log(data);
+            }
           })
+          */
           return false;
         });
       });

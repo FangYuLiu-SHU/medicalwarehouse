@@ -102,8 +102,6 @@ def inputJudge(page,limit,total,err):
 def patient_info_show():
     return render_template('patient_info.html',page_data=json.dumps([]))
 
-
-
 @app.route('/patient_info')
 def patient_info():
     page = request.args.get('page')  # 页数
