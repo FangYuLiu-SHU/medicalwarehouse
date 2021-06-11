@@ -75,64 +75,12 @@ def data_statistic():
     return render_template('datastatistic.html', data_json=data_json)
 
 
-def inputJudge(page,limit,total,err):
-    if page != "":
-        if page.isdigit() == False:
-            err = "输入不合法，请输入一个整数"
-        elif int(page) < 1:
-            err = "输入错误，请输入大于0的整数"
-    elif page == "":
-        err = "输入为空，请输入页数"
-
-    if limit == "":
-        err = "输入为空，请输入每页显示的数量"
-    else:
-        if limit.isdigit() == False:
-            err = "输入不合法，请输入一个整数"
-        elif int(limit) < 1  :
-            err = "每页显示数量至少为1"
-    if page.isdigit() == True and limit.isdigit() == True:
-        all_page = total / int(limit) + 1  # 数据总共页数
-        if int(page) > all_page:
-            err = "输入页数超过数据最大页数"
-    return err
 
 # 病人信息展示页面
 @app.route('/patient_info_show')
 def patient_info_show():
     return render_template('patient_info.html',page_data=json.dumps([]))
 
-
-
-@app.route('/patient_info')
-def patient_info():
-    page = request.args.get('page')  # 页数
-    limit = request.args.get('limit')  # 每页显示的数量
-    sql_total_count = "select count(*) from dwd_patient_info"  # 总的记录数
-    cursor.execute(sql_total_count)  # 执行sql语句
-    patient_total_count = cursor.fetchall()  # 取数据
-    offset = (int(page) - 1) * int(limit)  # 起始行
-    sql = "select * from dwd_patient_info limit " + str(offset) + ',' + str(limit)  # 一页数据
-    cursor.execute(sql)  # 执行sql语句
-    data = cursor.fetchall()  # 获取数据
-    json_data = {}
-    one_page_data = []
-    for result in data:
-        one_page_data.append({
-            'id': str(result[0]),
-            'sex': str(result[1]),
-            'age': str(result[2]),
-            'serum_creatinine': str(result[3]),
-            'eGFR': str(result[4]),
-            'symptoms_type': str(result[5]),
-            'tongue': str(result[6]),
-            'pulse': str(result[7]).strip(),
-        })
-    json_data["code"] = str(0)
-    json_data['total'] = patient_total_count[0][0]
-    json_data['data'] = one_page_data
-    json_data=json.dumps(json_data,ensure_ascii=False)
-    return json_data
 
 
 
@@ -155,9 +103,9 @@ def patient_info_by_condition():
         sql+="and id='" + str(id) + "'"
     if sex!="":
         sql += "and sex='" + str(sex) + "'"
-    if age[0]!="":
+    if age[0]!="" :
         sql += "and age>'" + str(age[0]) + "'"
-    if age[1]!="":
+    if age[1]!="" :
         sql += "and age<'" +  str(age[1]) + "'"
     if serum_creatinine[0]!="":
         sql += "and serum_creatinine>'" + str(serum_creatinine[0]) + "'"
@@ -171,9 +119,12 @@ def patient_info_by_condition():
         sql += "and symptoms_type='" + str(symptoms) + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
     sql+="limit "+str(offset)+','+str(limit)
-    print(sql)
-    cursor.execute(sql)  # 执行sql语句
-    data = cursor.fetchall()  # 获取数据
+    sql_total_count = "select count(*) from dwd_patient_info"  # 总的记录数
+    cursor.execute(sql_total_count)  # 执行sql语句
+    patient_total_count = cursor.fetchall()  # 取数据
+    cursor.execute(sql)  
+    data = cursor.fetchall() 
+    json_data = {}
     result_data = []
     for result in data:
         result_data.append({
@@ -186,8 +137,11 @@ def patient_info_by_condition():
             'tongue': str(result[6]),
             'pulse': str(result[7]).strip(),
         })
-    result_data = json.dumps(result_data, ensure_ascii=False)
-    return result_data
+    json_data["code"] = str(0)
+    json_data['total'] = patient_total_count[0][0]
+    json_data['data'] = result_data
+    json_data = json.dumps(json_data, ensure_ascii=False)
+    return json_data
 
 if __name__ == '__main__':
     app.run(debug=True)
