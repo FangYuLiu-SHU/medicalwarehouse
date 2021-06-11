@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>test</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" />
+  </head>
+  <body class="layui-layout-body" >
+    <div class="layui-layout layui-layout-admin">
+      <div class="layui-header">
+        <div class="layui-logo layui-hide-xs layui-bg-black">医疗系统</div>
+        <!-- 头部区域（可配合layui 已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+          <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="skipto('datastatistic')" style="cursor:pointer">信息展示</a></li>
+          <li class="layui-nav-item layui-hide-xs"><a href="">查询</a></li>
+          <li class="layui-nav-item layui-hide-xs"><a href="">预测</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+          <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+            <a href="javascript:">
+              tester
+            </a>
+            <dl class="layui-nav-child">
+              <dd><a href="">Your Profile</a></dd>
+              <dd><a href="">Settings</a></dd>
+              <dd><a href="">Sign out</a></dd>
+            </dl>
+          </li>
+          <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+            <a href="javascript:;">
+              <i class="layui-icon layui-icon-more-vertical"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="layui-body" style="left: 0px ">
+		    <!-- 内容主体区域 -->
+		    	<div id="init_title" style="position:absolute;left:25%;top:30%;font-size: 100px;"></div>
+		    	<iframe id="iframe_id" src="" style=" width: 100%; height:100%;"></iframe>
+      </div>
+    </div>
+    <script src="../static/layui/layui.js"></script>
+  	<script>
+		//JavaScript代码区域
+		layui.use(['element'], function(){
+		  var element = layui.element;
+
+		});
+		function skipto(target){
+			var ifr = document.getElementById('iframe_id');
+			if(document.getElementById('init_title')){
+				var inf = document.getElementById('init_title');
+				inf.remove();
+			}
+			ifr.src = 'http://127.0.0.1:5000/' + target;
+		}
+
+		</script>
+  </body>
+</html>
