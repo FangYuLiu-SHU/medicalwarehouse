@@ -75,28 +75,7 @@ def data_statistic():
     return render_template('datastatistic.html', data_json=data_json)
 
 
-def inputJudge(page,limit,total,err):
-    if page != "":
-        if page.isdigit() == False:
-            err = "输入不合法，请输入一个整数"
-        elif int(page) < 1:
-            err = "输入错误，请输入大于0的整数"
-    elif page == "":
-        err = "输入为空，请输入页数"
 
-    if limit == "":
-        err = "输入为空，请输入每页显示的数量"
-    else:
-        if limit.isdigit() == False:
-            err = "输入不合法，请输入一个整数"
-        elif int(limit) < 1  :
-            err = "每页显示数量至少为1"
-    if page.isdigit() == True and limit.isdigit() == True:
-        all_page = total / int(limit) + 1  # 数据总共页数
-        if int(page) > all_page:
-            err = "输入页数超过数据最大页数"
-    return err
-    
 # 病人信息展示页面
 @app.route('/patient_info_show')
 def patient_info_show():
@@ -104,21 +83,51 @@ def patient_info_show():
 
 
 
-@app.route('/patient_info')
-def patient_info():
-    page = request.args.get('page')  # 页数
-    limit = request.args.get('limit')  # 每页显示的数量
+
+@app.route('/patient_info_by_condition',methods=['POST'])
+def patient_info_by_condition():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None:
+        page=1
+    if limit is None:
+        limit=1
+    id = request.form.get('id')  # 编号
+    sex = request.form.get('sex')  # 性别
+    age = json.loads(request.form.get('age'))  # 年龄
+    serum_creatinine = json.loads(request.form.get('serum_creatinine'))  # 血肌酐
+    eGFR = json.loads(request.form.get('eGFR'))
+    symptoms = request.form.get('symptoms')  # 症型(1=肾阳虚，2=肾阴虚)
+    sql = "select * from dwd_patient_info where 1=1 "
+    if id!="":
+        sql+="and id='" + str(id) + "'"
+    if sex!="":
+        sql += "and sex='" + str(sex) + "'"
+    if age[0]!="" :
+        sql += "and age>'" + str(age[0]) + "'"
+    if age[1]!="" :
+        sql += "and age<'" +  str(age[1]) + "'"
+    if serum_creatinine[0]!="":
+        sql += "and serum_creatinine>'" + str(serum_creatinine[0]) + "'"
+    if serum_creatinine[1]!="":
+        sql += "and serum_creatinine<'" +  str(serum_creatinine[1]) + "'"
+    if eGFR[0]!="":
+        sql += "and eGFR>'" + str(eGFR[0]) + "'"
+    if eGFR[1]!="":
+        sql += "and eGFR<'" +  str(eGFR[1]) + "'"
+    if symptoms!="":
+        sql += "and symptoms_type='" + str(symptoms) + "'"
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    sql+="limit "+str(offset)+','+str(limit)
     sql_total_count = "select count(*) from dwd_patient_info"  # 总的记录数
     cursor.execute(sql_total_count)  # 执行sql语句
     patient_total_count = cursor.fetchall()  # 取数据
-    offset = (int(page) - 1) * int(limit)  # 起始行
-    sql = "select * from dwd_patient_info limit " + str(offset) + ',' + str(limit)  # 一页数据
-    cursor.execute(sql)  # 执行sql语句
-    data = cursor.fetchall()  # 获取数据
+    cursor.execute(sql)  
+    data = cursor.fetchall() 
     json_data = {}
-    one_page_data = []
+    result_data = []
     for result in data:
-        one_page_data.append({
+        result_data.append({
             'id': str(result[0]),
             'sex': str(result[1]),
             'age': str(result[2]),
@@ -130,10 +139,9 @@ def patient_info():
         })
     json_data["code"] = str(0)
     json_data['total'] = patient_total_count[0][0]
-    json_data['data'] = one_page_data
-    json_data=json.dumps(json_data,ensure_ascii=False)
+    json_data['data'] = result_data
+    json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
