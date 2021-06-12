@@ -4,6 +4,7 @@
     <list default="true" id="62db865c-0ead-4767-9b09-9c5c5901d1de" name="Default Changelist" comment="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/patient_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/patient_info.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,5 +95,15 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
     <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="data" language="Python" />
+        <watch expression="totalQueryData" language="Python" />
+        <watch expression="len(totalQueryData)" language="Python" />
+        <watch expression="patient_total_count[0][0]" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
