@@ -29,9 +29,11 @@
           <legend>医疗数据统计分析</legend>
         </fieldset>
         <div id="container1" style="height: 75%;position: relative">
-          <div id="age_ana" style="width: 33%; height: 100%;float: left">年龄分布</div>
-          <div id="sex_ana" style="width: 33%; height: 100%;float: left">性别分布</div>
           <div id="symptom_ana" style="width: 33%; height: 100%;float: left">症状统计</div>
+          <div id="sex_ana" style="width: 33%; height: 50%;float: left">性别分布</div>
+            <div id="age_ana" style="width: 33%; height: 50%;float: left">年龄分布</div>
+            <div id="eGFR_ana" style="width: 33%; height: 50%;float: left">eGFR值分布</div>
+          <div id="sc_ana" style="width: 33%; height: 50%;float: left">sc_value分布</div>
         </div>
 
         <div class="layui-form-item" style="width: 100%;margin-top: 10px;">
@@ -82,37 +84,186 @@
       <script src="../static/layui/layui.js"></script>
       <script type="text/javascript" src="/static/js/echarts.js"></script>
       <script type="text/javascript" src="/static/js/function.js"></script>
-<!--      <script>-->
-<!--        layui.use('form', function(){-->
-<!--        var form = layui.form;-->
-<!--          //监听提交-->
-<!--          form.on('submit(commit)', function(data){-->
-<!--            layer.msg(JSON.stringify(data.field));-->
-<!--            return false;-->
-<!--          });-->
-<!--        });-->
-<!--      </script>-->
       <script type="text/javascript">
-        var data_static={{data_json | tojson}};
+        var data_static={{data_json| tojson}};
         data_static=JSON.parse(data_static);
+        // document.write(data_static);
         var num_patient=data_static.num_patient;
         var num_male=data_static.num_male;
         var num_female=data_static.num_female;
         var num_pos=data_static.num_pos;
         var num_neg=data_static.num_neg;
         var age_distribute=data_static.age_distribute;
-        var age_num=[];
-        var age_type=[];
+        var age_num=data_static.age_distribute.num;
+        var age_type=data_static.age_distribute.bins;
+        var eGFR_distribute=data_static.eGFR_distribute;
+        var eGFR_num=data_static.eGFR_distribute.num;
+        var eGFR_type=data_static.eGFR_distribute.bins;
+        var sc_distribute=data_static.sc_distribute;
+        var sc_num=data_static.sc_distribute.num;
+        var sc_type=data_static.sc_distribute.bins;
         var yMax = 150;
         var dataShadow = [];
-        for(var key in age_distribute){
-            // document.write(key,age_distribute[key]);
-            age_num.push(age_distribute[key]);
-            age_type.push(key);
-            dataShadow.push(yMax);
-        }
+          var eGFR_dom = document.getElementById('eGFR_ana');
+        var eGFR_chart = echarts.init(eGFR_dom);
+        var eGFR_option= {
+                title: {
+              text: 'eGFR值分布',
+              left: 'center'
+          },
+             tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c}人 '
+        },
+            xAxis: {
+                data: eGFR_type,
+                axisLabel: {
+                    inside: false,
+                    textStyle: {
+                        color: '#120d0d'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                z: 10
+            },
+            yAxis: {
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside'
+                }
+            ],
+            series: [
+                {
+                	name: 'eGFR值段：',
+                    type: 'bar',
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#a0020d'},
+                                {offset: 0.5, color: '#be010e'},
+                                {offset: 1, color: '#be010e'}
+                            ]
+                        )
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#037ea3'},
+                                    {offset: 0.7, color: '#0091ab'},
+                                    {offset: 1, color: '#0571ae'}
+                                ]
+                            )
+                        }
+                    },
+                    data: eGFR_num
+                }
+            ]
 
-        // document.write(age_dis);
+
+        };
+        eGFR_chart.setOption(eGFR_option);
+
+          var sc_dom = document.getElementById('sc_ana');
+        var sc_chart = echarts.init(sc_dom);
+        var sc_option= {
+                title: {
+              text: '血肌酐值分布',
+              left: 'center'
+          },
+             tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c}人 '
+        },
+            xAxis: {
+                data: sc_type,
+                axisLabel: {
+                    inside: false,
+                    textStyle: {
+                        color: '#120d0d'
+                    }
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: false
+                },
+                z: 10
+            },
+            yAxis: {
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside'
+                }
+            ],
+            series: [
+                {
+                	name: '血肌酐值段：',
+                    type: 'bar',
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#a0020d'},
+                                {offset: 0.5, color: '#be010e'},
+                                {offset: 1, color: '#be010e'}
+                            ]
+                        )
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#037ea3'},
+                                    {offset: 0.7, color: '#0091ab'},
+                                    {offset: 1, color: '#0571ae'}
+                                ]
+                            )
+                        }
+                    },
+                    data: sc_num
+                }
+            ]
+
+
+        };
+        sc_chart.setOption(sc_option);
+
+
+
         var age_dom = document.getElementById('age_ana');
         var age_chart = echarts.init(age_dom);
         var age_option={
@@ -259,7 +410,6 @@
           ]
         };
         symptom_chart.setOption(symptom_option)
-
 
       </script>
 

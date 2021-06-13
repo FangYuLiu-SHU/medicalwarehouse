@@ -3,7 +3,7 @@ from flask import Flask, render_template, request
 import pymysql
 import pandas as pd
 import json
-
+from utils import tool
 
 # 连接数据库
 try:
@@ -36,43 +36,73 @@ def hello_world():
     return render_template('index.html')
 
 # 数据统计
-@app.route('/datastatistic')
+@app.route('/datastatistic', methods=["GET", "POST"])
 def data_statistic():
-    # 从数据库获取病人信息表
-    cursor.execute("SELECT * FROM dwd_patient_info;")
-    query_result = cursor.fetchall()
-    col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
-    pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
+    if request.method == "GET":
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute("SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_patient_info;")
+        except:
+            print('从服务器获取数据失败')
+            return 0
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
 
-    num_patient = len(pd_patient_info)  # 病人个数
-    num_male = len(pd_patient_info[pd_patient_info['sex']=='1'])    # 男性个数
-    num_female = len(pd_patient_info[pd_patient_info['sex']=='2'])  # 女性个数
+        data = tool.get_statistic_info(pd_patient_info)
 
-    num_pos = len(pd_patient_info[pd_patient_info['symptoms_type'] == '1'])  # 肾阳虚个数
-    num_neg = len(pd_patient_info[pd_patient_info['symptoms_type'] == '2'])  # 肾阴虚个数
+        data_json = json.dumps(data)
+        # return data_json
+        return render_template('datastatistic.html', data_json=data_json)
+    elif request.method == "POST":
+        gender = request.form.get('gender')
+        min_age = request.form.get('min_age')
+        max_age = request.form.get('max_age')
+        min_sc_value = request.form.get('min_sc_value')
+        max_sc_value = request.form.get('max_sc_value')
+        min_eGFR = request.form.get('min_eGFR')
+        max_eGFR = request.form.get('max_eGFR')
+        symptoms_type = request.form.get('symptoms_type')
+        # print(gender, min_age, max_age, min_sc_value, max_sc_value, min_eGFR, max_eGFR)
 
-    # 年龄段统计
-    age_distribute = {}
-    for i in range(10):
-        min_age = 10*i
-        max_age = 10*(i+1)
-        tmp = pd_patient_info[pd_patient_info['age'] >= min_age]
-        num = len(tmp[tmp['age'] < max_age])
-        age_range = str(min_age) + '-' + str(max_age)
-        age_distribute.update({age_range:num})
+        sql = "SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_patient_info WHERE id IS NOT NULL"
+        t = [None, '', 'all']
+        if gender in ['男', '女']:
+            sql = sql + " AND sex=" + ('1' if gender=='男' else '2')
+        if min_age not in t:
+            sql = sql + " AND age>=" + str(min_age)
+        if max_age not in t:
+            sql = sql + " AND age<=" + str(max_age)
+        if min_sc_value not in t:
+            sql = sql + " AND serum_creatinine>=" + str(min_sc_value)
+        if max_sc_value not in t:
+            sql = sql + " AND serum_creatinine<=" + str(max_sc_value)
+        if min_eGFR not in t:
+            sql = sql + " AND eGFR>=" + str(min_eGFR)
+        if min_sc_value not in t:
+            sql = sql + " AND eGFR>=" + str(max_eGFR)
+        if symptoms_type in ['肾阳虚', '肾阴虚']:
+            sql = sql + " AND symptoms_type=" + ('1' if symptoms_type=='肾阳虚' else '2')
+        # print(sql)
 
-    # 所有要传给前端的数据
-    data = {
-        'num_patient': num_patient,     # 病人个数
-        'num_male': num_male,           # 男性个数
-        'num_female': num_female,       # 女性个数
-        'num_pos': num_pos,             # 肾阳虚病人个数
-        'num_neg': num_neg,             # 肾阴虚病人个数
-        'age_distribute': age_distribute# 年龄段分布
-    }
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute(sql)
+        except:
+            print('从服务器获取数据失败')
+            return 0
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
+        print(pd_patient_info)
 
-    data_json = json.dumps(data)
-    return render_template('datastatistic.html', data_json=data_json)
+        data = tool.get_statistic_info(pd_patient_info)
+
+        data_json = json.dumps(data)
+        # return data_json
+        return render_template('datastatistic.html', data_json=data_json)
+
+
 
 
 
