@@ -102,6 +102,33 @@
         var sc_distribute=data_static.sc_distribute;
         var sc_num=data_static.sc_distribute.num;
         var sc_type=data_static.sc_distribute.bins;
+         var age_bins=[]
+        for(var i=0;i<=age_type.length;i++){
+            if(i==age_type.length){
+                age_bins.push(age_type[i-1]+"~")
+            }else {
+                age_bins.push((age_type[i]-10) + "~" + age_type[i])
+            }
+
+        }
+        var sc_bins=[]
+        for(var i=0;i<sc_type.length;i++){
+            if(i==sc_type.length-1){
+                sc_bins.push(sc_type[i]+"~")
+            }else {
+                sc_bins.push((sc_type[i]) + "~" + sc_type[i+1])
+            }
+
+        }
+        var eGFR_bins=[]
+        for(var i=0;i<eGFR_type.length;i++){
+            if(i==eGFR_type.length-1){
+                eGFR_bins.push(eGFR_type[i]+"~")
+            }else {
+                eGFR_bins.push((eGFR_type[i]) + "~" + (eGFR_type[i+1]))
+            }
+
+        }
         var yMax = 150;
         var dataShadow = [];
           var eGFR_dom = document.getElementById('eGFR_ana');
@@ -116,7 +143,7 @@
             formatter: '{a} <br/>{b}: {c}人 '
         },
             xAxis: {
-                data: eGFR_type,
+                data: eGFR_bins,
                 axisLabel: {
                     inside: false,
                     textStyle: {
@@ -195,7 +222,7 @@
             formatter: '{a} <br/>{b}: {c}人 '
         },
             xAxis: {
-                data: sc_type,
+                data: sc_bins,
                 axisLabel: {
                     inside: false,
                     textStyle: {
@@ -276,7 +303,7 @@
             formatter: '{a} <br/>{b}: {c}人 '
         },
             xAxis: {
-                data: age_type,
+                data: age_bins,
                 axisLabel: {
                     inside: false,
                     textStyle: {
