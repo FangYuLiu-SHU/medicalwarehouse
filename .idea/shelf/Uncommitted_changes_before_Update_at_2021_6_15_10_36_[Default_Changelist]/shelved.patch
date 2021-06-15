@@ -1,0 +1,257 @@
+Index: templates/diseasePrediction.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <meta charset=\"utf-8\" />\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\"/>\r\n    <title>病症预测页面</title>\r\n<style type=\"text/css\">\r\n.file {\r\n    display: inline-block;\r\n    height: 38px;\r\n    line-height: 38px;\r\n    padding: 0 18px;\r\n    background-color: #1E9FFF;\r\n    color: #fff;\r\n    white-space: nowrap;\r\n    text-align: center;\r\n    font-size: 14px;\r\n    border: none;\r\n    border-radius: 2px;\r\n    cursor: pointer;\r\n\r\n    position: relative;\r\n    overflow: hidden;\r\n    text-decoration: none;\r\n    text-indent: 0;\r\n}\r\n.file input {\r\n    position: absolute;\r\n    font-size: 100px;\r\n    right: 0;\r\n    top: 0;\r\n    opacity: 0;\r\n}\r\n.file:hover {\r\n    background: #78C3F3;\r\n    border-color: #78C3F3;\r\n    color: #004974;\r\n    text-decoration: none;\r\n}\r\n</style>\r\n    <link rel=\"stylesheet\" href=\"../static/layui/css/layui.css\"/>\r\n    <script src=\"../static/js/jquery.js\"></script>\r\n  </head>\r\n  <body>\r\n    <div class=\"layui-layout layui-layout-admin\">\r\n<!--      <div class=\"layui-header\">-->\r\n<!--        <div class=\"layui-logo layui-hide-xs layui-bg-black\">医疗系统</div>-->\r\n<!--        &lt;!&ndash; 头部区域（可配合layui 已有的水平导航） &ndash;&gt;-->\r\n<!--        <ul class=\"layui-nav layui-layout-left\">-->\r\n<!--          <li class=\"layui-nav-item layui-hide-xs\"><a  href=\"javascript:\" onclick=\"skipto('datastatistic')\" style=\"cursor:pointer\">信息展示</a></li>-->\r\n<!--          <li class=\"layui-nav-item layui-hide-xs\"><a href=\"./data_search\">查询</a></li>-->\r\n<!--          <li class=\"layui-nav-item layui-hide-xs layui-nav-itemed\"><a href=\"./disease_prediction\">预测</a></li>-->\r\n<!--        </ul>-->\r\n<!--        <ul class=\"layui-nav layui-layout-right\">-->\r\n<!--          <li class=\"layui-nav-item layui-hide layui-show-md-inline-block\">-->\r\n<!--            <a href=\"javascript:;\">-->\r\n<!--              tester-->\r\n<!--            </a>-->\r\n<!--            <dl class=\"layui-nav-child\">-->\r\n<!--              <dd><a href=\"\">Your Profile</a></dd>-->\r\n<!--              <dd><a href=\"\">Settings</a></dd>-->\r\n<!--              <dd><a href=\"\">Sign out</a></dd>-->\r\n<!--            </dl>-->\r\n<!--          </li>-->\r\n<!--          <li class=\"layui-nav-item\" lay-header-event=\"menuRight\" lay-unselect>-->\r\n<!--            <a href=\"javascript:;\">-->\r\n<!--              <i class=\"layui-icon layui-icon-more-vertical\"></i>-->\r\n<!--            </a>-->\r\n<!--          </li>-->\r\n<!--        </ul>-->\r\n<!--      </div>-->\r\n      <div class=\"layui-body\" style=\"left: 0\">\r\n        <div style=\"padding: 15px\">\r\n            <fieldset class=\"layui-elem-field layui-field-title\" style=\"margin-top: 50px;\">\r\n              <legend>输入病人的各项指标</legend>\r\n            </fieldset>\r\n            <form name=\"myForm\" class=\"layui-form layui-form-pane\" method=\"post\" lay-filter=\"forecastInformation\" enctype = 'multipart/form-data'>\r\n\r\n              <div class=\"layui-form-item\" pane=\"\">\r\n                <label class=\"layui-form-label\">性别</label>\r\n                <div class=\"layui-input-block\">\r\n                  <input type=\"radio\" name=\"sex\" value=\"男\" title=\"男\" checked=\"\">\r\n                  <input type=\"radio\" name=\"sex\" value=\"女\" title=\"女\">\r\n                  <!--<input type=\"radio\" name=\"sex\" value=\"禁\" title=\"禁用\" disabled=\"\">-->\r\n                </div>\r\n              </div>\r\n\r\n              <div class=\"layui-form-item\">\r\n                <div class=\"layui-inline\">\r\n                  <label class=\"layui-form-label\">年龄</label>\r\n                  <div class=\"layui-input-inline\">\r\n                    <input type=\"text\" name=\"userage\" autocomplete=\"off\" placeholder=\"请输入年龄\"  class=\"layui-input\">\r\n                  </div>\r\n                </div>\r\n                <div class=\"layui-inline\">\r\n                  <label class=\"layui-form-label\">分期</label>\r\n                  <div class=\"layui-input-inline\">\r\n                    <input type=\"text\" name=\"stage\" autocomplete=\"off\" placeholder=\"请输入分期\"  class=\"layui-input\">\r\n                  </div>\r\n                </div>\r\n                <div class=\"layui-inline\">\r\n                  <label class=\"layui-form-label\">血肌酐</label>\r\n                  <div class=\"layui-input-inline\">\r\n                    <input type=\"text\" name=\"bloodCreatinine\" autocomplete=\"off\" placeholder=\"请输入血肌酐指标\"  class=\"layui-input\">\r\n                  </div>\r\n                </div>\r\n              </div>\r\n\r\n              <div class=\"layui-form-item\">\r\n                <div class=\"layui-inline\">\r\n                  <label class=\"layui-form-label\">eGFR值</label>\r\n                  <div class=\"layui-input-inline\">\r\n                    <input type=\"text\" name=\"egfr\" lay-verify=\"required\" lay-reqtext=\"eGFR值不能为空\" autocomplete=\"off\" placeholder=\"请先计算eGFR值\"  class=\"layui-input\">\r\n                  </div>\r\n                </div>\r\n                <div class=\"layui-inline\">\r\n                  <button type=\"button\" class=\"layui-btn layui-btn-normal\" id=\"LAY-component-form-egfr\">计算eGFR值</button>\r\n                </div>\r\n              </div>\r\n\r\n              <div class=\"layui-form-item\">\r\n                <div class=\"layui-inline\">\r\n                  <label class=\"layui-form-label\">脉搏表格</label>\r\n                  <div class=\"layui-input-inline\">\r\n                    <input type=\"text\" name=\"fileName\" id=\"selectFileName\" lay-verify=\"fileName\" lay-reqtext=\"请先选择脉搏数据文件\" autocomplete=\"off\" placeholder=\"未选择文件\" class=\"layui-input\" readonly=\"readonly\">\r\n                  </div>\r\n                </div>\r\n                <div class=\"layui-inline\">\r\n                  <!--\t\t\t\t\t<input type=\"file\" name=\"pulseFile\" class=\"file\">-->\r\n                  <a href=\"javascript:;\" class=\"file\">点击选择文件\r\n                    <input type=\"file\" name=\"pulseFile\" id=\"selectFile\" class=\"file\">\r\n                  </a>\r\n                </div>\r\n\t\t\t  </div>\r\n\r\n              <div class=\"layui-form-item\">\r\n                <div class=\"layui-inline\">\r\n                  <label class=\"layui-form-label\">脉搏类型</label>\r\n                  <div class=\"layui-input-inline\">\r\n                    <input type=\"text\" name=\"pulseType\" id=\"pulseType\" autocomplete=\"off\" placeholder=\"预测结果\"  class=\"layui-input\">\r\n                  </div>\r\n                </div>\r\n                <div class=\"layui-inline\">\r\n                  <button class=\"layui-btn\" id=\"commit\" lay-submit=\"*\" lay-filter=\"forecastInformation\" id=\"LAY-component-form-result\">脉搏类型预测</button>\r\n                </div>\r\n              </div>\r\n            </form>\r\n        </div>\r\n      </div>\r\n    </div>\r\n    <script src=\"../static/layui/layui.js\"></script>\r\n    <script src=\"../static/js/jquery.js\"></script>\r\n    <script>\r\n    layui.use(['form', 'layedit', 'laydate'], function(){\r\n      var form = layui.form\r\n      ,layer = layui.layer\r\n      ,layedit = layui.layedit\r\n      ,laydate = layui.laydate;\r\n\r\n      //日期\r\n      laydate.render({\r\n        elem: '#date'\r\n      });\r\n      laydate.render({\r\n        elem: '#date1'\r\n      });\r\n\r\n      //创建一个编辑器\r\n      var editIndex = layedit.build('LAY_demo_editor');\r\n\r\n      //自定义验证规则\r\n      form.verify({\r\n        title: function(value){\r\n          if(value.length < 5){\r\n            return '标题至少得5个字符啊';\r\n          }\r\n        }\r\n        ,pass: [\r\n          /^[\\S]{6,12}$/\r\n          ,'密码必须6到12位，且不能出现空格'\r\n        ]\r\n        ,content: function(value){\r\n          layedit.sync(editIndex);\r\n        }\r\n        ,fileName: function (value){\r\n          if(value.length <= 0)\r\n            return '请先选择脉搏数据文件';\r\n        }\r\n      });\r\n\r\n      //监听指定开关\r\n      form.on('switch(switchTest)', function(data){\r\n        layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {\r\n          offset: '6px'\r\n        });\r\n        layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)\r\n      });\r\n\r\n      //监听提交\r\n      form.on('submit(demo1)', function(data){\r\n        //表单提交数据前做的事情\r\n        return data;\r\n      });\r\n\r\n      //表单赋值\r\n      layui.$('#LAY-component-form-setval').on('click', function(){\r\n        form.val('example', {\r\n          \"username\": \"贤心\" // \"name\": \"value\"\r\n          ,\"password\": \"123456\"\r\n          ,\"interest\": 1\r\n          ,\"like[write]\": true //复选框选中状态\r\n          ,\"close\": true //开关状态\r\n          ,\"sex\": \"女\"\r\n          ,\"desc\": \"我爱 layui\"\r\n        });\r\n      });\r\n\r\n      //表单取值\r\n      layui.$('#LAY-component-form-getval').on('click', function(){\r\n        var data = form.val('example');\r\n        alert(JSON.stringify(data));\r\n      });\r\n\r\n      //利用表单已填信息计算eGFR值\r\n      layui.$('#LAY-component-form-egfr').on('click', function(){\r\n        var data = form.val('forecastInformation');\r\n        var jsonData = JSON.stringify(data);// 转成JSON格式\r\n        //var result = $.parseJSON(jsonData);// 转成JSON对象\r\n        var objectData = JSON.parse(jsonData);//转成JSON对象\r\n        if(objectData.bloodCreatinine==\"\"||objectData.userage==\"\"){\r\n          layer.msg('请输入指标值用于计算！', { icon: 7, time: 1000, shade: [0.6, '#000', true] });\r\n          return ;\r\n        }\r\n        var egfr = 0;\r\n        if(objectData.sex.toString()==\"男\"){\r\n          egfr=186*(objectData.bloodCreatinine/88.41)**-1.154*(objectData.userage**-0.203)*1.233;\r\n        }\r\n        else if(objectData.sex.toString()==\"女\"){\r\n          egfr=186*(objectData.bloodCreatinine/88.41)**-1.154*0.742*(objectData.userage**-0.203)*1.233;\r\n        }\r\n        //alert(jsonData);\r\n        //alert(objectData.userage);//获取某key的对应value\r\n        //alert(JSON.stringify(data));\r\n        //更新计算得到的结果\r\n        form.val('forecastInformation', {\r\n          \"sex\": objectData.sex.toString() // \"name\": \"value\"\r\n          ,\"userage\": objectData.userage.toString()\r\n          ,\"stage\": objectData.stage.toString()\r\n          ,\"bloodCreatinine\": objectData.bloodCreatinine.toString()\r\n          ,\"egfr\": egfr.toString()\r\n        });\r\n      });\r\n      //layui框架渲染（否则下拉框不显示）\r\n      layui.use('form', function () {\r\n          var form = layui.form;\r\n          form.render();\r\n          //更新数据\r\n          var newData = {{newData | tojson}};//获取后端返回的结果\r\n          objectData = JSON.parse(newData);\r\n          //alert(objectData.pulseType.toString());\r\n          //document.getElementById(\"pulseType\").innerText = objectData.pulseType.toString();\r\n          form.val('forecastInformation', {\r\n          \"sex\": objectData.sex.toString() // \"name\": \"value\"\r\n          ,\"userage\": objectData.userage.toString()\r\n          ,\"stage\": objectData.stage.toString()\r\n          ,\"bloodCreatinine\": objectData.bloodCreatinine.toString()\r\n          ,\"egfr\": objectData.egfr.toString()\r\n          ,\"fileName\" : objectData.fileName.toString()\r\n          ,\"pulseType\": objectData.pulseType.toString()\r\n        });\r\n      });\r\n    });\r\n    </script>\r\n    <script>\r\n    $(\".file\").on(\"change\",\"input[type='file']\",function(){\r\n      var fileNameText=document.getElementById(\"selectFileName\");\r\n      var fileInput=document.getElementById(\"selectFile\");\r\n      fileNameText.value=fileInput.files[0].name;\r\n      //alert(fileNameText.placeholder);\r\n    })\r\n    </script>\r\n  </body>\r\n</html>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/diseasePrediction.html b/templates/diseasePrediction.html
+--- a/templates/diseasePrediction.html	(revision 59ea5560058b402e262a4f215fe6ebc1b7d5466d)
++++ b/templates/diseasePrediction.html	(date 1623717889954)
+@@ -157,63 +157,6 @@
+       ,layedit = layui.layedit
+       ,laydate = layui.laydate;
+ 
+-      //日期
+-      laydate.render({
+-        elem: '#date'
+-      });
+-      laydate.render({
+-        elem: '#date1'
+-      });
+-
+-      //创建一个编辑器
+-      var editIndex = layedit.build('LAY_demo_editor');
+-
+-      //自定义验证规则
+-      form.verify({
+-        title: function(value){
+-          if(value.length < 5){
+-            return '标题至少得5个字符啊';
+-          }
+-        }
+-        ,pass: [
+-          /^[\S]{6,12}$/
+-          ,'密码必须6到12位，且不能出现空格'
+-        ]
+-        ,content: function(value){
+-          layedit.sync(editIndex);
+-        }
+-        ,fileName: function (value){
+-          if(value.length <= 0)
+-            return '请先选择脉搏数据文件';
+-        }
+-      });
+-
+-      //监听指定开关
+-      form.on('switch(switchTest)', function(data){
+-        layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+-          offset: '6px'
+-        });
+-        layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+-      });
+-
+-      //监听提交
+-      form.on('submit(demo1)', function(data){
+-        //表单提交数据前做的事情
+-        return data;
+-      });
+-
+-      //表单赋值
+-      layui.$('#LAY-component-form-setval').on('click', function(){
+-        form.val('example', {
+-          "username": "贤心" // "name": "value"
+-          ,"password": "123456"
+-          ,"interest": 1
+-          ,"like[write]": true //复选框选中状态
+-          ,"close": true //开关状态
+-          ,"sex": "女"
+-          ,"desc": "我爱 layui"
+-        });
+-      });
+ 
+       //表单取值
+       layui.$('#LAY-component-form-getval').on('click', function(){
+Index: templates/patient_info.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"en\" style=\"height: 100%\">\r\n  <!--刘艳霞 2020.10.23-->\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>谣言源检测</title>\r\n    <link rel=\"stylesheet\" href=\"../static/layui/css/layui.css\" media=\"all\" />\r\n    <style>\r\n      .info {\r\n        width: 80%;\r\n        margin: 0 auto;\r\n      }\r\n      .bar-head-form {\r\n        margin-bottom: 0;\r\n      }\r\n      .header-input {\r\n        height: 35px;\r\n        width: 20%;\r\n        display: inline-block;\r\n      }\r\n      .header-button {\r\n        height: 33px;\r\n        line-height: 35px;\r\n        border: 0;\r\n      }\r\n      #headBar {\r\n        margin-top: -5000px;\r\n      }\r\n      .colBar {\r\n        margin-top: -5000px;\r\n      }\r\n      .max {\r\n        width: 25%;\r\n        display: inline-block;\r\n      }\r\n      .min {\r\n        width: 25%;\r\n        display: inline-block;\r\n      }\r\n      .max::placeholder {\r\n        font-size: 8px;\r\n      }\r\n      .min::placeholder {\r\n        font-size: 8px;\r\n      }\r\n    </style>\r\n  </head>\r\n  <body>\r\n    <div class=\"layui-layout layui-layout-admin\">\r\n      <div class=\"layui-header\">\r\n        <div class=\"layui-logo layui-hide-xs layui-bg-black\">某系统</div>\r\n        <!-- 头部区域（可配合layui 已有的水平导航） -->\r\n        <ul class=\"layui-nav layui-layout-left\">\r\n          <li class=\"layui-nav-item layui-hide-xs\"><a href=\"\">信息展示</a></li>\r\n          <li class=\"layui-nav-item layui-hide-xs layui-nav-itemed\">\r\n            <a href=\"\">查询</a>\r\n          </li>\r\n          <li class=\"layui-nav-item layui-hide-xs\"><a href=\"\">预测</a></li>\r\n        </ul>\r\n        <ul class=\"layui-nav layui-layout-right\">\r\n          <li class=\"layui-nav-item layui-hide layui-show-md-inline-block\">\r\n            <a href=\"javascript:;\"> tester </a>\r\n            <dl class=\"layui-nav-child\">\r\n              <dd><a href=\"\">Your Profile</a></dd>\r\n              <dd><a href=\"\">Settings</a></dd>\r\n              <dd><a href=\"\">Sign out</a></dd>\r\n            </dl>\r\n          </li>\r\n          <li class=\"layui-nav-item\" lay-header-event=\"menuRight\" lay-unselect>\r\n            <a href=\"javascript:;\">\r\n              <i class=\"layui-icon layui-icon-more-vertical\"></i>\r\n            </a>\r\n          </li>\r\n        </ul>\r\n      </div>\r\n      <div class=\"layui-body\" style=\"left: 0\">\r\n        <div class=\"info\">\r\n          <table class=\"info_table\" lay-filter=\"test\"></table>\r\n          <div id=\"demo\"></div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n    <div class=\"colBar\">\r\n      <a class=\"layui-btn layui-btn-xs\" lay-event=\"detail\">查看</a>\r\n    </div>\r\n    <div id=\"headBar\">\r\n      <button\r\n        class=\"layui-btn layui-btn-normal header-button\"\r\n        lay-event=\"query\">\r\n        查询\r\n      </button>\r\n      <button\r\n        class=\"layui-btn layui-btn-normal header-button\"\r\n        lay-event=\"all_data\">\r\n        所有数据\r\n      </button>\r\n    </div>\r\n    <div class=\"detail_query\" style=\"padding: 20px\">\r\n      <form class=\"layui-form\" lay-filter=\"query_form\">\r\n        <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->\r\n        <div class=\"layui-form-item\">\r\n          <label class=\"layui-form-label\">患者id</label>\r\n          <div class=\"layui-input-block\">\r\n            <input\r\n              type=\"text\"\r\n              name=\"id\"\r\n              placeholder=\"请输入\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input\"\r\n            />\r\n          </div>\r\n        </div>\r\n        <div class=\"layui-form-item\">\r\n          <label class=\"layui-form-label\">性别</label>\r\n          <div class=\"layui-input-block\">\r\n            <select name=\"sex\" lay-filter=\"aihao\">\r\n              <option value=\"\" selected>请选择性别</option>\r\n              <option value=\"1\">男</option>\r\n              <option value=\"2\">女</option>\r\n            </select>\r\n          </div>\r\n        </div>\r\n        <div class=\"layui-form-item\">\r\n          <label class=\"layui-form-label\">症型</label>\r\n          <div class=\"layui-input-block\">\r\n            <select name=\"symptoms\" lay-filter=\"aihao\">\r\n              <option value=\"\" selected>请选择</option>\r\n              <option value=\"1\">肾阳虚</option>\r\n              <option value=\"2\">肾阴虚</option>\r\n            </select>\r\n          </div>\r\n        </div>\r\n        <div class=\"layui-form-item\">\r\n          <label class=\"layui-form-label\">年龄</label>\r\n          <div class=\"layui-input-block\">\r\n            <input\r\n              type=\"text\"\r\n              name=\"age_min\"\r\n              placeholder=\"最小值\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input min\"\r\n              lay-verify=\"isNumber\"\r\n            />\r\n            <span>-</span>\r\n            <input\r\n              type=\"text\"\r\n              name=\"age_max\"\r\n              placeholder=\"最大值\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input max\"\r\n              lay-verify=\"isNumber\"\r\n            />\r\n          </div>\r\n        </div>\r\n        <div class=\"layui-form-item\">\r\n          <label class=\"layui-form-label\">血肌酐</label>\r\n          <div class=\"layui-input-block\">\r\n            <input\r\n              type=\"text\"\r\n              name=\"ser_min\"\r\n              placeholder=\"最小值\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input min\"\r\n              lay-verify=\"isNumber\"\r\n            />\r\n            <span>-</span>\r\n            <input\r\n              type=\"text\"\r\n              name=\"ser_max\"\r\n              placeholder=\"最大值\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input max\"\r\n              lay-verify=\"isNumber\"\r\n            />\r\n          </div>\r\n        </div>\r\n        <div class=\"layui-form-item\">\r\n          <label class=\"layui-form-label\">eGFR</label>\r\n          <div class=\"layui-input-block\">\r\n            <input\r\n              type=\"text\"\r\n              name=\"eGFR_min\"\r\n              placeholder=\"最小值\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input min\"\r\n              lay-verify=\"isNumber\"\r\n            />\r\n            <span>-</span>\r\n            <input\r\n              type=\"text\"\r\n              name=\"eGFR_max\"\r\n              placeholder=\"最大值\"\r\n              autocomplete=\"off\"\r\n              class=\"layui-input max\"\r\n              lay-verify=\"isNumber\"\r\n            />\r\n          </div>\r\n        </div>\r\n        <div class=\"layui-form-item\">\r\n          <div class=\"layui-input-block\">\r\n            <button class=\"layui-btn submit_query\" lay-submit lay-filter=\"*\">\r\n              立即提交\r\n            </button>\r\n            <button type=\"reset\" class=\"layui-btn layui-btn-primary\">\r\n              重置\r\n            </button>\r\n          </div>\r\n        </div>\r\n        <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->\r\n      </form>\r\n    </div>\r\n    <script type=\"text/javascript\" src=\"../static/layui/layui.js\"></script>\r\n    <script src=\"../static/js/jQuery.js\"></script>\r\n    <script>\r\n      function renderTable(tableData) {\r\n        // 渲染表格，tableData：后端返回的数据\r\n        const { data: arrData, code, total } = JSON.parse(tableData);\r\n        const data = arrData.map((e) => {\r\n          e.sex = e.sex === \"2\" ? \"女\" : \"男\";\r\n          e.symptoms_type = e.symptoms_type === \"1\" ? \"肾阳虚\" : \"肾阴虚\";\r\n          return e;\r\n        });\r\n        layui.use([\"laypage\", \"table\", \"layer\"], function () {\r\n          const laypage = layui.laypage, layer = layui.layer;\r\n          const table = layui.table;\r\n          // 表格table组件\r\n          table.render({\r\n            elem: \".info_table\", // 定位表格ID\r\n            title: \"用户数据表\",\r\n            toolbar: \"#headBar\", // 表格头工具栏\r\n            cols: [\r\n              [\r\n                {\r\n                  field: \"id\",\r\n                  title: \"编号\",\r\n                  width: 80,\r\n                  sort: true,\r\n                  align: \"center\",\r\n                },\r\n                { field: \"sex\", title: \"性别\", width: 80, align: \"center\" },\r\n                {\r\n                  field: \"age\",\r\n                  title: \"年龄\",\r\n                  width: 80,\r\n                  sort: true,\r\n                  align: \"center\",\r\n                },\r\n                {\r\n                  field: \"serum_creatinine\",\r\n                  title: \"血肌酐\",\r\n                  width: 110,\r\n                  align: \"center\",\r\n                },\r\n                {\r\n                  field: \"eGFR\",\r\n                  title: \"eGFR\",\r\n                  width: 177,\r\n                  align: \"center\",\r\n                },\r\n                { field: \"symptoms_type\", title: \"症型\", align: \"center\" },\r\n                { field: \"tongue\", title: \"舌\", align: \"center\" },\r\n                { field: \"pulse\", title: \"脉\", align: \"center\" },\r\n                {\r\n                  field: \"detail\",\r\n                  title: \"详细\",\r\n                  width: 80,\r\n                  toolbar: \".colBar\",\r\n                  align: \"center\",\r\n                },\r\n              ],\r\n            ],\r\n            data,\r\n            limit: queryObj.limit, // 每一页数据条数\r\n            done: function () {\r\n              // 分页组件\r\n              getPage(total, laypage);\r\n            },\r\n          });\r\n          table.on(\"toolbar(test)\", function (obj) {\r\n            // 点击查询按钮后的弹出层，用于更细节的查询\r\n            var checkStatus = table.checkStatus(obj.config.id);\r\n            console.log(obj);\r\n            console.log(checkStatus);\r\n            switch (obj.event) {\r\n              case \"query\": {\r\n                layer_idx = layer.open({\r\n                  type: 1,\r\n                  shadeClose: true,\r\n                  title: \"查询页面\",\r\n                  content: $(\".detail_query\"),\r\n                });\r\n                break\r\n              }\r\n            case \"all_data\": {\r\n              getTable(orignQuery, true, layer, \"重置成功!\");\r\n              $(\".detail_query .layui-form\")[0].reset()\r\n            }\r\n            }\r\n          });\r\n        });\r\n      }\r\n      function getTable(postData, sign=false, layer=null, msg=\"\") {\r\n        $.ajax({ // 向后端请求数据\r\n          type: \"POST\", //请求的方法\r\n          url: `http://127.0.0.1:5000/patient_info_by_condition`,\r\n          data: postData, // 携带的数据，POST方法用\r\n          success: function (returnData) {\r\n            // 请求成功时的回调函数\r\n            renderTable(returnData);\r\n            if(sign) {\r\n              layer.msg(msg);\r\n              layer.close(layer_idx);\r\n            }\r\n          },\r\n        });\r\n      }\r\n      function getPage(total, laypage) {\r\n        // 设置分页\r\n        laypage.render({\r\n          elem: \"demo\", // 根据ID定位\r\n          count: total, // 获取的数据总数\r\n          limit: queryObj.limit, // 每页默认显示的数量，同上\r\n          layout: [\"prev\", \"page\", \"next\", \"limit\"],\r\n          curr: queryObj.page, // 页码\r\n          jump: function (obj, first) {\r\n            if (!first) {\r\n              queryObj.page = obj.curr; // 设置当前页位置\r\n              queryObj.limit = obj.limit; // 设置每页的数据条数\r\n              getTable(queryObj);\r\n            }\r\n          },\r\n        });\r\n      }\r\n      layui.use([\"form\", \"layer\"], function () {\r\n        const form = layui.form,\r\n          layer = layui.layer;\r\n        form.verify({\r\n          isNumber: (value) => {\r\n            if (Number.isNaN(Number(value))) {\r\n              return \"请输入数字\";\r\n            }\r\n          },\r\n        });\r\n        form.on(\"submit(*)\", (data) => {\r\n          const { field } = data;\r\n          const QUERY_DATA = {\r\n            id: field.id,\r\n            sex: field.sex,\r\n            symptoms: field.symptoms,\r\n            age: JSON.stringify([field.age_min, field.age_max]),\r\n            serum_creatinine: JSON.stringify([field.ser_min, field.ser_max]),\r\n            eGFR: JSON.stringify([field.eGFR_min, field.eGFR_max]),\r\n            page: 1,\r\n            limit: 10,\r\n          };\r\n          queryObj = QUERY_DATA;\r\n          getTable(queryObj, true, layer, \"查询成功!\");\r\n          return false;\r\n        });\r\n      });\r\n\r\n      let layer_idx = 0; // layer的index参数，用于控制弹出层（查询用）的关闭\r\n      let queryObj = {\r\n        id: \"\",\r\n        sex: \"\",\r\n        symptoms: \"\",\r\n        age: JSON.stringify([\"\", \"\"]),\r\n        serum_creatinine: JSON.stringify([\"\", \"\"]),\r\n        eGFR: JSON.stringify([\"\", \"\"]),\r\n        page: 1,\r\n        limit: 10,\r\n      }; // 查询字符串，用于获取病人的数据\r\n      const orignQuery = {...queryObj} // 原始的查询字符串，用于重置操作\r\n      getTable(queryObj); // 获得表格数据，第一次调用默认获得所有病人的信息（第一页）\r\n    </script>\r\n  </body>\r\n</html>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/patient_info.html b/templates/patient_info.html
+--- a/templates/patient_info.html	(revision 59ea5560058b402e262a4f215fe6ebc1b7d5466d)
++++ b/templates/patient_info.html	(date 1623724516803)
+@@ -46,39 +46,9 @@
+     </style>
+   </head>
+   <body>
+-    <div class="layui-layout layui-layout-admin">
+-      <div class="layui-header">
+-        <div class="layui-logo layui-hide-xs layui-bg-black">某系统</div>
+-        <!-- 头部区域（可配合layui 已有的水平导航） -->
+-        <ul class="layui-nav layui-layout-left">
+-          <li class="layui-nav-item layui-hide-xs"><a href="">信息展示</a></li>
+-          <li class="layui-nav-item layui-hide-xs layui-nav-itemed">
+-            <a href="">查询</a>
+-          </li>
+-          <li class="layui-nav-item layui-hide-xs"><a href="">预测</a></li>
+-        </ul>
+-        <ul class="layui-nav layui-layout-right">
+-          <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+-            <a href="javascript:;"> tester </a>
+-            <dl class="layui-nav-child">
+-              <dd><a href="">Your Profile</a></dd>
+-              <dd><a href="">Settings</a></dd>
+-              <dd><a href="">Sign out</a></dd>
+-            </dl>
+-          </li>
+-          <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+-            <a href="javascript:;">
+-              <i class="layui-icon layui-icon-more-vertical"></i>
+-            </a>
+-          </li>
+-        </ul>
+-      </div>
+-      <div class="layui-body" style="left: 0">
+-        <div class="info">
+-          <table class="info_table" lay-filter="test"></table>
+-          <div id="demo"></div>
+-        </div>
+-      </div>
++    <div class="info">
++      <table class="info_table" lay-filter="test"></table>
++      <div id="demo"></div>
+     </div>
+     <div class="colBar">
+       <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+@@ -209,6 +179,7 @@
+         <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+       </form>
+     </div>
++    <div class="detail_page"></div>
+     <script type="text/javascript" src="../static/layui/layui.js"></script>
+     <script src="../static/js/jQuery.js"></script>
+     <script>
+@@ -279,8 +250,6 @@
+           table.on("toolbar(test)", function (obj) {
+             // 点击查询按钮后的弹出层，用于更细节的查询
+             var checkStatus = table.checkStatus(obj.config.id);
+-            console.log(obj);
+-            console.log(checkStatus);
+             switch (obj.event) {
+               case "query": {
+                 layer_idx = layer.open({
+@@ -292,7 +261,8 @@
+                 break
+               }
+             case "all_data": {
+-              getTable(orignQuery, true, layer, "重置成功!");
++              queryObj = orignQuery
++              getTable(queryObj, true, layer, "重置成功!");
+               $(".detail_query .layui-form")[0].reset()
+             }
+             }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"62db865c-0ead-4767-9b09-9c5c5901d1de\" name=\"Default Changelist\" comment=\"Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/templates/datastatistic.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/templates/datastatistic.html\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"HTML File\" />\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"JupyterTrust\" id=\"396c14fb-87b8-42af-aa9c-f028a8b18f0c\" />\r\n  <component name=\"ProjectId\" id=\"1jGOf1xcqEsO1xyZISeyPm4Mzkm\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"DefaultHtmlFileTemplate\" value=\"HTML File\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"D:\\visual\\PyCharm Community Edition 2019.2.3\\pythonWorkPlace\\weiboanalysis\\static\\data\\weibo\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"D:\\visual\\PyCharm Community Edition 2019.2.3\\pythonWorkPlace\\weiboanalysis\\utils\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"app\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"weiboanalysis\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/app.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.app\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"SvnConfiguration\">\r\n    <configuration />\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"62db865c-0ead-4767-9b09-9c5c5901d1de\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1603427061766</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1603427061766</updated>\r\n      <workItem from=\"1604022893885\" duration=\"776000\" />\r\n      <workItem from=\"1623394639866\" duration=\"23000\" />\r\n      <workItem from=\"1623548677917\" duration=\"1054000\" />\r\n      <workItem from=\"1623575317953\" duration=\"77000\" />\r\n      <workItem from=\"1623577341534\" duration=\"117000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml\" />\r\n  </component>\r\n  <component name=\"WindowStateProjectService\">\r\n    <state x=\"522\" y=\"154\" key=\"FileChooserDialogImpl\" timestamp=\"1623575391692\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"860\" />\r\n    </state>\r\n    <state x=\"522\" y=\"154\" key=\"FileChooserDialogImpl/0.0.1600.860@0.0.1600.860\" timestamp=\"1623575391692\" />\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.bottom\" timestamp=\"1623575394044\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"860\" />\r\n    </state>\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860\" timestamp=\"1623575394044\" />\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.center\" timestamp=\"1623575394044\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"860\" />\r\n    </state>\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860\" timestamp=\"1623575394044\" />\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.left\" timestamp=\"1623575394044\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"860\" />\r\n    </state>\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860\" timestamp=\"1623575394044\" />\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.right\" timestamp=\"1623575394044\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"860\" />\r\n    </state>\r\n    <state width=\"1292\" height=\"132\" key=\"GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860\" timestamp=\"1623575394044\" />\r\n    <state x=\"179\" y=\"0\" key=\"SettingsEditor\" timestamp=\"1623577406659\">\r\n      <screen x=\"0\" y=\"0\" width=\"1600\" height=\"860\" />\r\n    </state>\r\n    <state x=\"179\" y=\"0\" key=\"SettingsEditor/0.0.1600.860@0.0.1600.860\" timestamp=\"1623577406659\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <watches-manager>\r\n      <configuration name=\"PythonConfigurationType\">\r\n        <watch expression=\"data\" language=\"Python\" />\r\n        <watch expression=\"totalQueryData\" language=\"Python\" />\r\n        <watch expression=\"len(totalQueryData)\" language=\"Python\" />\r\n        <watch expression=\"patient_total_count[0][0]\" language=\"Python\" />\r\n      </configuration>\r\n    </watches-manager>\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/medicalwarehouse$app.coverage\" NAME=\"app Coverage Results\" MODIFIED=\"1623673597178\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 59ea5560058b402e262a4f215fe6ebc1b7d5466d)
++++ b/.idea/workspace.xml	(date 1623724533565)
+@@ -3,7 +3,11 @@
+   <component name="ChangeListManager">
+     <list default="true" id="62db865c-0ead-4767-9b09-9c5c5901d1de" name="Default Changelist" comment="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/templates/datastatistic.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datastatistic.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/algorithm/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/predict.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/files/pulseFile.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/pulseFile.csv" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/templates/diseasePrediction.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/diseasePrediction.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/templates/patient_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/patient_info.html" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -98,32 +102,6 @@
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
+     <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
+-  </component>
+-  <component name="WindowStateProjectService">
+-    <state x="522" y="154" key="FileChooserDialogImpl" timestamp="1623575391692">
+-      <screen x="0" y="0" width="1600" height="860" />
+-    </state>
+-    <state x="522" y="154" key="FileChooserDialogImpl/0.0.1600.860@0.0.1600.860" timestamp="1623575391692" />
+-    <state width="1292" height="132" key="GridCell.Tab.0.bottom" timestamp="1623575394044">
+-      <screen x="0" y="0" width="1600" height="860" />
+-    </state>
+-    <state width="1292" height="132" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
+-    <state width="1292" height="132" key="GridCell.Tab.0.center" timestamp="1623575394044">
+-      <screen x="0" y="0" width="1600" height="860" />
+-    </state>
+-    <state width="1292" height="132" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
+-    <state width="1292" height="132" key="GridCell.Tab.0.left" timestamp="1623575394044">
+-      <screen x="0" y="0" width="1600" height="860" />
+-    </state>
+-    <state width="1292" height="132" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
+-    <state width="1292" height="132" key="GridCell.Tab.0.right" timestamp="1623575394044">
+-      <screen x="0" y="0" width="1600" height="860" />
+-    </state>
+-    <state width="1292" height="132" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
+-    <state x="179" y="0" key="SettingsEditor" timestamp="1623577406659">
+-      <screen x="0" y="0" width="1600" height="860" />
+-    </state>
+-    <state x="179" y="0" key="SettingsEditor/0.0.1600.860@0.0.1600.860" timestamp="1623577406659" />
+   </component>
+   <component name="XDebuggerManager">
+     <watches-manager>
+@@ -135,7 +113,4 @@
+       </configuration>
+     </watches-manager>
+   </component>
+-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-    <SUITE FILE_PATH="coverage/medicalwarehouse$app.coverage" NAME="app Coverage Results" MODIFIED="1623673597178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+-  </component>
+ </project>
+\ No newline at end of file
+Index: algorithm/predict.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pandas as pd\r\nimport json\r\nimport numpy as np\r\nimport torch\r\nimport torch.nn as nn\r\nimport torch.nn.functional as F\r\nfrom torch import optim\r\nimport logging\r\nimport sys\r\nfrom sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score\r\nfrom torch import cuda\r\nfrom torch import nn\r\nfrom torch import optim\r\nfrom torch.utils import data\r\nfrom algorithm.pulsePredictLSTM import FCLSTM\r\n\r\n#对应关系[0,1,2,3] = [沉细，沉，细，弦]\r\ndef pulsePrediction(pulseData):\r\n    puseType=['沉细', '沉', '细', '弦细']\r\n    n = torch.load(\"./files/LSTM_predict.plt\").cpu()\r\n    pulseData = torch.from_numpy(pulseData).to(torch.float32)\r\n    pulseData = torch.unsqueeze(pulseData, dim=0)\r\n    result=n(pulseData)\r\n    print(result)\r\n    _, maxIndex = torch.max(result.data, 1)\r\n    #print(puseType[maxIndex])\r\n    return puseType[maxIndex]\r\n\r\n# x = FCLSTM()\r\n# x=\"\"\r\n# if cuda.is_available():\r\n#     x = torch.zeros((2560, 56)).cuda()\r\n# else:\r\n#     x = torch.zeros((2560, 56))\r\n# x=torch.unsqueeze(x, dim=0)\r\n# y = n(x)\r\n# print(y)\r\n# pulsePrediction(x)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/algorithm/predict.py b/algorithm/predict.py
+--- a/algorithm/predict.py	(revision 59ea5560058b402e262a4f215fe6ebc1b7d5466d)
++++ b/algorithm/predict.py	(date 1623715941737)
+@@ -17,7 +17,7 @@
+ #对应关系[0,1,2,3] = [沉细，沉，细，弦]
+ def pulsePrediction(pulseData):
+     puseType=['沉细', '沉', '细', '弦细']
+-    n = torch.load("./files/LSTM_predict.plt").cpu()
++    n = torch.load("./files/LSTM_predict.plt", map_location='cpu').cpu()
+     pulseData = torch.from_numpy(pulseData).to(torch.float32)
+     pulseData = torch.unsqueeze(pulseData, dim=0)
+     result=n(pulseData)
+Index: templates/index.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <meta charset=\"utf-8\" />\r\n    <meta\r\n      name=\"viewport\"\r\n      content=\"width=device-width, initial-scale=1, maximum-scale=1\"\r\n    />\r\n    <title>test</title>\r\n    <link rel=\"stylesheet\" href=\"../static/layui/css/layui.css\" />\r\n  </head>\r\n  <body class=\"layui-layout-body\" >\r\n    <div class=\"layui-layout layui-layout-admin\">\r\n      <div class=\"layui-header\">\r\n        <div class=\"layui-logo layui-hide-xs layui-bg-black\">医疗系统</div>\r\n        <!-- 头部区域（可配合layui 已有的水平导航） -->\r\n        <ul class=\"layui-nav layui-layout-left\">\r\n          <li class=\"layui-nav-item layui-hide-xs \"><a href=\"javascript:\" onclick=\"skipto('datastatistic')\" style=\"cursor:pointer\">信息展示</a></li>\r\n          <li class=\"layui-nav-item layui-hide-xs\"><a href=\"\">查询</a></li>\r\n          <li class=\"layui-nav-item layui-hide-xs\"><a href=\"javascript:\" onclick=\"skipto('disease_prediction')\" style=\"cursor:pointer\">预测</a></li>\r\n        </ul>\r\n        <ul class=\"layui-nav layui-layout-right\">\r\n          <li class=\"layui-nav-item layui-hide layui-show-md-inline-block\">\r\n            <a href=\"javascript:\">\r\n              tester\r\n            </a>\r\n            <dl class=\"layui-nav-child\">\r\n              <dd><a href=\"\">Your Profile</a></dd>\r\n              <dd><a href=\"\">Settings</a></dd>\r\n              <dd><a href=\"\">Sign out</a></dd>\r\n            </dl>\r\n          </li>\r\n          <li class=\"layui-nav-item\" lay-header-event=\"menuRight\" lay-unselect>\r\n            <a href=\"javascript:;\">\r\n              <i class=\"layui-icon layui-icon-more-vertical\"></i>\r\n            </a>\r\n          </li>\r\n        </ul>\r\n      </div>\r\n      <div class=\"layui-body\" style=\"left: 0px \">\r\n\t\t    <!-- 内容主体区域 -->\r\n\t\t    \t<div id=\"init_title\" style=\"position:absolute;left:25%;top:30%;font-size: 100px;\"></div>\r\n\t\t    \t<iframe id=\"iframe_id\" src=\"\" style=\" width: 100%; height:100%;\"></iframe>\r\n      </div>\r\n    </div>\r\n    <script src=\"../static/layui/layui.js\"></script>\r\n  \t<script>\r\n\t\t//JavaScript代码区域\r\n\t\tlayui.use(['element'], function(){\r\n\t\t  var element = layui.element;\r\n\r\n\t\t});\r\n\t\tfunction skipto(target){\r\n\t\t\tvar ifr = document.getElementById('iframe_id');\r\n\t\t\tif(document.getElementById('init_title')){\r\n\t\t\t\tvar inf = document.getElementById('init_title');\r\n\t\t\t\tinf.remove();\r\n\t\t\t}\r\n\t\t\tifr.src = 'http://127.0.0.1:5000/' + target;\r\n\t\t}\r\n\r\n\t\t</script>\r\n  </body>\r\n</html>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/templates/index.html b/templates/index.html
+--- a/templates/index.html	(revision 59ea5560058b402e262a4f215fe6ebc1b7d5466d)
++++ b/templates/index.html	(date 1623723808498)
+@@ -16,7 +16,7 @@
+         <!-- 头部区域（可配合layui 已有的水平导航） -->
+         <ul class="layui-nav layui-layout-left">
+           <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="skipto('datastatistic')" style="cursor:pointer">信息展示</a></li>
+-          <li class="layui-nav-item layui-hide-xs"><a href="">查询</a></li>
++          <li class="layui-nav-item layui-hide-xs"><a href="javascript:" onclick="skipto('patient_info_show')">查询</a></li>
+           <li class="layui-nav-item layui-hide-xs"><a href="javascript:" onclick="skipto('disease_prediction')" style="cursor:pointer">预测</a></li>
+         </ul>
+         <ul class="layui-nav layui-layout-right">
