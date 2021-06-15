@@ -11,66 +11,96 @@
     <link rel="stylesheet" href="../static/css/style.css" />
     <style>
       .layui-form-label{
-        width: 110px!important;
+        width: 100px;
         font-size: 14px;
       }
-      .layui-input-block{
-        min-height: 50px!important;
-        margin-bottom: 10px;
+      .layui-input{
+        min-height: 20px;
+        margin-bottom: 20px;
       }
       .layui-select{
         height: 35px;
+          width: 226px;
+      }
+      .layui-input-block{
+        min-height: 50px;
+        margin-bottom: 10px;
+      }
+      .layui-form-item{
+          width: 100%;
+          margin-top: 10px;
+      }
+      .layui-container{
+          width: 50%; height: 50%;float: left;
       }
     </style>
   </head>
 <body>
   <div class="layui-body" style="left: 0">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-          <legend>医疗数据统计分析</legend>
+          <legend>输入相关统计指标</legend>
         </fieldset>
-        <div class="layui-form-item" style="width: 100%;margin-top: 10px;">
-        <div class="layui-row">
-          <div class="layui-col-xs3">
-              <label class="layui-form-label" >年龄</label>
+            <div id="container2" style="width:30%;float: left">
+            <div class="layui-form-item" >
+            <label class="layui-form-label">症状选择</label>
                 <div class="layui-input-block" >
-                  <select name="age" lay-filter="infodis" style="width: 75%;" class="layui-select" >
-                    <option value="" style="font-size: 14px;" >请选择</option>
-                    <option value="0" style="font-size: 14px;" >0~30</option>
-                    <option value="1" style="font-size: 14px;" >31~50</option>
-                    <option value="2" style="font-size: 14px;" >51~70</option>
-                    <option value="3" style="font-size: 14px;" >70~100</option>
-                    <option value="4" style="font-size: 14px;">all</option>
+                  <select name="symptoms" lay-filter="info_display_sym"  class="layui-select" >
+                      <option value="" style="font-size: 14px;">请选择</option>
+                      <option value="1" style="font-size: 14px;">肾阳虚</option>
+                      <option value="2" style="font-size: 14px;">肾阴虚</option>
                   </select>
+                <button class="layui-btn submit_query" lay-submit lay-filter="*1">提交</button>
+                </div>
+            </div>
+           <div class="layui-form-item">
+              <label class="layui-form-label">患者性别</label>
+              <div class="layui-input-block">
+                <select name="sex" lay-filter="info_dis"  class="layui-select" >
+                  <option value="" selected>请选择</option>
+                  <option value="1">男</option>
+                  <option value="2">女</option>
+                </select>
+                <button class="layui-btn submit_query" lay-submit lay-filter="*2">提交</button>
               </div>
             </div>
-          <div class="layui-col-xs3">
-              <label class="layui-form-label" >性别</label>
-              <div class="layui-input-block" >
-              <select name="sex" lay-filter="infodis" style="width: 75%" class="layui-select" >
-              <option value="" style="font-size: 14px;">请选择</option>
-              <option value="1" style="font-size: 14px;">男</option>
-              <option value="2" style="font-size: 14px;">女</option>
-              <option value="4" style="font-size: 14px;">all</option>
-            </select>
-            </div>
-            </div>
-          <div class="layui-col-xs3">
-              <label class="layui-form-label" >症状</label>
-              <div class="layui-input-block" >
-              <select name="symptoms" lay-filter="infodis" style="width: 75%" class="layui-select" >
-              <option value="" style="font-size: 14px;">请选择</option>
-              <option value="1" style="font-size: 14px;">肾阳虚</option>
-              <option value="2" style="font-size: 14px;">肾阴虚</option>
-              <option value="4" style="font-size: 14px;">all</option>
-            </select>
-            </div>
-            </div>
-          <div class="layui-col-xs3">
-            <div class="layui-input-block" >
-                <button type="button" class="layui-btn layui-btn-primary layui-border-green"  lay-filter="commit">提交</button>
+            <div class="layui-form-item">
+                <div class="layui-inline"><label class="layui-form-label">年龄范围</label>
+                    <div class="layui-input-inline"style="width: 95px;" >
+                        <input type="text" name="min_age" placeholder="最小值" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="max_age" placeholder="最大值" autocomplete="off" class="layui-input">
+                    </div>
+                    <button class="layui-btn submit_query" lay-submit lay-filter="*3" >提交</button>
+                </div>
             </div>
           </div>
 
+      <div id="container3" style="width:70%;height: 90%;float: left">
+          <div class="layui-container" id="ana1" >症状分布</div>
+          <div class="layui-container" id="ana2" >性别分布</div>
+          <div class="layui-container" id="ana3" >eGFR分布</div>
+          <div class="layui-container" id="ana4" >sc分布</div>
+        </div>
   </div>
+   <script src="../static/layui/layui.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script>
+      //表单取值
+      layui.use(["form", "layer"], function () {
+          const form = layui.form, layer = layui.layer;
+          var symptom_type;
+          form.on("submit(*1)", (data) => {
+              if(data==="肾阳虚"){
+                  symptom_type=0;
+              }else {
+                  symptom_type=2;
+              }
+              document.write(symptom_type.type())
+          });
+      });
+    </script>
+
 </body>
 </html>

@@ -49,7 +49,7 @@
             if(i===returndata.age_distribute.bins.length){
                 age_bins.push(returndata.age_distribute.bins[i-1]+"~")
             }else {
-                age_bins.push((returndata.age_distribute.bins[i]-10) + "~" + returndata.age_distribute.bins[i])
+                age_bins.push((returndata.age_distribute.bins[i]) + "~" + (returndata.age_distribute.bins[i]+10))
             }
 
         }
