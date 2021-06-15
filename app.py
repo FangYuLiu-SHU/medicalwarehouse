@@ -4,6 +4,8 @@ import pymysql
 import pandas as pd
 import json
 from utils import tool
+import os
+from algorithm import predict
 
 # 连接数据库
 try:
@@ -172,6 +174,54 @@ def patient_info_by_condition():
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
+
+@app.route('/disease_prediction', methods=["GET", "POST"])
+def disease_prediction():
+    if request.method == "GET":
+        formData={'sex': '男', 'userage': '', 'stage': '', 'bloodCreatinine': '', 'egfr': '', 'fileName': '', 'pulseType': ''}
+        newData = json.dumps(formData)  # json.dumps封装
+        return render_template('diseasePrediction.html', newData=newData)
+    if request.method == "POST":
+        #获取前端请求的表单数据
+        formData = request.form.to_dict()
+        # 获取pulseFile文件对象
+        pulseFile = request.files.get('pulseFile')
+        # 保存到服务器
+        # save方法传完整的路径和文件名
+        # pulseFile.save(os.path.join(UPLOAD_PATH,pulseFile.filename))
+        # 上行可以进行优化,下行是对pulseFile文件名进行包装，保证文件名更安全。
+        filename = "pulseFile.csv"
+        pulseFile.save(os.path.join("./files/", filename))
+        #print(pulseFile)
+
+        filename_in = './files/pulseFile.csv'
+        #filename_out = './files/pulseFileUTF.csv'
+
+        # 输入文件的编码类型
+        #encode_in = 'utf-16 le'
+
+        # 输出文件的编码类型
+        # encode_out = 'utf-8'
+        #
+        # with codecs.open(filename=filename_in, mode='r', encoding=encode_in) as fi:
+        #     data = fi.read()
+        #     with open(filename_out, mode='w', encoding=encode_out) as fo:
+        #         fo.write(data)
+        #         fo.close()
+        #输入表维度大小
+        rows=2560
+        cols=57
+        data = pd.read_csv(filename_in, encoding="utf-8", header=None, nrows=rows, usecols=[i for i in range(cols)])
+        # 调用模型计算脉搏类型预测结果
+        result=predict.pulsePrediction(data.values)
+        #print(data.dropna(axis=1).values)
+        #print(data)
+        formData['pulseType'] = result
+        formData['fileName'] = ''
+        # print(formData)
+        newData = json.dumps(formData)  # json.dumps封装
+        #print(newData)
+        return render_template('diseasePrediction.html', newData=newData)
 
 if __name__ == '__main__':
     app.run(debug=True)
