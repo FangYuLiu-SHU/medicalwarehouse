@@ -46,39 +46,9 @@
     </style>
   </head>
   <body>
-    <div class="layui-layout layui-layout-admin">
-      <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">某系统</div>
-        <!-- 头部区域（可配合layui 已有的水平导航） -->
-        <ul class="layui-nav layui-layout-left">
-          <li class="layui-nav-item layui-hide-xs"><a href="">信息展示</a></li>
-          <li class="layui-nav-item layui-hide-xs layui-nav-itemed">
-            <a href="">查询</a>
-          </li>
-          <li class="layui-nav-item layui-hide-xs"><a href="">预测</a></li>
-        </ul>
-        <ul class="layui-nav layui-layout-right">
-          <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-            <a href="javascript:;"> tester </a>
-            <dl class="layui-nav-child">
-              <dd><a href="">Your Profile</a></dd>
-              <dd><a href="">Settings</a></dd>
-              <dd><a href="">Sign out</a></dd>
-            </dl>
-          </li>
-          <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
-            <a href="javascript:;">
-              <i class="layui-icon layui-icon-more-vertical"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="layui-body" style="left: 0">
-        <div class="info">
-          <table class="info_table" lay-filter="test"></table>
-          <div id="demo"></div>
-        </div>
-      </div>
+    <div class="info">
+      <table class="info_table" lay-filter="test"></table>
+      <div id="demo"></div>
     </div>
     <div class="colBar">
       <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
@@ -279,8 +249,6 @@
           table.on("toolbar(test)", function (obj) {
             // 点击查询按钮后的弹出层，用于更细节的查询
             var checkStatus = table.checkStatus(obj.config.id);
-            console.log(obj);
-            console.log(checkStatus);
             switch (obj.event) {
               case "query": {
                 layer_idx = layer.open({
@@ -292,7 +260,8 @@
                 break
               }
             case "all_data": {
-              getTable(orignQuery, true, layer, "重置成功!");
+              queryObj = orignQuery
+              getTable(queryObj, true, layer, "重置成功!");
               $(".detail_query .layui-form")[0].reset()
             }
             }
@@ -344,12 +313,12 @@
         form.on("submit(*)", (data) => {
           const { field } = data;
           const QUERY_DATA = {
-            id: field.id,
-            sex: field.sex,
-            symptoms: field.symptoms,
-            age: JSON.stringify([field.age_min, field.age_max]),
-            serum_creatinine: JSON.stringify([field.ser_min, field.ser_max]),
-            eGFR: JSON.stringify([field.eGFR_min, field.eGFR_max]),
+            id: field.id.trim(),
+            sex: field.sex.trim(),
+            symptoms: field.symptoms.trim(),
+            age: JSON.stringify([field.age_min.trim(), field.age_max.trim()]),
+            serum_creatinine: JSON.stringify([field.ser_min.trim(), field.ser_max.trim()]),
+            eGFR: JSON.stringify([field.eGFR_min, field.eGFR_max.trim()]),
             page: 1,
             limit: 10,
           };
