@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="62db865c-0ead-4767-9b09-9c5c5901d1de" name="Default Changelist" comment="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/datastatistic.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datastatistic.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -13,9 +14,20 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -104,26 +116,26 @@
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="522" y="154" key="FileChooserDialogImpl/0.0.1600.860@0.0.1600.860" timestamp="1623575391692" />
-    <state width="1292" height="132" key="GridCell.Tab.0.bottom" timestamp="1623575394044">
+    <state width="1547" height="131" key="GridCell.Tab.0.bottom" timestamp="1623718077913">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1292" height="132" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
-    <state width="1292" height="132" key="GridCell.Tab.0.center" timestamp="1623575394044">
+    <state width="1547" height="131" key="GridCell.Tab.0.bottom/0.0.1600.860@0.0.1600.860" timestamp="1623718077913" />
+    <state width="1547" height="131" key="GridCell.Tab.0.center" timestamp="1623718077913">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1292" height="132" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
-    <state width="1292" height="132" key="GridCell.Tab.0.left" timestamp="1623575394044">
+    <state width="1547" height="131" key="GridCell.Tab.0.center/0.0.1600.860@0.0.1600.860" timestamp="1623718077913" />
+    <state width="1547" height="131" key="GridCell.Tab.0.left" timestamp="1623718077913">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1292" height="132" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
-    <state width="1292" height="132" key="GridCell.Tab.0.right" timestamp="1623575394044">
+    <state width="1547" height="131" key="GridCell.Tab.0.left/0.0.1600.860@0.0.1600.860" timestamp="1623718077913" />
+    <state width="1547" height="131" key="GridCell.Tab.0.right" timestamp="1623718077913">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state width="1292" height="132" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1623575394044" />
-    <state x="179" y="0" key="SettingsEditor" timestamp="1623577406659">
+    <state width="1547" height="131" key="GridCell.Tab.0.right/0.0.1600.860@0.0.1600.860" timestamp="1623718077913" />
+    <state x="179" y="0" key="SettingsEditor" timestamp="1623715369362">
       <screen x="0" y="0" width="1600" height="860" />
     </state>
-    <state x="179" y="0" key="SettingsEditor/0.0.1600.860@0.0.1600.860" timestamp="1623577406659" />
+    <state x="179" y="0" key="SettingsEditor/0.0.1600.860@0.0.1600.860" timestamp="1623715369362" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
@@ -136,6 +148,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/medicalwarehouse$app.coverage" NAME="app Coverage Results" MODIFIED="1623673597178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/medicalwarehouse$app.coverage" NAME="app Coverage Results" MODIFIED="1623718077906" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
