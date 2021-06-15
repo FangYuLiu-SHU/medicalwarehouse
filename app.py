@@ -101,12 +101,13 @@ def data_statistic():
         data = tool.get_statistic_info(pd_patient_info)
 
         data_json = json.dumps(data)
-        # return data_json
-        return render_template('datastatistic.html', data_json=data_json)
+        return data_json
+        # return render_template('datastatistic.html', data_json=data_json)
 
 
-
-
+@app.route('/statistic_detail')
+def statistic_detail():
+    return render_template('statistic_detail.html')
 
 # 病人信息展示页面
 @app.route('/patient_info_show')
