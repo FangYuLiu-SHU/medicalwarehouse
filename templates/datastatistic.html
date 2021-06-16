@@ -53,25 +53,35 @@
             }
 
         }
-        var sc_bins=[]
-        for(var j=0;j<returndata.sc_distribute.bins.length;j++){
-            if(j===returndata.sc_distribute.bins.length-1){
-                sc_bins.push(returndata.sc_distribute.bins[j]+"~")
-            }else {
-                sc_bins.push((returndata.sc_distribute.bins[j]) + "~" + returndata.sc_distribute.bins[j+1])
-            }
-
-        }
-        var eGFR_bins=[]
-        for(var k=0;k<returndata.eGFR_distribute.bins.length;k++){
-            if(k===returndata.eGFR_distribute.bins.length-1){
-                eGFR_bins.push(returndata.eGFR_distribute.bins[k]+"~")
-            }else {
-                eGFR_bins.push((returndata.eGFR_distribute.bins[k]) + "~" + (returndata.eGFR_distribute.bins[k+1]))
-            }
-
-        }
+       //  var sc_bins=[]
+       //  for(var j=0;j<returndata.sc_distribute.bins.length;j++){
+       //      if(j===returndata.sc_distribute.bins.length-1){
+       //          sc_bins.push(returndata.sc_distribute.bins[j]+"~")
+       //      }else {
+       //          sc_bins.push((returndata.sc_distribute.bins[j]) + "~" + returndata.sc_distribute.bins[j+1])
+       //      }
+       //
+       //  }
+       //  var eGFR_bins=[]
+       //  for(var k=0;k<returndata.eGFR_distribute.bins.length;k++){
+       //      if(k===returndata.eGFR_distribute.bins.length-1){
+       //          eGFR_bins.push(returndata.eGFR_distribute.bins[k]+"~")
+       //      }else {
+       //          eGFR_bins.push((returndata.eGFR_distribute.bins[k]) + "~" + (returndata.eGFR_distribute.bins[k+1]))
+       //      }
+       //
+       //  }
         // document.write(sc_bins)
+          var eGFR_data=[],sc_data=[],age_data=[];
+        for(var i=0;i<returndata.eGFR_distribute.num.length;i++){
+            eGFR_data.push([returndata.eGFR_distribute.bins[i]+10,returndata.eGFR_distribute.num[i]])
+        }
+        for(var j=0;j<returndata.sc_distribute.num.length;j++){
+            sc_data.push([returndata.sc_distribute.bins[j]+50,returndata.sc_distribute.num[j]])
+        }
+
+          // console.log(returndata.sc_distribute)
+          // console.log(returndata.sc_distribute)
         var yMax = 150;
         var dataShadow = [];
           var eGFR_dom = document.getElementById('eGFR_ana');
@@ -83,12 +93,16 @@
           },
              tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b}: {c}人 '
+            // formatter: '{a} <br/>{b}: {c}人 '
         },
             xAxis: {
-                data: eGFR_bins,
+              name:"范围",
+                nameGap:20,
+                // data: eGFR_bins,
                 axisLabel: {
+                show:true,
                     inside: false,
+                  rotate:30,
                     textStyle: {
                         color: '#120d0d'
                     }
@@ -99,9 +113,12 @@
                 axisLine: {
                     show: false
                 },
-                z: 10
+              splitLine:{show:false},
+                boundaryGap: true,
             },
             yAxis: {
+              name:"人数",
+                nameGap:10,
                 axisLine: {
                     show: false
                 },
@@ -121,15 +138,15 @@
             ],
             series: [
                 {
-                	name: 'eGFR值段：',
+                	name: 'eGFR分布：',
                     type: 'bar',
                     itemStyle: {
                         color: new echarts.graphic.LinearGradient(
                             0, 0, 0, 1,
                             [
-                                {offset: 0, color: '#a0020d'},
-                                {offset: 0.5, color: '#be010e'},
-                                {offset: 1, color: '#be010e'}
+                                {offset: 0, color: '#828787'},
+                                {offset: 0.5, color: '#474a4a'},
+                                {offset: 1, color: '#191a1a'}
                             ]
                         )
                     },
@@ -138,14 +155,33 @@
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#037ea3'},
-                                    {offset: 0.7, color: '#0091ab'},
-                                    {offset: 1, color: '#0571ae'}
+                                    {offset: 0, color: '#14edf0'},
+                                    {offset: 0.7, color: '#13a8c2'},
+                                    {offset: 1, color: '#017a92'}
                                 ]
                             )
                         }
                     },
-                    data: returndata.eGFR_distribute.num
+                    data: eGFR_data,
+                   markLine:{
+                	    slient:true,
+                        // symbol:'none',
+                        itemStyle: {
+                        normal: {
+                            lineStyle:{
+                                width:2,
+                                type:'dotted'  //'dotted'虚线 'solid'实线
+                            },
+                            show: true,
+                            color: '#f00404',
+                            }
+                        },
+                        label:{
+                	        show:false,
+
+                        },
+                        data: [{name:"最低阈值", xAxis:90},{name:"最高阈值",xAxis:120}]
+                    },
                 }
             ]
 
@@ -161,12 +197,16 @@
           },
              tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b}: {c}人 '
+            // formatter: '{a} <br/>{b}: {c}人 '
         },
             xAxis: {
-                data: sc_bins,
+              name:"范围",
+                nameGap:20,
+                // data: sc_bins,
                 axisLabel: {
+                interval: 1,
                     inside: false,
+                  rotate:30,
                     textStyle: {
                         color: '#120d0d'
                     }
@@ -177,9 +217,12 @@
                 axisLine: {
                     show: false
                 },
-                z: 10
+              splitLine:{show:false},
+                boundaryGap: true,
             },
             yAxis: {
+              name:"人数",
+                nameGap:10,
                 axisLine: {
                     show: false
                 },
@@ -199,15 +242,15 @@
             ],
             series: [
                 {
-                	name: '血肌酐值段：',
+                	name: '血肌酐分布：',
                     type: 'bar',
                     itemStyle: {
                         color: new echarts.graphic.LinearGradient(
                             0, 0, 0, 1,
                             [
-                                {offset: 0, color: '#a0020d'},
-                                {offset: 0.5, color: '#be010e'},
-                                {offset: 1, color: '#be010e'}
+                                {offset: 0, color: '#828787'},
+                                {offset: 0.5, color: '#474a4a'},
+                                {offset: 1, color: '#191a1a'}
                             ]
                         )
                     },
@@ -216,14 +259,33 @@
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#037ea3'},
-                                    {offset: 0.7, color: '#0091ab'},
-                                    {offset: 1, color: '#0571ae'}
+                                    {offset: 0, color: '#14edf0'},
+                                    {offset: 0.7, color: '#13a8c2'},
+                                    {offset: 1, color: '#017a92'}
                                 ]
                             )
                         }
                     },
-                    data: returndata.sc_distribute.num
+                    data: sc_data,
+                   markLine:{
+                	    slient:true,
+                        // symbol:'none',
+                        itemStyle: {
+                        normal: {
+                            lineStyle:{
+                                width:2,
+                                type:'dotted'  //'dotted'虚线 'solid'实线
+                            },
+                            show: true,
+                            color: '#f00404',
+                            }
+                        },
+                        label:{
+                	        show:false,
+
+                        },
+                        data: [{name:"最低阈值", xAxis:44},{name:"最高阈值",xAxis:133}]
+                    },
                 }
             ]
 
@@ -239,12 +301,16 @@
           },
             tooltip: {
             trigger: 'item',
-            formatter: '{a} <br/>{b}: {c}人 '
+            formatter: '{a}{b}: {c}人 '
         },
             xAxis: {
+              name:"岁数",
+                nameGap:20,
                 data: age_bins,
                 axisLabel: {
+                interval: 1,
                     inside: false,
+                  rotate:30,
                     textStyle: {
                         color: '#120d0d'
                     }
@@ -255,9 +321,12 @@
                 axisLine: {
                     show: false
                 },
-                z: 10
+              splitLine:{show:false},
+                boundaryGap: true,
             },
             yAxis: {
+              name:"人数",
+                nameGap:10,
                 axisLine: {
                     show: false
                 },
@@ -277,15 +346,16 @@
             ],
             series: [
                 {
-                	name: '年龄段：',
+                	name: '年龄段',
                     type: 'bar',
+                    // barWidth:40,
                     itemStyle: {
                         color: new echarts.graphic.LinearGradient(
                             0, 0, 0, 1,
                             [
-                                {offset: 0, color: '#a0020d'},
-                                {offset: 0.5, color: '#be010e'},
-                                {offset: 1, color: '#be010e'}
+                                {offset: 0, color: '#828787'},
+                                {offset: 0.5, color: '#474a4a'},
+                                {offset: 1, color: '#191a1a'}
                             ]
                         )
                     },
@@ -294,9 +364,9 @@
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#037ea3'},
-                                    {offset: 0.7, color: '#0091ab'},
-                                    {offset: 1, color: '#0571ae'}
+                                    {offset: 0, color: '#14edf0'},
+                                    {offset: 0.7, color: '#13a8c2'},
+                                    {offset: 1, color: '#017a92'}
                                 ]
                             )
                         }
@@ -327,9 +397,15 @@
                   // name: '访问来源',
                   type: 'pie',
                   radius: '60%',
+                  label: {
+                      normal: {
+                          position:"inner",
+                          show:false,
+                      }
+                  },
                   data: [
-                      {value: returndata.num_male, name: '男性'},
-                      {value:returndata.num_female, name: '女性'},
+                      {value: returndata.num_male, name: '男性',itemStyle: {color:'#81888e'}},
+                      {value:returndata.num_female, name: '女性',itemStyle: {color:'#24abcd'}},
                   ],
                   emphasis: {
                       itemStyle: {
@@ -361,9 +437,15 @@
               {
                   type: 'pie',
                   radius: '60%',
+                label: {
+                      normal: {
+                          position:"inner",
+                          show:false,
+                      }
+                  },
                   data: [
-                      {value: returndata.num_pos, name: '肾阳虚'},
-                      {value: returndata.num_neg, name: '肾阴虚'},
+                      {value: returndata.num_pos, name: '肾阳虚',itemStyle: {color:'#81888e'}},
+                      {value: returndata.num_neg, name: '肾阴虚' ,itemStyle: {color:'#24abcd'}},
                   ],
                   emphasis: {
                       itemStyle: {

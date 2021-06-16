@@ -105,9 +105,57 @@ def data_statistic():
         # return render_template('datastatistic.html', data_json=data_json)
 
 
-@app.route('/statistic_detail')
+@app.route('/statistic_detail',methods=['GET', 'POST'])
 def statistic_detail():
-    return render_template('statistic_detail.html')
+    if request.method == "POST":
+        gender = request.form.get('gender')
+        min_age = request.form.get('min_age')
+        max_age = request.form.get('max_age')
+        min_sc_value = request.form.get('min_sc_value')
+        max_sc_value = request.form.get('max_sc_value')
+        min_eGFR = request.form.get('min_eGFR')
+        max_eGFR = request.form.get('max_eGFR')
+        symptoms_type = request.form.get('symptoms_type')
+        print(gender, symptoms_type, min_age, max_age, min_sc_value, max_sc_value, min_eGFR, max_eGFR)
+
+        sql = "SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_patient_info WHERE id IS NOT NULL"
+        t = [None, '', 'all']
+        if gender not in t:
+            sql = sql + " AND sex=" + str(gender)
+        if min_age not in t:
+            sql = sql + " AND age>=" + str(min_age)
+        if max_age not in t:
+            sql = sql + " AND age<=" + str(max_age)
+        if min_sc_value not in t:
+            sql = sql + " AND serum_creatinine>=" + str(min_sc_value)
+        if max_sc_value not in t:
+            sql = sql + " AND serum_creatinine<=" + str(max_sc_value)
+        if min_eGFR not in t:
+            sql = sql + " AND eGFR>=" + str(min_eGFR)
+        if min_sc_value not in t:
+            sql = sql + " AND eGFR>=" + str(max_eGFR)
+        if symptoms_type not in t:
+            sql = sql + " AND symptoms_type=" + str(symptoms_type)
+        # print(sql)
+
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute(sql)
+        except:
+            print('从服务器获取数据失败')
+            return 0
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
+        print(pd_patient_info)
+
+        data = tool.get_statistic_info(pd_patient_info)
+
+        data_json = json.dumps(data)
+        return  render_template('statistic_detail.html',data_json=data_json)
+
+    elif request.method == "GET":
+        return render_template('statistic_detail.html',data_json=0)
 
 # 病人信息展示页面
 @app.route('/patient_info_show')
