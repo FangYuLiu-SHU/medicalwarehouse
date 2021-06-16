@@ -135,17 +135,17 @@ def patient_info_by_condition():
     if sex!="":
         sql += "and sex='" + str(sex) + "'"
     if age[0]!="" :
-        sql += "and age>'" + str(age[0]) + "'"
+        sql += "and age>='" + str(age[0]) + "'"
     if age[1]!="" :
-        sql += "and age<'" +  str(age[1]) + "'"
+        sql += "and age<='" +  str(age[1]) + "'"
     if serum_creatinine[0]!="":
-        sql += "and serum_creatinine>'" + str(serum_creatinine[0]) + "'"
+        sql += "and serum_creatinine>='" + str(serum_creatinine[0]) + "'"
     if serum_creatinine[1]!="":
-        sql += "and serum_creatinine<'" +  str(serum_creatinine[1]) + "'"
+        sql += "and serum_creatinine<='" +  str(serum_creatinine[1]) + "'"
     if eGFR[0]!="":
-        sql += "and eGFR>'" + str(eGFR[0]) + "'"
+        sql += "and eGFR>='" + str(eGFR[0]) + "'"
     if eGFR[1]!="":
-        sql += "and eGFR<'" +  str(eGFR[1]) + "'"
+        sql += "and eGFR<='" +  str(eGFR[1]) + "'"
     if symptoms!="":
         sql += "and symptoms_type='" + str(symptoms) + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
@@ -223,6 +223,37 @@ def disease_prediction():
         newData = json.dumps(formData)  # json.dumps封装
         #print(newData)
         return render_template('diseasePrediction.html', newData=newData)
+    
+    
+#用户通道数量      
+@app.route('/find_channelNumber',methods=['GET','POST'])
+def find_channelNumber():
+    id = request.form.get('id')  # 用户id
+    sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_pulse_sig_" + str(
+        id) + "'"
+    cursor.execute(sql)  # 执行sql语句
+    res = cursor.fetchall()  # 取数据
+    json_data={}
+    json_data['channelNumber'] = res[0][0]
+    return json.dumps(json_data)
+
+
+#根据id及通道编号获取用户通道数据
+@app.route('/channel_data',methods=['GET','POST'])
+def channel_data():
+    id = request.form.get('id')  # 用户id
+    num = request.form.get('num')  # 通道编号
+    num=int(num)-1
+    sql = "select `" + str(num) + "` from medical_dw.ods_pulse_sig_" + str(id)
+    cursor.execute(sql)  # 执行sql语句
+    res = cursor.fetchall()  # 取数据
+    json_data = {}
+    channel_data = []
+    for i in res:
+        channel_data.append(round(i[0],5))
+    json_data["data"] = channel_data
+    return json.dumps(json_data)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
