@@ -16,7 +16,14 @@
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
           <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="skipto('datastatistic')" style="cursor:pointer">信息展示</a></li>
-          <li class="layui-nav-item layui-hide-xs"><a href="javascript:" onclick="skipto('patient_info_show')">查询</a></li>
+          <li class="layui-nav-item">
+            <a href="javascript:;">查询</a>
+            <dl class="layui-nav-child">
+              <dd><a href="javascript:" onclick="skipto('patient_info_show')">a</a></dd>
+              <dd><a href="">b</a></dd>
+              <dd><a href="">c</a></dd>
+            </dl>
+          </li>
           <li class="layui-nav-item layui-hide-xs"><a href="javascript:" onclick="skipto('disease_prediction')" style="cursor:pointer">预测</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
