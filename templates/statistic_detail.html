@@ -69,10 +69,10 @@
            <div class="layui-form-item">
               <label class="layui-form-label">患者性别</label>
               <div class="layui-input-block">
-                <select name="gender" lay-filter="info_display_gender"  class="layui-select" >
-                  <option value="" selected>请选择</option>
-                  <option value="1">男</option>
-                  <option value="2">女</option>
+                <select name="gender" lay-filter="info_display_gender"  class="layui-select"  >
+                  <option value="" >请选择</option>
+                  <option value="1"  >男</option>
+                  <option value="2" >女</option>
                 </select>
 <!--                <button class="layui-btn submit_query" lay-submit lay-filter="bt2">提交</button>-->
               </div>
@@ -80,17 +80,22 @@
             <div class="layui-form-item">
                 <div class="layui-inline"><label class="layui-form-label">年龄范围</label>
                     <div class="layui-input-inline"style="width: 160px;" >
-                        <input type="text" name="min_age" placeholder="最小值" autocomplete="off" class="layui-input">
+                        <input type="text" name="min_age" placeholder="最小值" autocomplete="off" class="layui-input" lay-verify="Mverify" >
                     </div>
                     <div class="layui-form-mid">-</div>
                     <div class="layui-input-inline" style="width: 165px;">
-                        <input type="text" name="max_age" placeholder="最大值" autocomplete="off" class="layui-input">
+                        <input type="text" name="max_age" placeholder="最大值" autocomplete="off" class="layui-input" lay-verify="Mverify" >
                     </div>
                 </div>
             </div>
                  <div class="layui-form-item">
-                <button class="layui-btn submit_query" lay-submit lay-filter="*" id="LAY-button-shen" style="margin-left: 110px;width: 100px">立即提交</button>
-<!--                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+                <button  class="layui-btn submit_query" lay-submit lay-filter="*"  id="LAY-button-shen"  style="margin-left: 110px;width: 100px">立即提交</button>
+                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+            <div class="layui-panel">
+<!--                <div  id="sym_display"></div>-->
+               <div  id="sym_display"></div>
+                   <div id="sex_display"></div>
             </div>
                 </form>
           </div>
@@ -101,7 +106,7 @@
           <div class="layui-container" id="eGFR_fig" ></div>
           <div class="layui-container" id="sc_fig"  ></div>
         </div>
-  </div>
+     </div>
    <script src="../static/layui/layui.js"></script>
     <script src="../static/js/jquery.js"></script>
         <script type="text/javascript" src="../static/js/echarts.js"></script>
@@ -110,358 +115,398 @@
 
     layui.use(['form'], function() {
         var form = layui.form, layer = layui.layer;
+           form.verify({
+              Mverify: (value) => {
+                  // value=JSON.parse(JSON.stringify(value));
+                if (isNaN(value)||value<0||value>150) {
+                 return  "输入有误，请重新输入！";
+                }
+              },
+            });
 
         //监听提交
         form.on('submit(*)', function () {
+
             var data = form.val('info_display');
             var objectData = JSON.parse(JSON.stringify(data));//转成JSON对象
-            return objectData
-        });
+            var min_age=objectData.min_age,max_age=objectData.max_age;
+            console.log((min_age+" "+max_age))
+            if(!min_age){
+                min_age=0;
+            }
+            if(!max_age){
+                max_age=150;
+            }
+            // console.log(objectData.symptoms_type+" "+objectData.gender)
+            var symptom,gender;
+            if(objectData.symptoms_type==='1'){
+                symptom='肾阳虚'
+            }else if(objectData.symptoms_type==='2') {
+                symptom='肾阴虚'
+            }else {
+                symptom='所有'
+            }
+            if(objectData.gender==='1'){
+                gender='男'
+            }else if(objectData.gender==='2') {
+                gender='女'
+            }else {
+                gender='所有'
+            }
+            // console.log(symptom+" "+gender)
+            if(min_age>=max_age) {
+                layer.alert("输入数据非法!", {icon: 2, skin: 'layer-ext-demo',})
+                return false
+            }
+
+            // document.getElementById('content_display')
+            //     layer.alert("症状:" + symptom + "\n性别:" + gender + "\n年龄范围:" + min_age + "~" + max_age,{icon:1,skin: 'layer-ext-demo',time:200000})
+            //     // return false
+            // }
+            // return objectData
+
+            });
+
+    // form.on("select(info_display_gender)", function (data) {
+    //         const { value } = data;
+    //         var gender;
+    //        if(value==='1'){
+    //             gender='男'
+    //         }else if(value==='2') {
+    //             gender='女'
+    //         }else {
+    //            gender='所有'
+    //        }
+    //         document.getElementById('sex_display').innerText="性别:"+gender;
+    //       });
+    //
+    //
+    // form.on("select(info_display_sym)", function (data) {
+    //         const { value } = data;
+    //         var sym;
+    //        if(value==='1'){
+    //             sym='肾阳虚'
+    //         }else if(value==='2') {
+    //             sym='肾阴虚'
+    //         }else{
+    //            sym='所有'
+    //        }
+    //         document.getElementById('sym_display').innerText="症状:"+sym;
+    //       });
+
     });
+
+
+
         var newData = {{data_json | tojson}};//获取后端返回的结果
         var returndata = JSON.parse(newData);
-        // console.log(returndata)
-        // var sc_bins=[]
-        // for(var j=0;j<returndata.sc_distribute.bins.length;j++){
-        //     if(j===returndata.sc_distribute.bins.length-1){
-        //         sc_bins.push(returndata.sc_distribute.bins[j]+"~")
-        //     }else {
-        //         sc_bins.push((returndata.sc_distribute.bins[j]) + "~" + returndata.sc_distribute.bins[j+1])
-        //     }
-        //
-        // }
-        // var eGFR_bins=[]
-        // for(var k=0;k<returndata.eGFR_distribute.bins.length;k++){
-        //     if(k===returndata.eGFR_distribute.bins.length-1){
-        //         eGFR_bins.push(returndata.eGFR_distribute.bins[k]+"~")
-        //     }else {
-        //         eGFR_bins.push((returndata.eGFR_distribute.bins[k]) + "~" +(returndata.eGFR_distribute.bins[k+1]))
-        //     }
-        //
-        // }
-     //
-     //    console.log(returndata.eGFR_distribute.bins)
-     // console.log(returndata.eGFR_distribute.num)
-
         var eGFR_data=[],sc_data=[];
-        for(var i=0;i<returndata.eGFR_distribute.num.length;i++){
-            eGFR_data.push([returndata.eGFR_distribute.bins[i]+10,returndata.eGFR_distribute.num[i]])
-        }
-        for(var j=0;j<returndata.sc_distribute.num.length;j++){
-            sc_data.push([returndata.sc_distribute.bins[j]+50,returndata.sc_distribute.num[j]])
-        }
-        var yMax = 150;
-        console.log(returndata.sc_distribute)
-        var dataShadow = [];
-        var eGFR_dom = document.getElementById('eGFR_fig');
-        var eGFR_chart = echarts.init(eGFR_dom);
-        var min_eGFR=90,max_eGFR=120;
-        var eGFR_option= {
+        if(returndata!==0) {
+            // console.log(returndata)
+            // console.log(returndata.eGFR_distribute)
+            for (var i = 0; i < returndata.eGFR_distribute.num.length; i++) {
+                eGFR_data.push([returndata.eGFR_distribute.bins[i] + 10, returndata.eGFR_distribute.num[i]])
+            }
+            for (var j = 0; j < returndata.sc_distribute.num.length; j++) {
+                sc_data.push([returndata.sc_distribute.bins[j] + 50, returndata.sc_distribute.num[j]])
+            }
+            var yMax = 150;
+            // console.log(returndata.sc_distribute)
+            var dataShadow = [];
+            var eGFR_dom = document.getElementById('eGFR_fig');
+            var eGFR_chart = echarts.init(eGFR_dom);
+            var min_eGFR = 90, max_eGFR = 120;
+            var eGFR_option = {
                 title: {
-              text: 'eGFR值分布',
-              left: 'center'
-          },
-            tooltip: {
-            trigger: 'item',
-        },
+                    text: 'eGFR值分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                },
 
-            xAxis: {
-                name:"范围",
-                nameGap:20,
-                axisLabel: {
-                    inside: false,
-                    rotate:30,
-                },
-                axisTick: {
-                    show: false,
-                    alignWithLabel: true
-                },
-                axisLine: {
-                    show: false
-                },
-                splitLine:{show:false},
-                boundaryGap: true,
-
-            },
-            yAxis: {
-                name:"人数",
-                nameGap:10,
-                axisLine: {
-                    show: false
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
-                    textStyle: {
-                        color: '#999'
-                    }
-                }
-            },
-            dataZoom: [
-                {
-                    type: 'inside'
-                }
-            ],
-            series: [
-                {
-                	name: 'eGFR分布',
-                    type: 'bar',
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(
-                            0, 0, 0, 1,
-                            [
-                                {offset: 0, color: '#828787'},
-                                {offset: 0.5, color: '#474a4a'},
-                                {offset: 1, color: '#191a1a'}
-                            ]
-                        )
+                xAxis: {
+                    name: "范围",
+                    nameGap: 20,
+                    axisLabel: {
+                        inside: false,
+                        rotate: 30,
                     },
-                    emphasis: {
+                    axisTick: {
+                        show: false,
+                        alignWithLabel: true
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    splitLine: {show: false},
+                    // boundaryGap: true,
+
+                },
+                yAxis: {
+                    name: "人数",
+                    nameGap: 10,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        textStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'inside'
+                    }
+                ],
+                series: [
+                    {
+                        name: 'eGFR分布',
+                        type: 'bar',
                         itemStyle: {
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#14edf0'},
-                                    {offset: 0.7, color: '#13a8c2'},
-                                    {offset: 1, color: '#017a92'}
+                                    {offset: 0, color: '#828787'},
+                                    {offset: 0.5, color: '#474a4a'},
+                                    {offset: 1, color: '#191a1a'}
                                 ]
                             )
-                        }
-                    },
-                    data:eGFR_data,
-                    markLine:{
-                	    slient:true,
-                        // symbol:'none',
-                        itemStyle: {
-                        normal: {
-                            lineStyle:{
-                                width:2,
-                                type:'dotted'  //'dotted'虚线 'solid'实线
-                            },
-                            show: true,
-                            color: '#f00404',
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#f53959'},
+                                        {offset: 0.7, color: '#cd0a2d'},
+                                        {offset: 1, color: '#a5011c'}
+                                    ]
+                                )
                             }
                         },
-                        label:{
-                	        show:false,
+                        data: eGFR_data,
+                        markLine: {
+                            slient: true,
+                            // symbol:'none',
+                            itemStyle: {
+                                normal: {
+                                    lineStyle: {
+                                        width: 2,
+                                        type: 'dotted'  //'dotted'虚线 'solid'实线
+                                    },
+                                    show: true,
+                                    color: '#f00404',
+                                }
+                            },
+                            label: {
+                                show: false,
 
+                            },
+                            data: [{name: "最低阈值(mL/min)", xAxis: 90}, {name: "最高阈值(mL/min)", xAxis: 120}]
                         },
-                        data: [{name:"最低阈值", xAxis:90},{name:"最高阈值",xAxis:120}]
-                    },
-                }
-            ]
-
-        };
-        eGFR_chart.setOption(eGFR_option);
-        var sc_dom = document.getElementById('sc_fig');
-        var sc_chart = echarts.init(sc_dom);
-        var sc_option= {
-                title: {
-              text: '血肌酐值分布',
-              left: 'center'
-          },
-             tooltip: {
-            trigger: 'item',
-
-        },
-            xAxis: {
-                name:"范围",
-                nameGap:20,
-                axisLabel: {
-                    inside: false,
-                    textStyle: {
-                        color: '#120d0d',
-                        rotate: 20
-                    },
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLine: {
-                    show: false
-                },
-                splitLine:{show:false},
-                boundaryGap: true,
-            },
-            yAxis: {
-                name:"人数",
-                nameGap:10,
-                axisLine: {
-                    show: false
-                },
-                axisTick: {
-                    show: false
-                },
-                axisLabel: {
-                    textStyle: {
-                        color: '#999'
                     }
-                }
-            },
-            dataZoom: [
-                {
-                    type: 'inside'
-                }
-            ],
-            series: [
-                {
-                    name:'血肌酐分布',
+                ]
 
-                    type: 'bar',
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(
-                            0, 0, 0, 1,
-                            [
-                                {offset: 0, color: '#828787'},
-                                {offset: 0.5, color: '#474a4a'},
-                                {offset: 1, color: '#191a1a'}
-                            ]
-                        )
+            };
+            eGFR_chart.setOption(eGFR_option);
+            var sc_dom = document.getElementById('sc_fig');
+            var sc_chart = echarts.init(sc_dom);
+            var sc_option = {
+                title: {
+                    text: '血肌酐值分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+
+                },
+                xAxis: {
+                    name: "范围",
+                    nameGap: 20,
+                    axisLabel: {
+                        inside: false,
+                        textStyle: {
+                            color: '#120d0d',
+                            rotate: 20
+                        },
                     },
-                    emphasis: {
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        show: false
+                    },
+                    splitLine: {show: false},
+                    // boundaryGap: true,
+                },
+                yAxis: {
+                    name: "人数",
+                    nameGap: 10,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLabel: {
+                        textStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'inside'
+                    }
+                ],
+                series: [
+                    {
+                        name: '血肌酐分布',
+
+                        type: 'bar',
                         itemStyle: {
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#14edf0'},
-                                    {offset: 0.7, color: '#13a8c2'},
-                                    {offset: 1, color: '#017a92'}
+                                    {offset: 0, color: '#828787'},
+                                    {offset: 0.5, color: '#474a4a'},
+                                    {offset: 1, color: '#191a1a'}
                                 ]
                             )
-                        }
-                    },
-                    data: sc_data,
-                    markLine:{
-                	    slient:true,
-                        // symbol:'none',
-                        itemStyle: {
-                        normal: {
-                            lineStyle:{
-                                width:2,
-                                type:'dotted'  //'dotted'虚线 'solid'实线
-                            },
-                            show: true,
-                            color: '#f00404',
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#f53959'},
+                                        {offset: 0.7, color: '#cd0a2d'},
+                                        {offset: 1, color: '#a5011c'}
+                                    ]
+                                )
                             }
                         },
-                        label:{
-                	        show:false,
+                        data: sc_data,
+                        markLine: {
+                            slient: true,
+                            // symbol:'none',
+                            itemStyle: {
+                                normal: {
+                                    lineStyle: {
+                                        width: 2,
+                                        type: 'dotted'  //'dotted'虚线 'solid'实线
+                                    },
+                                    show: true,
+                                    color: '#f00404',
+                                }
+                            },
+                            label: {
+                                show: false,
 
+                            },
+                            data: [{name: "最低阈值(μmol/L)", xAxis: 44}, {name: "最高阈值(μmol/L)", xAxis: 133}]
                         },
-                        data: [{name:"最低阈值", xAxis:44},{name:"最高阈值",xAxis:133}]
-                    },
-                }
-            ]
+                    }
+                ]
 
-        };
-        sc_chart.setOption(sc_option);
-        var sex_dom = document.getElementById('gender_fig');
-        var sex_chart = echarts.init(sex_dom);
-        var sex_option={
-          title: {
-              text: '患者性别分布',
-              left: 'center'
-          },
-          tooltip: {
-              trigger: 'item'
-          },
-          legend: {
-              orient: 'vertical',
-              left: 'left',
-          },
-          series: [
-              {
-                  // name: '访问来源',
-                  type: 'pie',
-                  radius: '60%',
-                 label: {
-                      normal: {
-                          position:"inner",
-                          show:false,
-                      }
-                  },
-                  data: [
-                      {value: returndata.num_male, name: '男性',itemStyle: {color:'#81888e'}},
-                      {value:returndata.num_female, name: '女性',itemStyle: {color:'#24abcd'}},
-                  ],
-                  emphasis: {
-                      itemStyle: {
-                          shadowBlur: 10,
-                          shadowOffsetX: 0,
-                          shadowColor: 'rgba(0,0,0,0.5)'
-                      }
-                  }
-              }
-          ]
-        };
-        sex_chart.setOption(sex_option)
+            };
+            sc_chart.setOption(sc_option);
+            var sex_dom = document.getElementById('gender_fig');
+            var sex_chart = echarts.init(sex_dom);
+            var sex_option = {
+                title: {
+                    text: '患者性别分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        // name: '访问来源',
+                        type: 'pie',
+                        radius: '60%',
+                        label: {
+                            normal: {
+                                position: "inner",
+                                show: false,
+                            }
+                        },
+                        data: [
+                            {value: returndata.num_male, name: '男性'},
+                            {value: returndata.num_female, name: '女性'},
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            sex_chart.setOption(sex_option)
 
-        var symptom_dom = document.getElementById('symptoms_fig');
-        var symptom_chart = echarts.init(symptom_dom);
-        var symptom_option={
-          title: {
-              text: '患者症状分布',
-              left: 'center'
-          },
-          tooltip: {
-              trigger: 'item'
-          },
-          legend: {
-              orient: 'vertical',
-              left: 'left',
-          },
-          series: [
-              {
-                  type: 'pie',
-                  radius: '60%',
-                  // label:{
-                  //     normal:{
-                  //         position:"inner",
-                  //         formatter: '{b}:{c}'
-                  //     }
-                  // },
+            var symptom_dom = document.getElementById('symptoms_fig');
+            var symptom_chart = echarts.init(symptom_dom);
+            var symptom_option = {
+                title: {
+                    text: '患者症状分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '60%',
+                        // label:{
+                        //     normal:{
+                        //         position:"inner",
+                        //         formatter: '{b}:{c}'
+                        //     }
+                        // },
 
-                  label: {
-                      normal: {
-                          position:"inner",
-                          show:false,
-                      }
-                  },
+                        label: {
+                            normal: {
+                                position: "inner",
+                                show: false,
+                            }
+                        },
 
-                  data: [
-                      {value: returndata.num_pos, name: '肾阳虚',itemStyle: {color:'#81888e'}},
-                      {value: returndata.num_neg, name: '肾阴虚',itemStyle: {color:'#24abcd'}},
-                  ],
-                      // .filter(function (e){
-                      // let num_pos=e.num_pos,num_neg=e.num_neg;
-                      // if(num_pos==0){
-                      //     return {value: num_neg, name: '肾阴虚',itemStyle: {color:'#24abcd'}}
-                      // }
-                      // else if(num_neg==0) {
-                      //     return {value: returndata.num_pos, name: '肾阳虚', itemStyle: {color: '#81888e'}}
-                      // }
-                      // else {
-                      //     return {value: returndata.num_pos, name: '肾阳虚',itemStyle: {color:'#81888e'}}, {value: returndata.num_neg, name: '肾阴虚',itemStyle: {color:'#24abcd'}}
-                      // }
-                  // }),
-                  emphasis: {
-                      itemStyle: {
-                          shadowBlur: 10,
-                          shadowOffsetX: 0,
-                          shadowColor: 'rgba(0,0,0,0.5)'
-                      }
-                  }
-              }
-          ]
-        };
-        symptom_chart.setOption(symptom_option);
-    //     window.addEventListener('resize',function (){
-    //         symptom_chart.resize();
-    //         sex_chart.resize();
-    //         eGFR_chart.resize();
-    //         sc_chart.resize();
-    // });
+                        data: [
+                            {value: returndata.num_pos, name: '肾阳虚'},
+                            {value: returndata.num_neg, name: '肾阴虚'},
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            symptom_chart.setOption(symptom_option);
+        }
+
+
     </script>
 
 </body>
