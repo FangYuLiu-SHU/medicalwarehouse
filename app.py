@@ -152,7 +152,7 @@ def statistic_detail():
         data = tool.get_statistic_info(pd_patient_info)
 
         data_json = json.dumps(data)
-        return  render_template('statistic_detail.html',data_json=data_json)
+        return data_json
 
     elif request.method == "GET":
         return render_template('statistic_detail.html',data_json=0)
