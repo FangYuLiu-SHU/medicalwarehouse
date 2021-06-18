@@ -32,25 +32,25 @@ layui.use(["form", "layer"], function () {
     };
     console.log(QUERY_LUNG_DATA);
     query_lung_obj = QUERY_LUNG_DATA;
-    getTable(query_lung_obj, url, true, layer, "查询成功!");
+    getTable(query_lung_obj, "/lung_patient_info", true, layer, "查询成功!");
     return false;
   });
 });
 function renderTable_lung(tableData) {
   // 渲染表格，tableData：后端返回的数据
-  console.log(tableData);
   const { data: arrData, code, total } = JSON.parse(tableData);
   const data = arrData.map((e) => {
     e.sex = e.sex === "1" ? "女" : "男";
     e.Lung_qi_deficiency = e.Lung_qi_deficiency === "1" ? "是" : "否";
     e.spleen_qi_deficiency = e.spleen_qi_deficiency === "1" ? "是" : "否";
     e.kidney_qi_deficiency = e.kidney_qi_deficiency === "1" ? "是" : "否";
+    e.PEF = e.PEF === "None" ? "无数据" : e.PEF;
     return e;
   });
-
   layui.use(["laypage", "table", "layer", "form"], function () {
     const laypage = layui.laypage;
     const table = layui.table;
+    const form = layui.form;
     table.render({
       elem: ".lung_info_table", // 定位表格ID
       title: "用户数据表",
@@ -60,9 +60,10 @@ function renderTable_lung(tableData) {
       limit: query_lung_obj.limit, // 每一页数据条数
       done: function () {
         // 分页组件
-        getPage(total, laypage, url, query_lung_obj);
+        getPage(total, laypage, "/lung_patient_info", query_lung_obj);
       },
     });
+    table.on("tool(lung)", obj => {rowToolEvent(obj, patient_tabel_lung, data, form, table, "lung")});
     table.on("toolbar(lung)", function (obj) {
       // 点击查询按钮后的弹出层，用于更细节的查询
       var checkStatus = table.checkStatus(obj.config.id);
@@ -78,8 +79,8 @@ function renderTable_lung(tableData) {
           break;
         }
         case "all_data": {
-          query_lung_obj = orignQuery;
-          getTable(query_lung_obj, url, true, layer, "重置成功!");
+          query_lung_obj = orignQuery_lung;
+          getTable(query_lung_obj, "/lung_patient_info", true, layer, "重置成功!");
           $(".lung_detail_query .layui-form")[0].reset();
         }
       }
@@ -108,8 +109,8 @@ let query_lung_obj = {
   "FEV1/FVC": JSON.stringify([
     "", ""]),
 };
-
-let  tabelCols_lung = [
+const orignQuery_lung = {...query_lung_obj}
+let tabelCols_lung = [
   [
     {
       field: "id",
@@ -154,26 +155,6 @@ let  tabelCols_lung = [
     },
   ],
 ]
+let patient_tabel_lung = [[...tabelCols_lung[0]]]
+patient_tabel_lung[0].pop()
 
-/*
-
-{
-  table: "lung",
-  id: "",
-  wm_diagnosis: "",
-  tongue: "",
-  pulse: "",
-  sex: "",
-  fei_qi_xu: "",
-  pi_qi_xu: "",
-  sheng_qi_xu: "",
-  age: JSON.stringify(["", ""]),
-  FEV1: JSON.stringify(["", ""]),
-  FVC: JSON.stringify(["", ""]),
-  "FEV1%": JSON.stringify([
-    "", ""]),
-  "FEV1/FVC": JSON.stringify([
-    "", ""]),
-};
-
-*/

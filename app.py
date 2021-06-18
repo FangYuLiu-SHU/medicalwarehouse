@@ -278,9 +278,10 @@ def disease_prediction():
 def find_channelNumber():
     id = request.form.get('id')  # 用户id
     type=request.form.get('type')
+    print(id, type)
     if (type=='kidney' or type=='liver'):
         sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_"+type+"_pulse__" + str(
-        id) + "'"
+            id).casefold() + "'"
     elif (type=='lung'):
         sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_lung_pulse_" + str(
             id).casefold() + "'"
@@ -288,6 +289,7 @@ def find_channelNumber():
     res = cursor.fetchall()  # 取数据
     json_data={}
     json_data['channelNumber'] = res[0][0]
+    print(json_data['channelNumber'])
     return json.dumps(json_data)
 
 
@@ -326,7 +328,7 @@ def lung_patient_info():
     age = json.loads(request.form.get('age'))  # 年龄
     wm_diagnosis = request.form.get('wm_diagnosis')  # 西医诊断
     fei_qi_xu = request.form.get('fei_qi_xu')  # 肺气虚
-    pi_qi_xu = request.form.get('wm_diagnosis')  # 脾气虚
+    pi_qi_xu = request.form.get('pi_qi_xu')  # 脾气虚
     sheng_qi_xu = request.form.get('sheng_qi_xu')  # 肾气虚
     FEV1 = json.loads(request.form.get('FEV1'))  # 年龄
     FVC = json.loads(request.form.get('FVC'))  # 年龄

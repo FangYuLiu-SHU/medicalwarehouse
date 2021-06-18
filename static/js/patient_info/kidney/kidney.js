@@ -24,64 +24,7 @@ function renderTable(tableData) {
         getPage(total, laypage, url,query_kidney_Obj);
       },
     });
-    table.on("tool(test)", function (obj) {
-      //行工具栏事件，点击详细的相关处理
-      switch (obj.event) {
-        case "detail": {
-          id = obj.data.id;
-          $.ajax({
-            type: "POST",
-            url: `http://127.0.0.1:5000/find_channelNumber`,
-            data: {
-              id,
-            }, // 携带的数据，POST方法用
-            success: function (returnData) {
-              let { channelNumber } = JSON.parse(returnData);
-              channelNumber = parseInt(channelNumber);
-              setTimeout(() => {
-                //使用计时器，防止表格渲染出现格式问题
-                table.render({
-                  elem: ".patient_info", // 定位表格ID
-                  title: "病人信息",
-                  cols: patientCols,
-                  data: [data.find((e) => e.id === id)],
-                  limit: query_kidney_Obj.limit, // 每一页数据条数
-                  done: function () {
-                    // 分页组件
-                    getPage(total, laypage, url, query_kidney_Obj);
-                  },
-                });
-              }, 0);
-              layer.open({
-                type: 1,
-                shadeClose: true,
-                area: ["1200", "450"],
-                title: "详细信息",
-                content: $(".patient_detail"),
-                end: () => {
-                  channelChart.clear();
-                }, // 弹出层关闭后的回调， 清除eCharts图表
-              });
-              channelSelect.empty(); // 清空select中的option选项， 防止冲突
-              if (channelNumber === 0) {
-                channelSelect.append(
-                  $(`<option value="none" disabled>没有数据</option>`)
-                );
-              } else {
-                channelSelect.append(
-                  $(`<option value="">请选择一个通道</option>`)
-                );
-                for (let i = 1; i <= channelNumber; ++i) {
-                  const newOption = $(`<option value=${i}>通道${i}</option>`);
-                  channelSelect.append(newOption);
-                }
-              }
-              form.render("select", "channel_form"); // 重新渲染select
-            },
-          });
-        }
-      }
-    });
+    table.on("tool(test)", obj => {rowToolEvent(obj, patientCols, data, form, table, "kidney")});
     table.on("toolbar(test)", function (obj) {
       // 点击查询按钮后的弹出层，用于更细节的查询
       var checkStatus = table.checkStatus(obj.config.id);
@@ -96,7 +39,7 @@ function renderTable(tableData) {
           break;
         }
         case "all_data": {
-          query_kidney_Obj = orignQuery;
+          query_kidney_Obj = orignQuery_kidney;
           getTable(query_kidney_Obj,url, true, layer, "重置成功!");
           $(".kidney_detail_query .layui-form")[0].reset();
         }
@@ -178,7 +121,7 @@ let id = "";
 
 const channelDom = $(".show_div")[0];
 const channelSelect = $(".channel");
-const orignQuery = { ...query_kidney_Obj }; // 原始的查询字符串，用于重置操作
+const orignQuery_kidney = { ...query_kidney_Obj }; // 原始的查询字符串，用于重置操作
 const channelChart = echarts.init(channelDom);
 const tabelCols = [
   [
