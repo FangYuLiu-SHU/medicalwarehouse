@@ -277,8 +277,13 @@ def disease_prediction():
 @app.route('/find_channelNumber',methods=['GET','POST'])
 def find_channelNumber():
     id = request.form.get('id')  # 用户id
-    sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_kidney_pulse_" + str(
+    type=request.form.get('type')
+    if (type=='kidney' or type=='liver'):
+        sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_"+type+"_pulse__" + str(
         id) + "'"
+    elif (type=='lung'):
+        sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_lung_pulse_" + str(
+            id).casefold() + "'"
     cursor.execute(sql)  # 执行sql语句
     res = cursor.fetchall()  # 取数据
     json_data={}
@@ -292,7 +297,11 @@ def channel_data():
     id = request.form.get('id')  # 用户id
     num = request.form.get('num')  # 通道编号
     num=int(num)-1
-    sql = "select `" + str(num) + "` from medical_dw.ods_kidney_pulse_" + str(id)
+    type = request.form.get('type')
+    if (type == 'kidney' or type == 'liver'):
+        sql = "select `" + str(num) + "` from medical_dw.ods_"+type+"_pulse_" + str(id)
+    elif (type == 'lung'):
+        sql = "select `" + str(num) + "` from medical_dw.ods_lung_pulse_" + str(id).casefold()
     cursor.execute(sql)  # 执行sql语句
     res = cursor.fetchall()  # 取数据
     json_data = {}
@@ -369,8 +378,9 @@ def lung_patient_info():
     if pulse != "":
         sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
+    cursor.execute(sql)
+    total_data = cursor.fetchall()  # 所有满足条件的数据
     sql += "limit " + str(offset) + ',' + str(limit)
-    print(sql)
     cursor.execute(sql)  # 执行sql语句
     data = cursor.fetchall()  # 获取数据
     json_data = {}
@@ -386,10 +396,7 @@ def lung_patient_info():
         for i in range(len(column_names)):
             one_person[column_names[i][0]] = str(result[i])
         result_data.append(one_person)
-    sql_total = "select count(*) from dwd_lung_info"
-    cursor.execute(sql_total)
-    total_count = cursor.fetchall()  # 取数据
-    json_data['total'] = total_count[0][0]
+    json_data['total'] = len(total_data)
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
@@ -430,8 +437,9 @@ def liver_patient_info():
     if pulse != "":
         sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
+    cursor.execute(sql)
+    total_data = cursor.fetchall()  # 所有满足条件的数据
     sql += "limit " + str(offset) + ',' + str(limit)
-    print(sql)
     cursor.execute(sql)  # 执行sql语句
     data = cursor.fetchall()  # 获取数据
     json_data = {}
@@ -445,10 +453,7 @@ def liver_patient_info():
         for i in range(len(column_names)):
             one_person[column_names[i][0]] = str(result[i])
         result_data.append(one_person)
-    sql_total = "select count(*) from dwd_liver_info"
-    cursor.execute(sql_total)
-    total_count = cursor.fetchall()  # 取数据
-    json_data['total'] = total_count[0][0]
+    json_data['total'] = len(total_data)
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
