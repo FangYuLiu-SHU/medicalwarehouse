@@ -177,7 +177,7 @@ def patient_info_by_condition():
     serum_creatinine = json.loads(request.form.get('serum_creatinine'))  # 血肌酐
     eGFR = json.loads(request.form.get('eGFR'))
     symptoms = request.form.get('symptoms')  # 症型(1=肾阳虚，2=肾阴虚)
-    sql = "select * from dwd_patient_info where 1=1 "
+    sql = "select * from dwd_kidney_info where 1=1 "
     if id!="":
         sql+="and id='" + str(id) + "'"
     if sex!="":
@@ -207,22 +207,22 @@ def patient_info_by_condition():
     data = cursor.fetchall()
     json_data = {}
     result_data = []
+    sql_COLUMN_NAME = "select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name = 'dwd_kidney_info' and " \
+                      "table_schema = 'medical_dw' ORDER BY ordinal_position"
+    cursor.execute(sql_COLUMN_NAME)  
+    column_names = cursor.fetchall()  # 获取列名字数据
     for result in data:
-        result_data.append({
-            'id': str(result[0]),
-            'sex': str(result[1]),
-            'age': str(result[2]),
-            'serum_creatinine': str(result[3]),
-            'eGFR': str(result[4]),
-            'symptoms_type': str(result[5]),
-            'tongue': str(result[6]),
-            'pulse': str(result[7]).strip(),
-        })
+        one_person = {}
+        for i in range(len(column_names)):
+            one_person[column_names[i][0]] = str(result[i])
+        result_data.append(one_person)
+        
     json_data["code"] = str(0)
     json_data['total'] = len(totalQueryData)
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
+
 
 @app.route('/disease_prediction', methods=["GET", "POST"])
 def disease_prediction():
@@ -277,7 +277,7 @@ def disease_prediction():
 @app.route('/find_channelNumber',methods=['GET','POST'])
 def find_channelNumber():
     id = request.form.get('id')  # 用户id
-    sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_pulse_sig_" + str(
+    sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_kidney_pulse_" + str(
         id) + "'"
     cursor.execute(sql)  # 执行sql语句
     res = cursor.fetchall()  # 取数据
@@ -292,7 +292,7 @@ def channel_data():
     id = request.form.get('id')  # 用户id
     num = request.form.get('num')  # 通道编号
     num=int(num)-1
-    sql = "select `" + str(num) + "` from medical_dw.ods_pulse_sig_" + str(id)
+    sql = "select `" + str(num) + "` from medical_dw.ods_kidney_pulse_" + str(id)
     cursor.execute(sql)  # 执行sql语句
     res = cursor.fetchall()  # 取数据
     json_data = {}
@@ -301,6 +301,98 @@ def channel_data():
         channel_data.append(round(i[0],5))
     json_data["data"] = channel_data
     return json.dumps(json_data)
+    
+    
+#查询肺病人的信息
+@app.route('/lung_patient_info',methods=['GET','POST'])
+def lung_patient_info():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None or page=="":
+        page=1
+    if limit is None or limit=="":
+        limit=10
+    id = request.form.get('id')  # 编号
+    name = request.form.get('name')  # 姓名
+    sex = request.form.get('sex')  # 性别
+    age = json.loads(request.form.get('age'))  # 年龄
+    wm_diagnosis = request.form.get('wm_diagnosis')  # 西医诊断
+    fei_qi_xu = request.form.get('fei_qi_xu')  # 肺气虚
+    pi_qi_xu = request.form.get('wm_diagnosis')  # 脾气虚
+    sheng_qi_xu = request.form.get('sheng_qi_xu')  # 肾气虚
+    FEV1 = json.loads(request.form.get('FEV1'))  # 年龄
+    FVC = json.loads(request.form.get('FVC'))  # 年龄
+    FEV11 = json.loads(request.form.get('FEV1%'))  # 年龄
+    FEV2 = json.loads(request.form.get('FEV1/FVC'))  # FEV1 / FVC改值
+    PEF = json.loads(request.form.get('PEF'))
+    tongue = request.form.get('tongue')  # 舌象
+    pulse = request.form.get('pulse')  # 脉象
+    sql = "select * from dwd_lung_info where 1=1 "
+    print(sql)
+    if id != "":
+        sql += "and id='" + str(id) + "'"
+    if name != "":
+        sql += "and name='" + str(name) + "'"
+    if sex != "":
+        sql += "and sex='" + str(sex) + "'"
+    if age != "" and age[0] != "":
+        sql += "and age>='" + str(age[0]) + "'"
+    if age != "" and age[1] != "":
+        sql += "and age<='" + str(age[1]) + "'"
+    if wm_diagnosis != "":
+        sql += "and wm_diagnosis like '" + "%" + str(wm_diagnosis) + "%" + "'"
+    if fei_qi_xu != "":
+        sql += "and Lung_qi_deficiency='" + str(fei_qi_xu) + "'"
+    if pi_qi_xu != "":
+        sql += "and spleen_qi_deficiency='" + str(pi_qi_xu) + "'"
+    if sheng_qi_xu != "":
+        sql += "and kidney_qi_deficiency='" + str(sheng_qi_xu) + "'"
+    if FEV1 != "" and FEV1[0] != "":
+        sql += "and FEV1>='" + str(FEV1[0]) + "'"
+    if FEV1 != "" and FEV1[1] != "":
+        sql += "and FEV1<='" + str(FEV1[1]) + "'"
+    if FVC != "" and FVC[0] != "":
+        sql += "and FVC>='" + str(FVC[0]) + "'"
+    if FVC != "" and FVC[1] != "":
+        sql += "and FVC<='" + str(FVC[1]) + "'"
+    if FEV11 != "" and FEV11[0] != "":
+        sql += "and \'FEV1%\'>='" + str(FEV11[0]) + "'"
+    if FEV11 != "" and FEV11[1] != "":
+        sql += "and \'FEV1%\'<='" + str(FEV11[1]) + "'"
+    if FEV2 != "" and FEV2[0] != "":
+        sql += "and \'FEV1/FVC>=\''" + str(FEV2[0]) + "'"
+    if FEV2 != "" and FEV2[1] != "":
+        sql += "and \'FEV1/FVC<=\''" + str(FEV2[1]) + "'"
+    if PEF != "" and PEF[0] != "":
+        sql += "and PEF>='" + str(PEF[0]) + "'"
+    if PEF != "" and PEF[1] != "":
+        sql += "and PEF<='" + str(PEF[1]) + "'"
+    if tongue != "":
+        sql += "and tongue like '" + "%" + str(tongue) + "%" + "'"
+    if pulse != "":
+        sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
+    offset = (page - 1) * limit  # 起始行
+    sql += "limit " + str(offset) + ',' + str(limit)
+    print(sql)
+    cursor.execute(sql)  # 执行sql语句
+    data = cursor.fetchall()  # 获取数据
+    json_data = {}
+    result_data = []
+
+    sql_COLUMN_NAME = "select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name = 'dwd_lung_info' and " \
+                      "table_schema = 'medical_dw' ORDER BY ordinal_position"
+    cursor.execute(sql_COLUMN_NAME)  
+    column_names = cursor.fetchall()  # 获取列名字数据
+
+    for result in data:
+        one_person = {}
+        for i in range(len(column_names)):
+            one_person[column_names[i][0]] = str(result[i])
+        result_data.append(one_person)
+    json_data['data'] = result_data
+    json_data = json.dumps(json_data, ensure_ascii=False)
+    return json_data
+
 
 
 if __name__ == '__main__':
