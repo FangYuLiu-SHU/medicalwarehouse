@@ -13,15 +13,15 @@ function renderTable(tableData) {
     const table = layui.table;
     // 表格table组件
     table.render({
-      elem: ".info_table", // 定位表格ID
+      elem: ".kidney_info_table", // 定位表格ID
       title: "用户数据表",
-      toolbar: "#headBar", // 表格头工具栏
+      toolbar: "#headBar_kidney", // 表格头工具栏
       cols: tabelCols,
       data,
-      limit: queryObj.limit, // 每一页数据条数
+      limit: query_kidney_Obj.limit, // 每一页数据条数
       done: function () {
         // 分页组件
-        getPage(total, laypage);
+        getPage(total, laypage, url,query_kidney_Obj);
       },
     });
     table.on("tool(test)", function (obj) {
@@ -45,10 +45,10 @@ function renderTable(tableData) {
                   title: "病人信息",
                   cols: patientCols,
                   data: [data.find((e) => e.id === id)],
-                  limit: queryObj.limit, // 每一页数据条数
+                  limit: query_kidney_Obj.limit, // 每一页数据条数
                   done: function () {
                     // 分页组件
-                    getPage(total, laypage);
+                    getPage(total, laypage, url, query_kidney_Obj);
                   },
                 });
               }, 0);
@@ -91,14 +91,14 @@ function renderTable(tableData) {
             type: 1,
             shadeClose: true,
             title: "查询页面",
-            content: $(".detail_query"),
+            content: $(".kidney_detail_query"),
           });
           break;
         }
         case "all_data": {
-          queryObj = orignQuery;
-          getTable(queryObj, true, layer, "重置成功!");
-          $(".detail_query .layui-form")[0].reset();
+          query_kidney_Obj = orignQuery;
+          getTable(query_kidney_Obj,url, true, layer, "重置成功!");
+          $(".kidney_detail_query .layui-form")[0].reset();
         }
       }
     });
@@ -127,39 +127,6 @@ function renderTable(tableData) {
     });
   });
 }
-function getTable(postData, sign = false, layer = null, msg = "") {
-  $.ajax({
-    // 向后端请求数据
-    type: "POST", //请求的方法
-    url: `http://127.0.0.1:5000/patient_info_by_condition`,
-    data: postData, // 携带的数据，POST方法用
-    success: function (returnData) {
-      // 请求成功时的回调函数
-      renderTable(returnData);
-      if (sign) {
-        layer.msg(msg);
-        layer.close(layer_idx);
-      }
-    },
-  });
-}
-function getPage(total, laypage) {
-  // 设置分页
-  laypage.render({
-    elem: "demo", // 根据ID定位
-    count: total, // 获取的数据总数
-    limit: queryObj.limit, // 每页默认显示的数量，同上
-    layout: ["prev", "page", "next", "limit"],
-    curr: queryObj.page, // 页码
-    jump: function (obj, first) {
-      if (!first) {
-        queryObj.page = obj.curr; // 设置当前页位置
-        queryObj.limit = obj.limit; // 设置每页的数据条数
-        getTable(queryObj);
-      }
-    },
-  });
-}
 layui.use(["form", "layer"], function () {
   const form = layui.form,
     layer = layui.layer;
@@ -172,7 +139,10 @@ layui.use(["form", "layer"], function () {
   });
   form.on("submit(*)", (data) => {
     const { field } = data;
+    console.log(data);
     const QUERY_DATA = {
+      page_el: "page_kidney",
+      table: "kidney",
       id: field.id.trim(),
       sex: field.sex.trim(),
       symptoms: field.symptoms.trim(),
@@ -185,14 +155,16 @@ layui.use(["form", "layer"], function () {
       page: 1,
       limit: 10,
     };
-    queryObj = QUERY_DATA;
-    getTable(queryObj, true, layer, "查询成功!");
+    query_kidney_Obj = QUERY_DATA;
+    getTable(query_kidney_Obj, url, true, layer, "查询成功!");
     return false;
   });
 });
 layui.use(["element"], function () {});
 let layer_idx = 0; // layer的index参数，用于控制弹出层（查询用）的关闭
-let queryObj = {
+let query_kidney_Obj = {
+  page_el: "page_kidney",
+  table: "kidney",
   id: "",
   sex: "",
   symptoms: "",
@@ -206,7 +178,7 @@ let id = "";
 
 const channelDom = $(".show_div")[0];
 const channelSelect = $(".channel");
-const orignQuery = { ...queryObj }; // 原始的查询字符串，用于重置操作
+const orignQuery = { ...query_kidney_Obj }; // 原始的查询字符串，用于重置操作
 const channelChart = echarts.init(channelDom);
 const tabelCols = [
   [
@@ -292,4 +264,4 @@ const option = {
     },
   },
 };
-getTable(queryObj); // 获得表格数据，第一次调用默认获得所有病人的信息（第一页）
+getTable(query_kidney_Obj, url); // 获得表格数据，第一次调用默认获得所有病人的信息（第一页）

@@ -30,11 +30,11 @@
         margin-top: -5000px;
       }
       .max {
-        width: 25%;
+        width: 70px;
         display: inline-block;
       }
       .min {
-        width: 25%;
+        width: 70px;
         display: inline-block;
       }
       .max::placeholder {
@@ -62,8 +62,8 @@
     </style>
   </head>
   <body>
-    <div class="layui-tab  layui-tab-brief">
-      <ul class="layui-tab-title" lay-filter="test1">
+    <div class="layui-tab layui-tab-brief" lay-filter="patient">
+      <ul class="layui-tab-title">
         <li class="layui-this">肾病人信息</li>
         <li>肝病人信息</li>
         <li>肺病人信息</li>
@@ -71,18 +71,29 @@
       <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
           <div class="info">
-            <table class="info_table" lay-filter="test"></table>
-            <div id="demo"></div>
+            <table class="kidney_info_table" lay-filter="test"></table>
+            <div id="page_kidney"></div>
           </div>
         </div>
-        <div class="layui-tab-item">内容2</div>
-        <div class="layui-tab-item">内容3</div>
+        <div class="layui-tab-item">
+          <div class="info">
+            <table class="liver_info_table" lay-filter="liver"></table>
+            <div id="page_liver"></div>
+          </div>
+        </div>
+        <div class="layui-tab-item">
+          <div class="info">
+            <table class="lung_info_table" lay-filter="lung"></table>
+            <div id="page_lung"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="colBar">
       <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
     </div>
-    <div id="headBar">
+    <!-- 肾相关 -->
+    <div id="headBar_kidney">
       <button
         class="layui-btn layui-btn-normal header-button"
         lay-event="query"
@@ -96,9 +107,8 @@
         所有数据
       </button>
     </div>
-    <div class="detail_query" style="padding: 20px">
+    <div class="kidney_detail_query" style="padding: 20px">
       <form class="layui-form" lay-filter="query_form">
-        <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
         <div class="layui-form-item">
           <label class="layui-form-label">患者id</label>
           <div class="layui-input-block">
@@ -220,9 +230,259 @@
       </form>
       <div class="show_div"></div>
     </div>
+
+    <!-- 肺相关 -->
+    <div id="headBar_lung">
+      <button
+        class="layui-btn layui-btn-normal header-button"
+        lay-event="query"
+      >
+        查询
+      </button>
+      <button
+        class="layui-btn layui-btn-normal header-button"
+        lay-event="all_data"
+      >
+        所有数据
+      </button>
+    </div>
+    <div class="lung_detail_query" style="padding: 20px">
+      <form class="layui-form" lay-filter="query_form">
+        <div class="layui-form-item" style="width: 300px">
+          <label class="layui-form-label">患者id</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="id"
+              placeholder="请输入"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">年龄</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="age_min"
+              placeholder="最小值"
+              autocomplete="off"
+              class="layui-input min"
+              lay-verify="isNumber"
+            />
+            <span>-</span>
+            <input
+              type="text"
+              name="age_max"
+              placeholder="最大值"
+              autocomplete="off"
+              class="layui-input max"
+              lay-verify="isNumber"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+              <input type="radio" name="sex" value="1" title="男" />
+              <input type="radio" name="sex" value="2" title="女" />
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">肾气虚</label>
+            <div class="layui-input-block">
+              <input type="radio" name="sheng_qi_xu" value="1" title="是" />
+              <input type="radio" name="sheng_qi_xu" value="0" title="否" />
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">肺气虚</label>
+            <div class="layui-input-block">
+              <input type="radio" name="fei_qi_xu" value="1" title="是" />
+              <input type="radio" name="fei_qi_xu" value="0" title="否" />
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">脾气虚</label>
+            <div class="layui-input-block">
+              <input type="radio" name="pi_qi_xu" value="1" title="是" />
+              <input type="radio" name="pi_qi_xu" value="0" title="否" />
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">西医诊断</label>
+            <div class="layui-input-block">
+              <input
+                type="text"
+                name="wm_diagnosis"
+                placeholder="请输入"
+                autocomplete="off"
+                class="layui-input"
+              />
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">FEV1</label>
+            <div class="layui-input-block">
+              <input
+                type="text"
+                name="FEV1_min"
+                placeholder="最小值"
+                autocomplete="off"
+                class="layui-input min"
+                lay-verify="isNumber"
+              />
+              <span>-</span>
+              <input
+                type="text"
+                name="FEV1_max"
+                placeholder="最大值"
+                autocomplete="off"
+                class="layui-input max"
+                lay-verify="isNumber"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">FVC</label>
+            <div class="layui-input-block">
+              <input
+                type="text"
+                name="FVC_min"
+                placeholder="最小值"
+                autocomplete="off"
+                class="layui-input min"
+                lay-verify="isNumber"
+              />
+              <span>-</span>
+              <input
+                type="text"
+                name="FVC_max"
+                placeholder="最大值"
+                autocomplete="off"
+                class="layui-input max"
+                lay-verify="isNumber"
+              />
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">FEV1%</label>
+            <div class="layui-input-block">
+              <input
+                type="text"
+                name="FEV1%_min"
+                placeholder="最小值"
+                autocomplete="off"
+                class="layui-input min"
+                lay-verify="isNumber"
+              />
+              <span>-</span>
+              <input
+                type="text"
+                name="FEV1%_max"
+                placeholder="最大值"
+                autocomplete="off"
+                class="layui-input max"
+                lay-verify="isNumber"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">FEV1/FVC</label>
+            <div class="layui-input-block">
+              <input
+                type="text"
+                name="FEV1/FVC_min"
+                placeholder="最小值"
+                autocomplete="off"
+                class="layui-input min"
+                lay-verify="isNumber"
+              />
+              <span>-</span>
+              <input
+                type="text"
+                name="FEV1/FVC_max"
+                placeholder="最大值"
+                autocomplete="off"
+                class="layui-input max"
+                lay-verify="isNumber"
+              />
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">PEF</label>
+            <div class="layui-input-block">
+              <input
+                type="text"
+                name="PEF_min"
+                placeholder="最小值"
+                autocomplete="off"
+                class="layui-input min"
+                lay-verify="isNumber"
+              />
+              <span>-</span>
+              <input
+                type="text"
+                name="PEF_max"
+                placeholder="最大值"
+                autocomplete="off"
+                class="layui-input max"
+                lay-verify="isNumber"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item" style="width: 300px">
+          <label class="layui-form-label">舌象</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="tongue"
+              placeholder="请输入"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item" style="width: 300px">
+          <label class="layui-form-label">脉象</label>
+          <div class="layui-input-block">
+            <input
+              type="text"
+              name="pulse"
+              placeholder="请输入"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn submit_query" lay-submit lay-filter="lung">
+              立即提交
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">
+              重置
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
     <script type="text/javascript" src="../static/js/echarts.min.js"></script>
     <script type="text/javascript" src="../static/layui/layui.js"></script>
     <script src="../static/js/jQuery.js"></script>
-    <script src="../static/js/patient_info/kidney.js"></script>
+    <script src="../static/js/patient_info/common.js"></script>
+    <script src="../static/js/patient_info/lung/lung.js"></script>
+    <script src="../static/js/patient_info/kidney/kidney.js"></script>
   </body>
 </html>
