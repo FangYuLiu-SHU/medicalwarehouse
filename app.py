@@ -37,13 +37,13 @@ app.secret_key = '000000'
 def hello_world():
     return render_template('index.html')
 
-# 数据统计
+# 肾科病人信息统计
 @app.route('/datastatistic', methods=["GET", "POST"])
-def data_statistic():
+def kidney_statistic():
     if request.method == "GET":
         # 从数据库获取病人信息表
         try:
-            cursor.execute("SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_patient_info;")
+            cursor.execute("SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_kidney_info;")
         except:
             print('从服务器获取数据失败')
             return 0
@@ -65,60 +65,9 @@ def data_statistic():
         min_eGFR = request.form.get('min_eGFR')
         max_eGFR = request.form.get('max_eGFR')
         symptoms_type = request.form.get('symptoms_type')
-        # print(gender, min_age, max_age, min_sc_value, max_sc_value, min_eGFR, max_eGFR)
+        # print(gender, symptoms_type, min_age, max_age, min_sc_value, max_sc_value, min_eGFR, max_eGFR)
 
-        sql = "SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_patient_info WHERE id IS NOT NULL"
-        t = [None, '', 'all']
-        if gender in ['男', '女']:
-            sql = sql + " AND sex=" + ('1' if gender=='男' else '2')
-        if min_age not in t:
-            sql = sql + " AND age>=" + str(min_age)
-        if max_age not in t:
-            sql = sql + " AND age<=" + str(max_age)
-        if min_sc_value not in t:
-            sql = sql + " AND serum_creatinine>=" + str(min_sc_value)
-        if max_sc_value not in t:
-            sql = sql + " AND serum_creatinine<=" + str(max_sc_value)
-        if min_eGFR not in t:
-            sql = sql + " AND eGFR>=" + str(min_eGFR)
-        if min_sc_value not in t:
-            sql = sql + " AND eGFR>=" + str(max_eGFR)
-        if symptoms_type in ['肾阳虚', '肾阴虚']:
-            sql = sql + " AND symptoms_type=" + ('1' if symptoms_type=='肾阳虚' else '2')
-        # print(sql)
-
-        # 从数据库获取病人信息表
-        try:
-            cursor.execute(sql)
-        except:
-            print('从服务器获取数据失败')
-            return 0
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
-        pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-        print(pd_patient_info)
-
-        data = tool.get_statistic_info(pd_patient_info)
-
-        data_json = json.dumps(data)
-        return data_json
-        # return render_template('datastatistic.html', data_json=data_json)
-
-
-@app.route('/statistic_detail',methods=['GET', 'POST'])
-def statistic_detail():
-    if request.method == "POST":
-        gender = request.form.get('gender')
-        min_age = request.form.get('min_age')
-        max_age = request.form.get('max_age')
-        min_sc_value = request.form.get('min_sc_value')
-        max_sc_value = request.form.get('max_sc_value')
-        min_eGFR = request.form.get('min_eGFR')
-        max_eGFR = request.form.get('max_eGFR')
-        symptoms_type = request.form.get('symptoms_type')
-        print(gender, symptoms_type, min_age, max_age, min_sc_value, max_sc_value, min_eGFR, max_eGFR)
-
-        sql = "SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_patient_info WHERE id IS NOT NULL"
+        sql = "SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_kidney_info WHERE id IS NOT NULL"
         t = [None, '', 'all']
         if gender not in t:
             sql = sql + " AND sex=" + str(gender)
@@ -143,19 +92,146 @@ def statistic_detail():
             cursor.execute(sql)
         except:
             print('从服务器获取数据失败')
-            return 0
+            return '从服务器获取数据失败'
         query_result = cursor.fetchall()
         col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
         pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-        print(pd_patient_info)
+        # print(pd_patient_info)
 
         data = tool.get_statistic_info(pd_patient_info)
 
         data_json = json.dumps(data)
         return data_json
 
-    elif request.method == "GET":
-        return render_template('statistic_detail.html',data_json=0)
+
+@app.route('/statistic_detail',methods=['GET', 'POST'])
+def statistic_detail():
+    return render_template('statistic_detail.html')
+
+
+# 肝科病人信息统计
+@app.route('/liver_statistic', methods=["GET", "POST"])
+def liver_statistic():
+    if request.method == "GET":
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute("SELECT sex, age, ALT, symptoms_type FROM dwd_liver_info;")
+        except:
+            print('从服务器获取数据失败')
+            return '从服务器获取数据失败'
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        pd_liver_info = pd.DataFrame(list(query_result), columns=col_names)
+
+        data = tool.get_liver_statistic_info(pd_liver_info)
+
+        data_json = json.dumps(data)
+        return data_json
+    elif request.method == "POST":
+        gender = request.form.get('gender')
+        min_age = request.form.get('min_age')
+        max_age = request.form.get('max_age')
+        min_ALT = request.form.get('min_ALT')
+        max_ALT = request.form.get('max_ALT')
+        symptoms_type = request.form.get('symptoms_type')
+        print(gender, symptoms_type, min_age, max_age, min_ALT, max_ALT)
+
+        sql = "SELECT sex, age, ALT, symptoms_type FROM dwd_liver_info WHERE id IS NOT NULL"
+        t = [None, '', 'all']
+        gender_dict = {'1':'2', '2':'1'}
+        if gender not in t:
+            sql = sql + " AND sex=" + gender_dict[str(gender)]
+        if min_age not in t:
+            sql = sql + " AND age>=" + str(min_age)
+        if max_age not in t:
+            sql = sql + " AND age<=" + str(max_age)
+        if min_ALT not in t:
+            sql = sql + " AND ALT>=" + str(min_ALT)
+        if max_ALT not in t:
+            sql = sql + " AND ALT<=" + str(max_ALT)
+        if symptoms_type not in t:
+            sql = sql + " AND symptoms_type=" + str(symptoms_type)
+        # print(sql)
+
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute(sql)
+        except:
+            print('从服务器获取数据失败')
+            return '从服务器获取数据失败'
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        pd_liver_info = pd.DataFrame(list(query_result), columns=col_names)
+        # print(pd_liver_info)
+
+        data = tool.get_liver_statistic_info(pd_liver_info)
+        # print(data)
+
+        data_json = json.dumps(data)
+        return data_json
+
+
+# 肺科病人信息统计
+@app.route('/lung_statistic', methods=["GET", "POST"])
+def lung_statistic():
+    if request.method == "GET":
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute("SELECT sex, age, Lung_qi_deficiency, spleen_qi_deficiency, kidney_qi_deficiency FROM dwd_lung_info;")
+        except:
+            print('从服务器获取数据失败')
+            return '从服务器获取数据失败'
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        pd_lung_info = pd.DataFrame(list(query_result), columns=col_names)
+        # print(pd_lung_info)
+
+        data = tool.get_lung_statistic_info(pd_lung_info)
+        # print(data)
+
+        data_json = json.dumps(data)
+        return data_json
+    elif request.method == "POST":
+        gender = request.form.get('gender')
+        min_age = request.form.get('min_age')
+        max_age = request.form.get('max_age')
+        Lung_qi_deficiency = request.form.get('Lung_qi_deficiency')
+        spleen_qi_deficiency = request.form.get('spleen_qi_deficiency')
+        kidney_qi_deficiency = request.form.get('kidney_qi_deficiency')
+        # print(gender, min_age, max_age, Lung_qi_deficiency, spleen_qi_deficiency, kidney_qi_deficiency)
+
+        sql = "SELECT sex, age, Lung_qi_deficiency, spleen_qi_deficiency, kidney_qi_deficiency FROM dwd_lung_info WHERE id IS NOT NULL"
+        t = [None, '', 'all']
+        if gender not in t:
+            sql = sql + " AND sex=" + str(gender)
+        if min_age not in t:
+            sql = sql + " AND age>=" + str(min_age)
+        if max_age not in t:
+            sql = sql + " AND age<=" + str(max_age)
+        if Lung_qi_deficiency not in t:
+            sql = sql + " AND Lung_qi_deficiency=" + str(Lung_qi_deficiency)
+        if spleen_qi_deficiency not in t:
+            sql = sql + " AND spleen_qi_deficiency=" + str(spleen_qi_deficiency)
+        if kidney_qi_deficiency not in t:
+            sql = sql + " AND kidney_qi_deficiency=" + str(kidney_qi_deficiency)
+        # print(sql)
+
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute(sql)
+        except:
+            print('从服务器获取数据失败')
+            return '从服务器获取数据失败'
+        query_result = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        pd_lung_info = pd.DataFrame(list(query_result), columns=col_names)
+        # print(pd_lung_info)
+
+        data = tool.get_lung_statistic_info(pd_lung_info)
+        # print(data)
+
+        data_json = json.dumps(data)
+        return data_json
 
 # 病人信息展示页面
 @app.route('/patient_info_show')
