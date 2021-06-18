@@ -304,7 +304,7 @@ def channel_data():
     
     
 #查询肺病人的信息
-@app.route('/lung_patient_info',methods=['GET','POST'])
+@app.route('/lung_patient_info',methods=['POST'])
 def lung_patient_info():
     page = request.form.get('page')  # 页数
     limit = request.form.get('limit')  # 每页显示的数量
@@ -313,7 +313,6 @@ def lung_patient_info():
     if limit is None or limit=="":
         limit=10
     id = request.form.get('id')  # 编号
-    name = request.form.get('name')  # 姓名
     sex = request.form.get('sex')  # 性别
     age = json.loads(request.form.get('age'))  # 年龄
     wm_diagnosis = request.form.get('wm_diagnosis')  # 西医诊断
@@ -331,8 +330,6 @@ def lung_patient_info():
     print(sql)
     if id != "":
         sql += "and id='" + str(id) + "'"
-    if name != "":
-        sql += "and name='" + str(name) + "'"
     if sex != "":
         sql += "and sex='" + str(sex) + "'"
     if age != "" and age[0] != "":

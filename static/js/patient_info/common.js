@@ -39,7 +39,7 @@ function getPage(total, laypage, dir, queryObj) {
 }
 
 let url = "/patient_info_by_condition";
-let urlArr = ["/patient_info_by_condition", "/patient_info_by_condition", "/patient_info_by_condition"]
+let urlArr = ["/patient_info_by_condition", "/patient_info_by_condition", "http://127.0.0.1:5000/lung_patient_info"]
 
 layui.use(["element"], function() {
   const element = layui.element;
