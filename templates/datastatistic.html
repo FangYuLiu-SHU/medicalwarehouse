@@ -21,30 +21,49 @@
       .layui-select{
         height: 35px;
       }
+      .layui-tab-item{
+          height: 600px;
+      }
     </style>
   </head>
   <body>
       <div class="layui-body" style="left: 0">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-          <legend>医疗数据统计分析</legend>
-               <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_detail" style="color:red;font-size:10px;">详细请点击</a></div>
-        </fieldset>
-        <div id="container1" style="width:100%;height: 85%">
-          <div id="symptom_ana" style="width: 34%; height: 100%;float: left">症状统计</div>
-          <div id="sex_ana" style="width: 33%; height: 50%;float: left">性别分布</div>
-            <div id="age_ana" style="width: 33%; height: 50%;float: left">年龄分布</div>
-            <div id="eGFR_ana" style="width: 33%; height: 50%;float: left">eGFR值分布</div>
-          <div id="sc_ana" style="width: 33%; height: 50%;float: left">sc_value分布</div>
-        </div>
+      <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+          <ul class="layui-tab-title">
+            <li class="layui-this">肾科</li>
+            <li>肝科</li>
+            <li>肺科</li>
+            <li>闻诊</li>
+          </ul>
+          <div class="layui-tab-content"  >
+            <div class="layui-tab-item layui-show">
+                <div id="container1" style="width:100%;height:100%">
+                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_detail" style="color:red;font-size:10px;">详细请点击</a></div>
+                  <div id="symptom_ana" style="width: 34%; height: 100%;float: left">症状统计</div>
+                  <div id="sex_ana" style="width: 33%; height: 50%;float: left">性别分布</div>
+                    <div id="age_ana" style="width: 33%; height: 50%;float: left">年龄分布</div>
+                    <div id="eGFR_ana" style="width: 33%; height: 50%;float: left">eGFR值分布</div>
+                  <div id="sc_ana" style="width: 33%; height: 50%;float: left">sc_value分布</div>
+                </div>
+            </div>
+            <div class="layui-tab-item">内容2</div>
+            <div class="layui-tab-item">内容3</div>
+            <div class="layui-tab-item">内容4</div>
+           </div>
+           </div>
 
     </div>
       <script src="../static/layui/layui.js"></script>
       <script type="text/javascript" src="../static/js/echarts.js"></script>
       <script type="text/javascript" src="../static/js/function.js"></script>
+
       <script type="text/javascript">
-          var returndata={{data_json|tojson}};
-        returndata=JSON.parse(returndata);
-       var age_bins=[]
+      layui.use('element', function(){
+           var $ = layui.jquery,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+      });
+      var returndata={{data_json|tojson}};
+      returndata=JSON.parse(returndata);
+      var age_bins=[]
         for(var i=0;i<=returndata.age_distribute.bins.length;i++){
             if(i===returndata.age_distribute.bins.length){
                 age_bins.push(returndata.age_distribute.bins[i-1]+"~")
@@ -53,26 +72,7 @@
             }
 
         }
-       //  var sc_bins=[]
-       //  for(var j=0;j<returndata.sc_distribute.bins.length;j++){
-       //      if(j===returndata.sc_distribute.bins.length-1){
-       //          sc_bins.push(returndata.sc_distribute.bins[j]+"~")
-       //      }else {
-       //          sc_bins.push((returndata.sc_distribute.bins[j]) + "~" + returndata.sc_distribute.bins[j+1])
-       //      }
-       //
-       //  }
-       //  var eGFR_bins=[]
-       //  for(var k=0;k<returndata.eGFR_distribute.bins.length;k++){
-       //      if(k===returndata.eGFR_distribute.bins.length-1){
-       //          eGFR_bins.push(returndata.eGFR_distribute.bins[k]+"~")
-       //      }else {
-       //          eGFR_bins.push((returndata.eGFR_distribute.bins[k]) + "~" + (returndata.eGFR_distribute.bins[k+1]))
-       //      }
-       //
-       //  }
-        // document.write(sc_bins)
-          var eGFR_data=[],sc_data=[],age_data=[];
+        var eGFR_data=[],sc_data=[],age_data=[];
         for(var i=0;i<returndata.eGFR_distribute.num.length;i++){
             eGFR_data.push([returndata.eGFR_distribute.bins[i]+10,returndata.eGFR_distribute.num[i]])
         }
@@ -80,11 +80,9 @@
             sc_data.push([returndata.sc_distribute.bins[j]+50,returndata.sc_distribute.num[j]])
         }
 
-          // console.log(returndata.sc_distribute)
-          // console.log(returndata.sc_distribute)
         var yMax = 150;
         var dataShadow = [];
-          var eGFR_dom = document.getElementById('eGFR_ana');
+        var eGFR_dom = document.getElementById('eGFR_ana');
         var eGFR_chart = echarts.init(eGFR_dom);
         var eGFR_option= {
                 title: {
@@ -377,7 +375,6 @@
 
                 };
         age_chart.setOption(age_option);
-
         var sex_dom = document.getElementById('sex_ana');
         var sex_chart = echarts.init(sex_dom);
         var sex_option={
