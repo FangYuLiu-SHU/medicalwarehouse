@@ -40,20 +40,6 @@
           <legend>输入相关统计指标</legend>
         </fieldset>
             <div id="container2"  style="width:35% ;float: left">
-<!--                -->
-<!--            <div class="layui-form-item" >-->
-<!--            <label class="layui-form-label">科室选择</label>-->
-<!--                <div class="layui-input-block" >-->
-<!--                  <select name="symptoms_type" lay-filter="info_display_sym"  class="layui-select" >-->
-<!--                      <option value="" style="font-size: 14px;">请选择</option>-->
-<!--                      <option value="1" style="font-size: 14px;">肾</option>-->
-<!--                      <option value="2" style="font-size: 14px;">肺</option>-->
-<!--                      <option value="3" style="font-size: 14px;">脾</option>-->
-<!--                      <option value="4" style="font-size: 14px;">闻</option>-->
-<!--                  </select>-->
-<!--                <button class="layui-btn submit_query" lay-submit lay-filter="*0">提交</button>-->
-<!--                </div>-->
-<!--            </div>-->
                 <form class="layui-form" action="" method="post" lay-filter="info_display">
             <div class="layui-form-item" >
             <label class="layui-form-label">症状选择</label>
@@ -419,58 +405,11 @@
            form.verify({
               Mverify: (value) => {
                 if (isNaN(value)||value<0||value>150) {
-                 return  "输入有误，请重新输入！";
+                    layer.alert("非法数据,请重新输入!", {icon: 2, skin: 'layer-ext-demo',})
+                    return  false;
                 }
               },
             });
-
-            // layui.$('#LAY-button-shen').on('click', function() {
-            //     var data = form.val('info_display');
-            //     var objectData = JSON.parse(JSON.stringify(data));//转成JSON对象
-            //     var min_age = objectData.min_age, max_age = objectData.max_age;
-            //     if (!min_age) {
-            //         min_age = 0;
-            //     }
-            //     if (!max_age) {
-            //         max_age = 150;
-            //     }
-            //     // console.log(objectData.symptoms_type+" "+objectData.gender)
-            //     var symptom, gender;
-            //     if (objectData.symptoms_type === '1') {
-            //         symptom = '肾阳虚'
-            //     } else if (objectData.symptoms_type === '2') {
-            //         symptom = '肾阴虚'
-            //     } else {
-            //         symptom = '所有'
-            //     }
-            //     if (objectData.gender === '1') {
-            //         gender = '男'
-            //     } else if (objectData.gender === '2') {
-            //         gender = '女'
-            //     } else {
-            //         gender = '所有'
-            //     }
-            //     if (min_age >= max_age) {
-            //         layer.alert("输入数据非法!", {icon: 2, skin: 'layer-ext-demo',})
-            //         return false
-            //     }
-            //     layer.alert("症状:" + symptom + "\n性别:" + gender + "\n年龄范围:" + min_age + "~" + max_age, {
-            //         icon: 1,
-            //         skin: 'layer-ext-demo',
-            //     })
-            //
-            //     $.ajax({
-            //         url:"http://127.0.0.1:5000/statistic_detail",
-            //         data:JSON.stringify(objectData),
-            //         dataType:"json",
-            //         type:'POST',
-            //         success:function (data){
-            //             console.log(111)
-            //             return data
-            //         }
-            //
-            //     })
-            // });
 
 
         // //监听提交
@@ -478,6 +417,11 @@
             var data = form.val('info_display');
             var objectData = JSON.parse(JSON.stringify(data));//转成JSON对象
             var min_age=Number(objectData.min_age),max_age=Number(objectData.max_age);
+            document.getElementById("content").innerText='';
+            eGFR_chart.clear();
+            sc_chart.clear();
+            sex_chart.clear();
+            symptom_chart.clear();
             if(!min_age){
                 min_age=0;
             }
@@ -500,12 +444,9 @@
                 gender='不区分性别'
             }
             if(min_age>=max_age) {
-                layer.alert("输入数据非法!", {icon: 2, skin: 'layer-ext-demo',})
+                layer.alert("非法数据，请重新输入!", {icon: 2, skin: 'layer-ext-demo',})
                 return false
             }
-            // alert("症状:" + symptom + "\n性别:" + gender + "\n年龄范围:" + min_age + "~" + max_age,{icon:1,skin: 'layer-ext-demo',time:200000})
-            var content="输入选项如下：\n\n患者症状： " + symptom + "\n\n患者性别： " + gender + "\n\n患者年龄范围： " + min_age + "~" + max_age+"岁"
-            document.getElementById("content").innerText=content;
             $.ajax({
                     url:"http://127.0.0.1:5000/statistic_detail",
                     data:data,
@@ -515,7 +456,8 @@
                         console.log("请求数据成功")
                         var returndata = JSON.parse(JSON.stringify(objdata));
                         console.log(returndata)
-
+                        var content="输入选项如下：\n\n患者症状： " + symptom + "\n\n患者性别： " + gender + "\n\n患者年龄范围： " + min_age + "~" + max_age+"岁"
+                        document.getElementById("content").innerText=content;
                         fig_dis(returndata,eGFR_chart,sc_chart,sex_chart,symptom_chart)
                         },
                      error: function() {
