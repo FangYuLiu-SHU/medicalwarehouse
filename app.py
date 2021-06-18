@@ -368,7 +368,7 @@ def lung_patient_info():
         sql += "and tongue like '" + "%" + str(tongue) + "%" + "'"
     if pulse != "":
         sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
-    offset = (page - 1) * limit  # 起始行
+    offset = (int(page) - 1) * int(limit)  # 起始行
     sql += "limit " + str(offset) + ',' + str(limit)
     print(sql)
     cursor.execute(sql)  # 执行sql语句
@@ -389,6 +389,66 @@ def lung_patient_info():
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
+    
+    
+@app.route('/liver_patient_info',methods=['POST'])
+def liver_patient_info():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None or page == "":
+        page = 1
+    if limit is None or limit == "":
+        limit = 10
+    id = request.form.get('id')  # 编号
+    sex = request.form.get('sex')  # 性别
+    age = json.loads(request.form.get('age'))  # 年龄
+    symptoms_type = request.form.get('symptoms_type')#症型
+    ALT = json.loads(request.form.get('ALT'))
+    tongue = request.form.get('tongue')  # 舌象
+    pulse = request.form.get('pulse')  # 脉象
+    sql = "select * from dwd_liver_info where 1=1 "
+    if id != "":
+        sql += "and id='" + str(id) + "'"
+    if sex != "":
+        sql += "and sex='" + str(sex) + "'"
+    if age != "" and age[0] != "":
+        sql += "and age>'" + str(age[0]) + "'"
+    if age != "" and age[1] != "":
+        sql += "and age<'" + str(age[1]) + "'"
+    if ALT != "" and ALT[0] != "":
+        sql += "and ALT>'" + str(ALT[0]) + "'"
+    if ALT != "" and ALT[1] != "":
+        sql += "and ALT<'" + str(ALT[1]) + "'"
+    if symptoms_type != "":
+        sql += "and symptoms_type='" + str(symptoms_type) + "'"
+    if tongue != "":
+        sql += "and tongue like '" + "%" + str(tongue) + "%" + "'"
+    if pulse != "":
+        sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    sql += "limit " + str(offset) + ',' + str(limit)
+    print(sql)
+    cursor.execute(sql)  # 执行sql语句
+    data = cursor.fetchall()  # 获取数据
+    json_data = {}
+    result_data = []
+    sql_COLUMN_NAME = "select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name = 'dwd_liver_info' and " \
+                      "table_schema = 'medical_dw' ORDER BY ordinal_position"
+    cursor.execute(sql_COLUMN_NAME)  # 执行sql语句
+    column_names = cursor.fetchall()  # 获取数据
+    for result in data:
+        one_person = {}
+        for i in range(len(column_names)):
+            one_person[column_names[i][0]] = str(result[i])
+        result_data.append(one_person)
+    sql_total = "select count(*) from dwd_liver_info"
+    cursor.execute(sql_total)
+    total_count = cursor.fetchall()  # 取数据
+    json_data['total'] = total_count[0][0]
+    json_data['data'] = result_data
+    json_data = json.dumps(json_data, ensure_ascii=False)
+    return json_data
+
 
 
 
