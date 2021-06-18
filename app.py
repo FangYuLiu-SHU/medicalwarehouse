@@ -278,10 +278,9 @@ def disease_prediction():
 def find_channelNumber():
     id = request.form.get('id')  # 用户id
     type=request.form.get('type')
-    print(id, type)
     if (type=='kidney' or type=='liver'):
         sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_"+type+"_pulse__" + str(
-            id).casefold() + "'"
+        id) + "'"
     elif (type=='lung'):
         sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_lung_pulse_" + str(
             id).casefold() + "'"
