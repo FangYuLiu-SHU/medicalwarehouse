@@ -378,14 +378,18 @@ def lung_patient_info():
 
     sql_COLUMN_NAME = "select COLUMN_NAME from INFORMATION_SCHEMA.Columns where table_name = 'dwd_lung_info' and " \
                       "table_schema = 'medical_dw' ORDER BY ordinal_position"
-    cursor.execute(sql_COLUMN_NAME)  
-    column_names = cursor.fetchall()  # 获取列名字数据
+    cursor.execute(sql_COLUMN_NAME)  # 执行sql语句
+    column_names = cursor.fetchall()  # 获取数据
 
     for result in data:
         one_person = {}
         for i in range(len(column_names)):
             one_person[column_names[i][0]] = str(result[i])
         result_data.append(one_person)
+    sql_total = "select count(*) from dwd_lung_info"
+    cursor.execute(sql_total)
+    total_count = cursor.fetchall()  # 取数据
+    json_data['total'] = total_count[0][0]
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
