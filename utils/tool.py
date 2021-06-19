@@ -96,10 +96,10 @@ def get_liver_statistic_info(pd_patient_info):
         'num_patient': num_patient,  # 病人个数
         'num_male': num_male,  # 男性个数
         'num_female': num_female,  # 女性个数
-        'num_pos': num_dh,  # 肝胆湿热证个数
-        'num_neg': num_ds,  # 肝郁脾虚证个数
+        'num_dh': num_dh,  # 肝胆湿热证个数
+        'num_ds': num_ds,  # 肝郁脾虚证个数
         'age_distribute': age_distribute,  # 年龄段分布
-        'ALT_distribute': ALT_distribute,  # 血肌酐值分布
+        'ALT_distribute': ALT_distribute,  # ALT值分布
     }
     return data
 

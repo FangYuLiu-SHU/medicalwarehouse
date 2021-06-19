@@ -4,8 +4,10 @@ import pymysql
 import pandas as pd
 import json
 from utils import tool
+from utils import load_data
 import os
 from algorithm import predict
+from sqlalchemy import create_engine
 
 # 连接数据库
 try:
@@ -17,6 +19,7 @@ try:
              db ='medical_dw',
              charset='utf8'
              )
+    engine = create_engine("mysql+pymysql://root:000000@58.199.160.140:3306/medical_dw?charset=utf8")
 except:
     print('数据库连接失败！')
     exit(0)
@@ -36,6 +39,123 @@ app.secret_key = '000000'
 @app.route('/')
 def hello_world():
     return render_template('index.html')
+
+# 数据导入
+@app.route('/dataimport', methods=["GET", "POST"])
+def dataimport():
+    data = request.get_data()
+    data = json.loads(data)
+    print(data)
+    print(data['data_source'])
+    print(data['patient_info_file'])
+    data_source = request.form.get('data_source')   # 数据来源
+    dept = request.form.get('dept')     # 科室
+    print(data_source, dept)
+
+    if dept == 'kidney':
+        patient_info_table_name = 'ods_kidney_info'
+        pulse_table_name = 'ods_kidney_pulse_'
+        col_names = ['id', 'sex', 'age', 'staging', 'serum_creatinine', 'eGFR', 'symptoms_type', 'tongue', 'pulse']
+    elif dept == 'liver':
+        patient_info_table_name = 'ods_liver_info'
+        pulse_table_name = 'ods_liver_pulse_'
+        col_names = ['id', 'sex', 'age', 'ALT', 'symptoms_type', 'tongue', 'pulse']
+    elif dept == 'lung':
+        patient_info_table_name = 'ods_lung_info'
+        pulse_table_name = 'ods_lung_pulse_'
+        col_names = ['id', 'sex', 'age', 'wm_diagnosis', 'lung_qi_deficiency', 'spleen_qi_deficiency', 'kidney_qi_deficiency',
+                      'FEV1', 'FVC', 'FEV1%', 'FEV1/FVC', 'PEF', 'tongueA', 'tongueB', 'tongueC', 'pulseA', 'pulseB', 'pulseC', ]
+
+    patient_info_path = './tmp/patientinfo/'
+    pulse_path = './tmp/pulse/'
+    if data_source == 'local':              # 从本地导入数据到数据仓库
+        patient_info_file = request.files.get('patient_info_file')  # 病例信息表
+        patient_info_file_encoding = request.files.get('patient_info_file_encoding') # 病例信息表编码格式
+        pulse_files = request.files.get('pulse_files')  # 脉搏信号表,多个，数组存放
+        pulse_file_encoding = request.files.get('pulse_file_encoding')  # 脉搏信号表编码格式
+        try:
+            # 清空临时文件目录下的所有内容
+            load_data.clear_folder('./tmp/')
+            # 保存到临时文件
+            if patient_info_file is not None:
+                patient_info_file.save(os.path.join(patient_info_path, 'patient_info.csv'))
+            if pulse_files is not None:
+                for pulse_file in pulse_files:
+                    pulse_file.save(os.path.join(pulse_path, pulse_file.filename))
+        except:
+            print('Data uploading failed！')
+            return 'Data uploading failed！'
+
+        # 将数据导入数据仓库
+        try:
+            if dept == 'kidney':
+                load_data.load_kidney_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding='utf-8')
+                load_data.load_kidney_pulse_to_mysql(pulse_path, encoding='utf-16 le')
+            elif dept == 'liver':
+                load_data.load_liver_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding='utf-8')
+                load_data.load_liver_pulse_to_mysql(pulse_path, encoding='utf-16 le')
+            elif dept == 'lung':
+                load_data.load_lung_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding='utf-8')
+                load_data.load_lung_pulse_to_mysql(pulse_path, encoding='utf-16 le')
+        except:
+            print('Data importing fialed！')
+            return 'Data importing fialed！'
+    elif data_source == 'MySQL':            # 从MySQL导入数据到数据仓库
+        host = request.form.get('host')
+        port = request.form.get('port')
+        user = request.form.get('user')
+        passwd = request.form.get('passwd')
+        db = request.form.get('db')
+        charset = request.form.get('charset')
+        patient_info_table = request.form.get('patient_info_table')
+        pulse_table_na_rule = request.form.get('pulse_table_na_rule')
+
+        # host = 'localhost'
+        # port = 3306
+        # user = 'root'
+        # passwd = '000000'
+        # db = 'srcdb'
+        # charset = 'utf8'
+        # patient_info_table = 'ods_kidney_info'
+        try:
+            # 连接数据库
+            src_db = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, charset=charset)
+            src_cursor = src_db.cursor()
+            # 读取病例信息表
+            sql = 'select * from ' + patient_info_table
+            src_cursor.execute(sql)
+            query_result = src_cursor.fetchall()
+            print(query_result)
+            pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
+            print(pd_patient_info)
+            if len(pd_patient_info)==0:
+                print('No data!')
+                return 'No data!'
+            # 导入病例信息表到数据仓库
+            print(patient_info_table_name)
+            pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
+
+            # 读取并导入脉象数据
+            for patient_id in pd_patient_info['id']:
+                sql = 'select * from ' + pulse_table_name + patient_id
+                try:
+                    src_cursor.execute(sql)
+                except:
+                    print(patient_id, '脉博数据表不存在！')
+                    continue
+                query_result = src_cursor.fetchall()
+                pd_pulse = pd.DataFrame(list(query_result))
+                print(pd_pulse)
+                pd_pulse.to_sql(name=pulse_table_name+patient_id.lower(), con=engine, if_exists='replace', index=False)
+        except:
+            print('Data import failed！')
+            return 'Data import failed！'
+
+    return 'Data importing succeed！'
+
+@app.route('/fileInput', methods=["GET", "POST"])
+def fileInpute():
+    return render_template('fileInput.html')
 
 # 肾科病人信息统计
 @app.route('/datastatistic', methods=["GET", "POST"])
