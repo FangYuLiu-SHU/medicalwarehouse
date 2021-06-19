@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="62db865c-0ead-4767-9b09-9c5c5901d1de" name="Default Changelist" comment="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/patient_info/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/common.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/patient_info/kidney/kidney.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/kidney/kidney.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/patient_info/lung/lung.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/lung/lung.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/patient_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/patient_info.html" afterDir="false" />
-    </list>
+    <list default="true" id="62db865c-0ead-4767-9b09-9c5c5901d1de" name="Default Changelist" comment="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,10 +107,13 @@
   <component name="XDebuggerManager">
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="data" language="Python" />
-        <watch expression="totalQueryData" language="Python" />
-        <watch expression="len(totalQueryData)" language="Python" />
-        <watch expression="patient_total_count[0][0]" language="Python" />
+        <watch expression="request.files" language="Python" />
+        <watch expression="request.files.getlist(&quot;pulseFile&quot;)" language="Python" />
+        <watch expression="request.files" language="Python" />
+        <watch expression="request.form" language="Python" />
+        <watch expression="request.form.get(&quot;dept&quot;)" language="Python" />
+        <watch expression="json.loads(pulseFile)" language="Python" />
+        <watch expression="__py_debug_temp_var_29026503" />
       </configuration>
     </watches-manager>
   </component>

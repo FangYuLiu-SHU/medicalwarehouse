@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>数据导入</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all" />
+    <script src="../static/js/jquery.js"></script>
+    <style type="text/css">
+      .file {
+        display: inline-block;
+        height: 38px;
+        line-height: 38px;
+        padding: 0 18px;
+        background-color: #1e9fff;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 14px;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        text-indent: 0;
+      }
+      .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+      }
+      .file:hover {
+        background: #78c3f3;
+        border-color: #78c3f3;
+        color: #004974;
+        text-decoration: none;
+      }
+      .hide {
+        display: none;
+      }
+      .constrain_width {
+        width: 45%;
+      }
+      .layui-form-pane .layui-form-label {
+        width: 130px;
+      }
+      .layui-form-pane .layui-input-block {
+        margin-left: 130px;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="padding: 15px">
+      <fieldset
+        class="layui-elem-field layui-field-title"
+        style="margin-top: 50px"
+      >
+        <legend>数据导入</legend>
+      </fieldset>
+      <form name="myForm" class="layui-form layui-form-pane">
+        <div class="layui-form-item constrain_width" pane="">
+          <label class="layui-form-label">数据来源</label>
+          <div class="layui-input-block">
+            <input
+              type="radio"
+              name="source"
+              value="local"
+              title="本地"
+              lay-filter="show"
+              checked
+            />
+            <input
+              type="radio"
+              name="source"
+              value="MySQL"
+              title="Mysql"
+              lay-filter="show"
+            />
+          </div>
+        </div>
+        <div class="layui-form-item constrain_width" pane="">
+          <label class="layui-form-label">科室</label>
+          <div class="layui-input-block">
+            <input
+              type="radio"
+              name="dept"
+              value="kidney"
+              title="肾科"
+              checked
+            />
+            <input type="radio" name="dept" value="liver" title="肝科" />
+            <input type="radio" name="dept" value="lung" title="肺科" />
+          </div>
+        </div>
+        <div class="mysql hide">
+          <div class="layui-inline">
+            <div class="layui-form-item">
+              <label class="layui-form-label">host</label>
+              <div class="layui-input-block">
+                <input
+                  type="text"
+                  name="host"
+                  value="localhost"
+                  placeholder="请输入"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <div class="layui-form-item">
+              <label class="layui-form-label">port</label>
+              <div class="layui-input-block">
+                <input
+                  type="text"
+                  name="port"
+                  value="3306"
+                  placeholder="请输入"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <div class="layui-form-item">
+              <label class="layui-form-label">user</label>
+              <div class="layui-input-block">
+                <input
+                  type="text"
+                  name="user"
+                  value="root"
+                  placeholder="请输入"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+          </div>
+          <div></div>
+          <!-- 换行用 -->
+          <div class="layui-inline">
+            <div class="layui-form-item">
+              <label class="layui-form-label">password</label>
+              <div class="layui-input-block">
+                <input
+                  type="password"
+                  name="password"
+                  value="000000"
+                  placeholder="请输入"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <div class="layui-form-item">
+              <label class="layui-form-label">db</label>
+              <div class="layui-input-block">
+                <input
+                  type="text"
+                  name="db"
+                  value="medicaldb"
+                  placeholder="请输入"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <div class="layui-form-item">
+              <label class="layui-form-label">charset</label>
+              <div class="layui-input-block">
+                <input
+                  type="text"
+                  name="charset"
+                  value="utf-8"
+                  placeholder="请输入"
+                  class="layui-input"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline local">
+            <label class="layui-form-label">病例信息表</label>
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                name="fileName"
+                id="selectFileName"
+                lay-verify="fileName"
+                lay-reqtext="请先选择脉搏数据文件"
+                autocomplete="off"
+                placeholder="未选择文件"
+                class="layui-input"
+                readonly="readonly"
+              />
+            </div>
+          </div>
+          <div class="layui-inline mysql hide">
+            <label class="layui-form-label">病例信息表名</label>
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                name="fileTableName"
+                placeholder="请输入"
+                class="layui-input"
+              />
+            </div>
+          </div>
+          <div class="layui-inline local">
+            <!--					<input type="file" name="pulseFile" class="file">-->
+            <a href="javascript:;" class="file"
+              >点击选择文件
+              <input
+                type="file"
+                name="infoFile"
+                id="selectFile"
+                class="file"
+                multiple
+              />
+            </a>
+          </div>
+          <div class="layui-inline local">
+            <label class="layui-form-label">编码</label>
+            <div class="layui-input-block">
+              <select name="encode_info" lay-verify="">
+                <option value="utf-8" selected>utf-8</option>
+                <option value="utf-16 le">utf-16 le</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-inline local">
+            <label class="layui-form-label">脉搏数据目录</label>
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                name="fileName"
+                id="selectDirName"
+                lay-verify="fileName"
+                lay-reqtext="请先选择脉搏数据文件"
+                autocomplete="off"
+                placeholder="未选择文件"
+                class="layui-input"
+                readonly="readonly"
+              />
+            </div>
+          </div>
+          <div class="layui-inline mysql hide">
+            <label class="layui-form-label">脉搏数据表名</label>
+            <div class="layui-input-inline">
+              <input
+                type="text"
+                name="fileStrName"
+                value="病例编号"
+                class="layui-input"
+              />
+            </div>
+          </div>
+          <div class="layui-inline local">
+            <!--					<input type="file" name="pulseFile" class="file">-->
+            <a href="javascript:;" class="file"
+              >点击选择目录
+              <input
+                type="file"
+                name="pulseDir"
+                id="selectDir"
+                class="file"
+                webkitdirectory
+              />
+            </a>
+          </div>
+
+          <div class="layui-inline local">
+            <label class="layui-form-label">编码</label>
+            <div class="layui-input-block">
+              <select name="encode_dir" lay-verify="">
+                <option value="utf-8">utf-8</option>
+                <option value="utf-16 le" selected>utf-16 le</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">
+              导入
+            </button>
+            <button type="reset" class="layui-btn layui-btn-primary">
+              重置
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script>
+      //Demo
+      layui.use(["form", "layer"], function () {
+        const form = layui.form;
+        const layer = layui.layer;
+        //监听提交
+        form.on("radio(show)", (data) => {
+          const { value } = data;
+          console.log(value);
+          switch (value) {
+            case "MySQL": {
+              sourceMysql.removeClass("hide");
+              sourceLocal.addClass("hide");
+              break;
+            }
+            case "local": {
+              sourceMysql.addClass("hide");
+              sourceLocal.removeClass("hide");
+              break;
+            }
+          }
+        });
+        form.on("submit(formDemo)", function (data) {
+          const { field, form } = data;
+          const submit_obj = {
+            data_source: field.source.trim(),
+            dept: field.dept.trim(),
+            patient_info_file: uploadFile,
+            patient_info_file_encoding: field.encode_info.trim(),
+            pulse_files: uploadDir,
+            pulse_file_encoding: field.encode_dir.trim(),
+            host: field.host.trim(),
+            port: field.port.trim(),
+            user: field.user.trim(),
+            passwd: field.password.trim(),
+            db: field.db.trim(),
+            charset: field.charset.trim(),
+            pulse_table_na_rule: field.fileTableName.trim(),
+          };
+          console.log(submit_obj);
+          $.ajax({
+            url: "/file",
+            type: "POST",
+            data: JSON.stringify(submit_obj),
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: data => {
+              form.reset()
+              layer.msg("上传成功");
+            }
+          });
+          return false;
+        });
+      });
+      $("#selectFile").on("change", (e) => {
+        const { files } = e.target;
+        if (uploadFile === null) {
+          uploadFile = new FormData();
+        }
+        for (let i = 0; i < files.length; ++i) {
+          if (fileName.indexOf(files[i].name) === -1) {
+            uploadFile.append(`file${uploadFile.length + i}`, files[i]);
+            fileName.push(files[i].name);
+          }
+        }
+        $("#selectFileName").val(fileName.join(";"));
+      });
+      $("#selectDir").on("change", (e) => {
+        const { files } = e.target;
+        if (uploadDir === null) {
+          uploadDir = new FormData();
+        }
+        for (let i = 0; i < files.length; ++i) {
+          if (dirFileName.indexOf(files[i].name) === -1) {
+            uploadDir.append(files[i].name, files[i]);
+            dirFileName.push(files[i].name);
+          }
+        }
+        $("#selectDirName").val(dirFileName.join(";"));
+      });
+      const sourceMysql = $(".mysql");
+      const sourceLocal = $(".local");
+      let uploadFile = null;
+      let fileName = [];
+      let uploadDir = null;
+      let dirFileName = [];
+    </script>
+  </body>
+</html>
