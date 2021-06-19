@@ -11,6 +11,7 @@ function renderTable(tableData) {
       layer = layui.layer,
       form = layui.form;
     const table = layui.table;
+    let id = 0;
     // 表格table组件
     table.render({
       elem: ".kidney_info_table", // 定位表格ID
@@ -21,10 +22,13 @@ function renderTable(tableData) {
       limit: query_kidney_Obj.limit, // 每一页数据条数
       done: function () {
         // 分页组件
-        getPage(total, laypage, url,query_kidney_Obj);
+        getPage(total, laypage, url, query_kidney_Obj);
       },
     });
-    table.on("tool(test)", obj => {rowToolEvent(obj, patientCols, data, form, table, "kidney")});
+    table.on("tool(test)", (obj) => {
+      id = obj.data.id;
+      rowToolEvent(obj, patientCols, data, form, table, "kidney");
+    });
     table.on("toolbar(test)", function (obj) {
       // 点击查询按钮后的弹出层，用于更细节的查询
       var checkStatus = table.checkStatus(obj.config.id);
@@ -40,33 +44,13 @@ function renderTable(tableData) {
         }
         case "all_data": {
           query_kidney_Obj = orignQuery_kidney;
-          getTable(query_kidney_Obj,url, true, layer, "重置成功!");
+          getTable(query_kidney_Obj, url, true, layer, "重置成功!");
           $(".kidney_detail_query .layui-form")[0].reset();
         }
       }
     });
-    form.on("select(channel_select)", function (data) {
-      const { value } = data;
-      $.ajax({
-        type: "POST",
-        url: `http://127.0.0.1:5000/channel_data`,
-        data: {
-          id,
-          num: value,
-        }, // 携带的数据，POST方法用
-        success: function (returnData) {
-          layer.msg("更新成功");
-          const { data } = JSON.parse(returnData),
-            len = data.length;
-          let xaxis = [];
-          for (let i = 1; i <= len; ++i) {
-            xaxis.push(i);
-          }
-          option.xAxis.data = xaxis;
-          option.series.data = data;
-          channelChart.setOption(option);
-        },
-      });
+    form.on("select(channel_select)", (data) => {
+      channel_select(data, id, "kidney");
     });
   });
 }
@@ -119,10 +103,7 @@ let query_kidney_Obj = {
 }; // 查询字符串，用于获取病人的数据
 let id = "";
 
-const channelDom = $(".show_div")[0];
-const channelSelect = $(".channel");
 const orignQuery_kidney = { ...query_kidney_Obj }; // 原始的查询字符串，用于重置操作
-const channelChart = echarts.init(channelDom);
 const tabelCols = [
   [
     {
@@ -164,47 +145,4 @@ const tabelCols = [
 ];
 const patientCols = [[...tabelCols[0]]];
 patientCols[0].pop();
-const option = {
-  title: {
-    text: "脉搏信号",
-    left: "1%",
-  },
-  tooltip: {
-    trigger: "axis",
-  },
-  grid: {
-    left: "10%",
-    right: "15%",
-    bottom: "10%",
-  },
-  xAxis: {
-    data: [],
-  },
-  yAxis: {
-    min: "dataMin",
-    max: "dataMax",
-    axisLabel: {
-      formatter: (value) => value.toFixed(4),
-    },
-  },
-  dataZoom: [
-    {
-      startValue: "1",
-    },
-    {
-      type: "inside",
-    },
-  ],
-  series: {
-    name: "脉搏信号",
-    type: "line",
-    data: [],
-    markLine: {
-      silent: true,
-      lineStyle: {
-        color: "#333",
-      },
-    },
-  },
-};
 getTable(query_kidney_Obj, url); // 获得表格数据，第一次调用默认获得所有病人的信息（第一页）

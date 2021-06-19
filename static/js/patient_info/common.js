@@ -11,6 +11,7 @@ function getTable(postData, dir, sign = false, layer = null, msg = "") {
       switch(postData.table) {
         case "kidney": renderTable(returnData);break;
         case "lung": renderTable_lung(returnData);break;
+        case "liver": renderTable_liver(returnData);break;
       }
       if (sign) {
         layer.msg(msg);
@@ -45,7 +46,7 @@ layui.use(["element"], function() {
   element.on('tab(patient)', function(data){
     switch(data.index) {
       case 0: getTable(query_kidney_Obj, "/patient_info_by_condition"); break;
-      case 1: getTable(query_lung_obj, url); break;
+      case 1: getTable(query_liver_obj, "/liver_patient_info"); break;
       case 2: getTable(query_lung_obj, "/lung_patient_info"); break;
     }
   });  
@@ -55,7 +56,7 @@ function rowToolEvent(obj, cols, data, form, table, type) {
   //行工具栏事件，点击详细的相关处理
   switch (obj.event) {
     case "detail": {
-      id = obj.data.id;
+      let id = obj.data.id;
       $.ajax({
         type: "POST",
         url: `/find_channelNumber`,
@@ -106,3 +107,75 @@ function rowToolEvent(obj, cols, data, form, table, type) {
     }
   }
 }
+
+function channel_select(data, id, type) {
+  const { value } = data;
+  $.ajax({
+    type: "POST",
+    url: `http://127.0.0.1:5000/channel_data`,
+    data: {
+      type,
+      id,
+      num: value,
+    }, // 携带的数据，POST方法用
+    success: function (returnData) {
+      layer.msg("更新成功");
+      const { data } = JSON.parse(returnData),
+        len = data.length;
+      let xaxis = [];
+      for (let i = 1; i <= len; ++i) {
+        xaxis.push(i);
+      }
+      option.xAxis.data = xaxis;
+      option.series.data = data;
+      channelChart.setOption(option);
+    },
+  });
+}
+
+const channelDom = $(".show_div")[0];
+const channelSelect = $(".channel");
+const channelChart = echarts.init(channelDom);
+const option = {
+  title: {
+    text: "脉搏信号",
+    left: "1%",
+  },
+  tooltip: {
+    trigger: "axis",
+  },
+  grid: {
+    left: "10%",
+    right: "15%",
+    bottom: "10%",
+  },
+  xAxis: {
+    data: [],
+  },
+  yAxis: {
+    min: "dataMin",
+    max: "dataMax",
+    axisLabel: {
+      formatter: (value) => value.toFixed(4),
+    },
+  },
+  dataZoom: [
+    {
+      startValue: "1",
+    },
+    {
+      type: "inside",
+    },
+  ],
+  series: {
+    name: "脉搏信号",
+    type: "line",
+    data: [],
+    markLine: {
+      silent: true,
+      lineStyle: {
+        color: "#333",
+      },
+    },
+  },
+};

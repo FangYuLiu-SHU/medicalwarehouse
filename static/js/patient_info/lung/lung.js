@@ -40,7 +40,7 @@ function renderTable_lung(tableData) {
   // 渲染表格，tableData：后端返回的数据
   const { data: arrData, code, total } = JSON.parse(tableData);
   const data = arrData.map((e) => {
-    e.sex = e.sex === "1" ? "女" : "男";
+    e.sex = e.sex === "2" ? "女" : "男";
     e.Lung_qi_deficiency = e.Lung_qi_deficiency === "1" ? "是" : "否";
     e.spleen_qi_deficiency = e.spleen_qi_deficiency === "1" ? "是" : "否";
     e.kidney_qi_deficiency = e.kidney_qi_deficiency === "1" ? "是" : "否";
@@ -63,7 +63,10 @@ function renderTable_lung(tableData) {
         getPage(total, laypage, "/lung_patient_info", query_lung_obj);
       },
     });
-    table.on("tool(lung)", obj => {rowToolEvent(obj, patient_tabel_lung, data, form, table, "lung")});
+    table.on("tool(lung)", obj => {
+      id = obj.data.id;
+      rowToolEvent(obj, patient_tabel_lung, data, form, table, "lung")
+    });
     table.on("toolbar(lung)", function (obj) {
       // 点击查询按钮后的弹出层，用于更细节的查询
       var checkStatus = table.checkStatus(obj.config.id);
@@ -85,6 +88,7 @@ function renderTable_lung(tableData) {
         }
       }
     });
+    form.on("select(channel_select)", data => {channel_select(data, id, "lung")});
   });
 
 }
