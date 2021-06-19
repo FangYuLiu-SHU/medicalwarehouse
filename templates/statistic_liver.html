@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>test</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      .layui-input{
+        min-height: 20px;
+        margin-bottom: 20px;
+      }
+      .layui-select{
+        height: 35px;width: 50px;
+      }
+      .layui-input-block{
+          width: 350px;
+      }
+      .layui-form-item{
+          width: 100%;
+          margin-top: 10px;
+      }
+    </style>
+  </head>
+<body>
+  <div class="layui-body" style="left: 0">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+          <legend>输入肝科患者统计指标</legend>
+            <div style="text-align:right;"><a href="http://127.0.0.1:5000/datastatistic" style="color:gray;font-size:14px;">返回统计主页</a></div>
+        </fieldset>
+            <div id="container2"  style="width:35% ;float: left">
+                <form class="layui-form" action="" method="post" lay-filter="info_display">
+            <div class="layui-form-item" >
+            <label class="layui-form-label">症状选择</label>
+                <div class="layui-input-block" >
+                  <select name="symptoms_type" lay-filter="info_display_sym"  class="layui-select" >
+                      <option value="" style="font-size: 14px;">请选择</option>
+                      <option value="1" style="font-size: 14px;">肝胆湿热</option>
+                      <option value="2" style="font-size: 14px;">肝郁脾虚</option>
+                  </select>
+<!--                <button class="layui-btn submit_query" lay-submit lay-filter="bt1">提交</button>-->
+                </div>
+            </div>
+           <div class="layui-form-item">
+              <label class="layui-form-label">患者性别</label>
+              <div class="layui-input-block">
+                <select name="gender" lay-filter="info_display_gender"  class="layui-select"  >
+                  <option value="" >请选择</option>
+                  <option value="1"  >男</option>
+                  <option value="2" >女</option>
+                </select>
+<!--                <button class="layui-btn submit_query" lay-submit lay-filter="bt2">提交</button>-->
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline"><label class="layui-form-label">年龄范围</label>
+                    <div class="layui-input-inline"style="width: 160px;" >
+                        <input type="text" name="min_age" placeholder="最小值" autocomplete="off" class="layui-input" lay-verify="Mverify" >
+                    </div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-input-inline" style="width: 165px;">
+                        <input type="text" name="max_age" placeholder="最大值" autocomplete="off" class="layui-input" lay-verify="Mverify" >
+                    </div>
+                </div>
+            </div>
+                 <div class="layui-form-item">
+                <button  class="layui-btn submit_query" type="button" lay-submit lay-filter="*"  id="LAY-button-shen"  style="margin-left: 110px;width: 100px">立即提交</button>
+<!--                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+            </div>
+            <div class="layui-panel"  style="margin-top: 50px;margin-left: 120px;">
+                <div class="layui-tab-item layui-show"  id="content" style="font-size: 14px;"></div>
+            </div>
+                </form>
+          </div>
+
+      <div id="container3" style="width:32%;height: 42%;float: left" >
+          <div id="symptoms_fig" style="width:500px; height: 290px;"></div></div>
+       <div id="container4" style="width:32%;height: 42%;float: left" >
+           <div id="gender_fig" style="width: 500px; height: 290px;"></div></div>
+      <div id="container5" style="width:65%;height: 43%;float: left" >
+           <div id="ALT_fig" style="width: 650px; height: 290px;margin-left: 15% "></div>
+<!--          <div class="layui-container" id="sc_fig"  ></div>-->
+
+     </div>
+   <script src="../static/layui/layui.js"></script>
+    <script src="../static/js/jquery.js"></script>
+    <script type="text/javascript" src="../static/js/echarts.js"></script>
+   <script type="text/javascript" src="../static/js/function.js"></script>
+     <script>
+        var ALT_dom = document.getElementById('ALT_fig');
+        var ALT_chart_liver = echarts.init(ALT_dom);
+        var sex_dom_liver = document.getElementById('gender_fig');
+        var sex_chart_liver = echarts.init(sex_dom_liver);
+        var symptom_dom_liver = document.getElementById('symptoms_fig');
+        var symptom_chart_liver = echarts.init(symptom_dom_liver);
+        var yMax = 150;
+        var dataShadow = [];
+
+        function fig_dis(returndata_liver,ALT_chart_liver,sex_chart_liver,symptom_chart_liver){
+            var symptom_option_liver={
+                  title: {
+                      text: '患者症状分布',
+                      left: 'center'
+                  },
+                  // tooltip: {
+                  //     trigger: 'item'
+                  // },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          type: 'pie',
+                          radius: '60%',
+                          tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        label: {
+                                  normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          emphasis: {
+                              scale:true,
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          },
+                          data: [
+                              {value: returndata_liver.num_pos, name: '肝胆湿热'},
+                              {value: returndata_liver.num_neg, name: '肝郁脾虚' },
+                          ].filter(e => Number(e.value) !== 0),
+
+                      }
+                  ]
+                };
+            symptom_chart_liver.setOption(symptom_option_liver);
+            var sex_option_liver={
+                  title: {
+                      text: '患者性别分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                          // name: '访问来源',
+                          type: 'pie',
+                          radius: '60%',
+                          label: {
+                                   normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          },
+                          data: [
+                              {value: returndata_liver.num_male, name: '男性'},
+                              {value:returndata_liver.num_female, name: '女性'},
+                          ].filter(e => Number(e.value) !== 0),
+                      }
+                  ]
+                };
+            sex_chart_liver.setOption(sex_option_liver);
+            var ALT_data_liver=[];
+            // var ALT_interval=(returndata_liver.ALT_distribute.bins[1]-returndata_liver.ALT_distribute.bins[0])/2;
+            for (var i = 0; i < returndata_liver.ALT_distribute.num.length; i++) {
+                ALT_data_liver.push([(returndata_liver.ALT_distribute.bins[i]+returndata_liver.ALT_distribute.bins[i+1])/2, returndata_liver.ALT_distribute.num[i]])
+            };
+
+            var ALT_option_liver= {
+                        title: {
+                      text: '谷丙转氨酶(ALT)值分布',
+                      left: 'center'
+                  },
+                     tooltip: {
+                    trigger: 'item',
+                    // formatter: '人 '
+                },
+                    xAxis: {
+                      name:"范围",
+                        // splitNumber:returndata_liver.ALT_distribute.bins.length-1,
+                    interval:returndata_liver.ALT_distribute.bins[1]-returndata_liver.ALT_distribute.bins[0],
+                    min:returndata_liver.ALT_distribute.bins[0],
+                    max:returndata_liver.ALT_distribute.bins[returndata_liver.ALT_distribute.num.length],
+                        nameGap:20,
+                        // data: ALT_bins,
+                        axisLabel: {
+                            interval: 0,
+                            // min:0,
+                            // max:480,
+                            inside: false,
+                            rotate:30,
+                            textStyle: {
+                                color: '#120d0d'
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                      splitLine:{show:false},
+                        // boundaryGap: true,
+                    },
+                    yAxis: {
+                      name:"人数",
+                        nameGap:10,
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#999'
+                            }
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside'
+                        }
+                    ],
+                    series: [
+                        {
+                                 tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                var la = 'ALT值区间:' + params.value[1] + '人'
+                                return la
+                            }
+                        },
+                            name:'ALT正常范围',
+                            type: 'bar',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#828787'},
+                                        {offset: 0.5, color: '#474a4a'},
+                                        {offset: 1, color: '#191a1a'}
+                                    ]
+                                )
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f53959'},
+                                            {offset: 0.7, color: '#cd0a2d'},
+                                            {offset: 1, color: '#a5011c'}
+                                        ]
+                                    )
+                                }
+                            },
+                            data: ALT_data_liver,
+                           markLine:{
+                                slient:true,
+                                // symbol:'none',
+                               padding:[0,0,0,-1],
+                                itemStyle: {
+                                normal: {
+                                    lineStyle:{
+                                        width:2,
+                                        type:'dotted'  //'dotted'虚线 'solid'实线
+                                    },
+                                    show: true,
+                                    color: '#e20808',
+                                    }
+                                },
+                                label:{
+                                    show:false,
+
+                                },
+                                data: [{name:"最高阈值(U/L)",xAxis:40}]
+                            },
+                        }
+                    ]
+                };
+            ALT_chart_liver.setOption(ALT_option_liver);
+
+        }
+
+        layui.use(['form'], function() {
+        var form = layui.form, layer = layui.layer, $ = layui.jquery;
+           form.verify({
+              Mverify: (value) => {
+                if (isNaN(value)||value<0||value>150) {
+                    layer.alert("非法数据,请重新输入!", {icon: 2, skin: 'layer-ext-demo',})
+                    return  false;
+                }
+              },
+            });
+
+        // //监听提交
+        form.on('submit(*)', function () {
+            var data = form.val('info_display');
+            var objectData = JSON.parse(JSON.stringify(data));//转成JSON对象
+            var min_age=Number(objectData.min_age),max_age=Number(objectData.max_age);
+            document.getElementById("content").innerText='';
+            ALT_chart_liver.clear();
+            sex_chart_liver.clear();
+            symptom_chart_liver.clear();
+            if(!min_age){
+                min_age=0;
+            }
+            if(!max_age){
+                max_age=150;
+            }
+            var symptom,gender;
+            if(objectData.symptoms_type==='1'){
+                symptom='肝胆湿热'
+            }else if(objectData.symptoms_type==='2') {
+                symptom='肝郁脾虚'
+            }else {
+                symptom='不区分'
+            }
+            if(objectData.gender==='1'){
+                gender='男'
+            }else if(objectData.gender==='2') {
+                gender='女'
+            }else {
+                gender='不区分'
+            }
+            if(min_age>=max_age) {
+                layer.alert("非法数据，请重新输入!", {icon: 2, skin: 'layer-ext-demo',})
+                return false
+            }
+            $.ajax({
+                    url:"http://127.0.0.1:5000/liver_statistic",
+                    data:data,
+                    dataType:"json",
+                    type:'POST',
+                    success:function (objdata){
+                        console.log("请求数据成功")
+                        var content="输入选项如下：\n\n患者症状： " + symptom + "\n\n患者性别： " + gender + "\n\n患者年龄范围： " + min_age + "~" + max_age+"岁"
+                        document.getElementById("content").innerText=content;
+                        if(objdata==='无数据'){
+                             layer.alert("不存在数据，请重新输入!", {icon: 0, skin: 'layer-ext-demo',})
+                             return false
+                        } else{
+                            var returndata_liver = JSON.parse(JSON.stringify(objdata));
+                            console.log(returndata_liver)
+                            fig_dis(returndata_liver,ALT_chart_liver,sex_chart_liver,symptom_chart_liver)
+                            }
+                        },
+                     error: function() {
+                         console.log("请求数据失败")
+                     }
+                    })
+            });
+    });
+    </script>
+
+</body>
+</html>

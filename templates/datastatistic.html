@@ -22,69 +22,92 @@
         height: 35px;
       }
       .layui-tab-item{
-          height: 600px;
+          height: 550px;
       }
     </style>
   </head>
   <body>
       <div class="layui-body" style="left: 0">
+
       <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
           <ul class="layui-tab-title">
             <li class="layui-this">肾科</li>
             <li>肝科</li>
             <li>肺科</li>
-            <li>闻诊</li>
+<!--            <li>闻诊</li>-->
           </ul>
           <div class="layui-tab-content"  >
             <div class="layui-tab-item layui-show">
                 <div id="container1" style="width:100%;height:100%">
-                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_detail" style="color:red;font-size:10px;">详细请点击</a></div>
-                  <div id="symptom_ana" style="width: 34%; height: 100%;float: left">症状统计</div>
-                  <div id="sex_ana" style="width: 33%; height: 50%;float: left">性别分布</div>
-                    <div id="age_ana" style="width: 33%; height: 50%;float: left">年龄分布</div>
-                    <div id="eGFR_ana" style="width: 33%; height: 50%;float: left">eGFR值分布</div>
-                  <div id="sc_ana" style="width: 33%; height: 50%;float: left">sc_value分布</div>
+                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_kidney" style="color:red;font-size:14px;">详细请点击</a></div>
+                    <div id="liver1" style="width: 10%; height: 100%;float: left"></div>
+                  <div id="symptom_kidney" style="width: 450px; height:  280px;float: left">症状统计</div>
+                  <div id="sex_kidney" style="width: 450px; height:  280px;float: left">性别分布</div>
+                    <div id="age_kidney" style="width: 450px; height:  280px;float: left">年龄分布</div>
+                    <div id="eGFR_kidney"  style="width: 650px; height: 280px;float: left">eGFR值分布</div>
+                  <div id="sc_kidney" style="width: 650px; height: 280px;float: left">sc_value分布</div>
                 </div>
             </div>
-            <div class="layui-tab-item">内容2</div>
-            <div class="layui-tab-item">内容3</div>
+            <div class="layui-tab-item ">
+                <div id="container2" style="width:100%;height:100%">
+                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_liver"  style="color:red;font-size:14px;">详细请点击</a></div>
+                    <div id="liver2" style="width: 10%; height: 100%;float: left"></div>
+                  <div id="symptom_liver" style="width: 650px; height: 280px;float: left">症状统计</div>
+                  <div id="sex_liver" style="width: 650px; height: 280px;float: left">性别分布</div>
+                    <div id="age_liver" style="width: 650px; height: 280px;float: left">年龄分布</div>
+                    <div id="ALT_liver" style="width: 650px; height: 280px;float: left">ALT值分布</div>
+<!--                     <div id="liver2" style="width: 5%; height: 100%;float: left"></div>-->
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div id="container3" style="width:100%;height:100%">
+                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_lung" style="color:red;font-size:14px;">详细请点击</a></div>
+                    <div id="lung1" style="width: 10%; height: 100%;float: left"></div>
+                    <div id="lung_symptom_lung_qd" style="width: 450px; height:  280px;float: left">肺气虚患者分布</div>
+                    <div id="lung_symptom_spleen_qd" style="width: 450px; height:  280px;float: left">脾气虚患者分布</div>
+                  <div id="lung_symptom_kidney_qd" style="width: 450px; height: 280px;float: left">肾气虚患者分布</div>
+                  <div id="sex_lung" style="width: 650px; height: 280px;float: left">性别分布</div>
+                    <div id="age_lung" style="width: 650px; height: 280px;float: left">年龄分布</div>
+                </div>
+            </div>
             <div class="layui-tab-item">内容4</div>
            </div>
            </div>
-
     </div>
       <script src="../static/layui/layui.js"></script>
       <script type="text/javascript" src="../static/js/echarts.js"></script>
       <script type="text/javascript" src="../static/js/function.js"></script>
-
+<!--   <script type="text/javascript" src="../static/js/data_stastistic/kidney_statistic.js"></script>-->
       <script type="text/javascript">
       layui.use('element', function(){
            var $ = layui.jquery,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
       });
-      var returndata={{data_json|tojson}};
-      returndata=JSON.parse(returndata);
-      var age_bins=[]
-        for(var i=0;i<=returndata.age_distribute.bins.length;i++){
-            if(i===returndata.age_distribute.bins.length){
-                age_bins.push(returndata.age_distribute.bins[i-1]+"~")
+
+      //肾科患者数据统计
+          var returndata_kidney={{data_json|tojson}};
+          returndata_kidney=JSON.parse(returndata_kidney);
+          var age_bins_kidney=[]
+          for(var i=0;i<=returndata_kidney.age_distribute.bins.length;i++){
+            if(i===returndata_kidney.age_distribute.bins.length){
+                age_bins_kidney.push(returndata_kidney.age_distribute.bins[i-1]+"~")
             }else {
-                age_bins.push((returndata.age_distribute.bins[i]) + "~" + (returndata.age_distribute.bins[i]+10))
+                age_bins_kidney.push((returndata_kidney.age_distribute.bins[i]) + "~" + (returndata_kidney.age_distribute.bins[i]+10))
             }
 
         }
-        var eGFR_data=[],sc_data=[],age_data=[];
-        for(var i=0;i<returndata.eGFR_distribute.num.length;i++){
-            eGFR_data.push([returndata.eGFR_distribute.bins[i]+10,returndata.eGFR_distribute.num[i]])
+        var eGFR_data_kidney=[],sc_data_kidney=[],age_data_kidney=[];
+        for(var i=0;i<returndata_kidney.eGFR_distribute.num.length;i++){
+            eGFR_data_kidney.push([returndata_kidney.eGFR_distribute.bins[i]+10,returndata_kidney.eGFR_distribute.num[i]])
         }
-        for(var j=0;j<returndata.sc_distribute.num.length;j++){
-            sc_data.push([returndata.sc_distribute.bins[j]+50,returndata.sc_distribute.num[j]])
+        for(var j=0;j<returndata_kidney.sc_distribute.num.length;j++){
+            sc_data_kidney.push([returndata_kidney.sc_distribute.bins[j]+50,returndata_kidney.sc_distribute.num[j]])
         }
 
         var yMax = 150;
         var dataShadow = [];
-        var eGFR_dom = document.getElementById('eGFR_ana');
-        var eGFR_chart = echarts.init(eGFR_dom);
-        var eGFR_option= {
+        var eGFR_dom_kidney = document.getElementById('eGFR_kidney');
+        var eGFR_chart_kidney = echarts.init(eGFR_dom_kidney);
+        var eGFR_option_kidney= {
                 title: {
               text: 'eGFR值分布',
               left: 'center'
@@ -94,7 +117,10 @@
             // formatter: '{a} <br/>{b}: {c}人 '
         },
             xAxis: {
-              name:"范围",
+                    name: "范围",
+                    interval:returndata_kidney.eGFR_distribute.bins[1]-returndata_kidney.eGFR_distribute.bins[0],
+                    min:returndata_kidney.eGFR_distribute.bins[0],
+                    max:returndata_kidney.eGFR_distribute.bins[returndata_kidney.eGFR_distribute.num.length],
                 nameGap:20,
                 // data: eGFR_bins,
                 axisLabel: {
@@ -136,7 +162,14 @@
             ],
             series: [
                 {
-                	name: 'eGFR分布：',
+                    tooltip:{
+                          trigger:'item',
+                        formatter:function (params){
+                              var la='eGFR值'+Number(params.value[0]-10)+'~'+Number(params.value[0]+10)+'内:'+params.value[1]+'人'
+                              return la
+                      }
+                      },
+                    name:'eGFR值正常范围',
                     type: 'bar',
                     itemStyle: {
                         color: new echarts.graphic.LinearGradient(
@@ -160,7 +193,7 @@
                             )
                         }
                     },
-                    data: eGFR_data,
+                    data: eGFR_data_kidney,
                    markLine:{
                 	    slient:true,
                         // symbol:'none',
@@ -185,10 +218,10 @@
 
 
         };
-        eGFR_chart.setOption(eGFR_option);
-        var sc_dom = document.getElementById('sc_ana');
-        var sc_chart = echarts.init(sc_dom);
-        var sc_option= {
+        eGFR_chart_kidney.setOption(eGFR_option_kidney);
+        var sc_dom_kidney = document.getElementById('sc_kidney');
+        var sc_chart_kidney = echarts.init(sc_dom_kidney);
+        var sc_option_kidney= {
                 title: {
               text: '血肌酐值分布',
               left: 'center'
@@ -199,6 +232,9 @@
         },
             xAxis: {
               name:"范围",
+               interval:returndata_kidney.sc_distribute.bins[1]-returndata_kidney.sc_distribute.bins[0],
+                    min:returndata_kidney.sc_distribute.bins[0],
+                    max:returndata_kidney.sc_distribute.bins[returndata_kidney.sc_distribute.num.length],
                 nameGap:20,
                 // data: sc_bins,
                 axisLabel: {
@@ -240,7 +276,14 @@
             ],
             series: [
                 {
-                	name: '血肌酐分布：',
+                	     tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                var la = '血肌酐值区间:' + params.value[1] + '人'
+                                return la
+                            }
+                        },
+                    name:'血肌酐值正常范围',
                     type: 'bar',
                     itemStyle: {
                         color: new echarts.graphic.LinearGradient(
@@ -264,7 +307,7 @@
                             )
                         }
                     },
-                    data: sc_data,
+                    data: sc_data_kidney,
                    markLine:{
                 	    slient:true,
                         // symbol:'none',
@@ -289,10 +332,10 @@
 
 
         };
-        sc_chart.setOption(sc_option);
-        var age_dom = document.getElementById('age_ana');
-        var age_chart = echarts.init(age_dom);
-        var age_option={
+        sc_chart_kidney.setOption(sc_option_kidney);
+        var age_dom_kidney = document.getElementById('age_kidney');
+        var age_chart_kidney = echarts.init(age_dom_kidney);
+        var age_option_kidney={
             title: {
               text: '患者年龄分布',
               left: 'center'
@@ -304,7 +347,7 @@
             xAxis: {
               name:"岁数",
                 nameGap:20,
-                data: age_bins,
+                data: age_bins_kidney,
                 axisLabel: {
                 interval: 1,
                     inside: false,
@@ -369,15 +412,15 @@
                             )
                         }
                     },
-                    data: returndata.age_distribute.num
+                    data: returndata_kidney.age_distribute.num
                 }
             ]
 
                 };
-        age_chart.setOption(age_option);
-        var sex_dom = document.getElementById('sex_ana');
-        var sex_chart = echarts.init(sex_dom);
-        var sex_option={
+        age_chart_kidney.setOption(age_option_kidney);
+        var sex_dom_kidney = document.getElementById('sex_kidney');
+        var sex_chart_kidney = echarts.init(sex_dom_kidney);
+        var sex_option_kidney={
           title: {
               text: '患者性别分布',
               left: 'center'
@@ -385,24 +428,29 @@
           tooltip: {
               trigger: 'item'
           },
-          legend: {
+          legend:{  selectedMode:false,
               orient: 'vertical',
               left: 'left',
           },
           series: [
               {
                   // name: '访问来源',
+                  tooltip:{
+                      trigger:'item',
+                  formatter:'{b}:{c}人,，占比{d}%'
+                  },
                   type: 'pie',
                   radius: '60%',
                   label: {
-                      normal: {
-                          position:"inner",
-                          show:false,
-                      }
+                        normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
                   },
                   data: [
-                      {value: returndata.num_male, name: '男性'},
-                      {value:returndata.num_female, name: '女性'},
+                      {value: returndata_kidney.num_male, name: '男性'},
+                      {value:returndata_kidney.num_female, name: '女性'},
                   ],
                   emphasis: {
                       itemStyle: {
@@ -414,11 +462,10 @@
               }
           ]
         };
-        sex_chart.setOption(sex_option)
-
-        var symptom_dom = document.getElementById('symptom_ana');
-        var symptom_chart = echarts.init(symptom_dom);
-        var symptom_option={
+        sex_chart_kidney.setOption(sex_option_kidney)
+        var symptom_dom_kidney = document.getElementById('symptom_kidney');
+        var symptom_chart_kidney = echarts.init(symptom_dom_kidney);
+        var symptom_option_kidney={
           title: {
               text: '患者症状分布',
               left: 'center'
@@ -426,23 +473,29 @@
           tooltip: {
               trigger: 'item'
           },
-          legend: {
+          legend:{
+              selectedMode:false,
               orient: 'vertical',
               left: 'left',
           },
           series: [
               {
+                  tooltip:{
+                      trigger:'item',
+                  formatter:'{b}:{c}人,，占比{d}%'
+                  },
                   type: 'pie',
                   radius: '60%',
                 label: {
-                      normal: {
-                          position:"inner",
-                          show:false,
-                      }
+                        normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
                   },
                   data: [
-                      {value: returndata.num_pos, name: '肾阳虚'},
-                      {value: returndata.num_neg, name: '肾阴虚' },
+                      {value: returndata_kidney.num_pos, name: '肾阳虚'},
+                      {value: returndata_kidney.num_neg, name: '肾阴虚' },
                   ],
                   emphasis: {
                       itemStyle: {
@@ -454,9 +507,643 @@
               }
           ]
         };
-        symptom_chart.setOption(symptom_option);
+        symptom_chart_kidney.setOption(symptom_option_kidney);
       </script>
+  <script>
+//肝科患者数据统计
+ // {"num_patient": 188, "num_male": 87, "num_female": 101, "num_pos": 15, "num_neg": 173, "age_distribute": {"bins": [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80], "num": [3, 9, 13, 23, 17, 27, 23, 33, 23, 16, 1]}, "ALT_distribute": {"bins": [0, 40, 80, 120, 160, 200, 240, 280, 320, 360, 400, 440], "num": [144, 31, 4, 3, 2, 0, 1, 2, 0, 0, 1]}}
+      let query_liver_obj = {
+            num_patient: "",
+            num_male: "",
+            num_female: "",
+            num_pos: "",
+            num_neg: "",
+            age_distribute: JSON.stringify(["", ""]),
+            ALT_distribute: JSON.stringify(["", ""]),
+          };
+      const orignQuery_liver = {...query_liver_obj}
+      layui.use(['form'], function() {
+          var form = layui.form, layer = layui.layer, $ = layui.jquery;
+          $.ajax({
+              url: "http://127.0.0.1:5000/liver_statistic",
+              data: orignQuery_liver,
+              dataType: "json",
+              type: 'GET',
+              success: function (returndata_liver) {
+                  console.log("请求数据成功")
+                  console.log(returndata_liver)
 
+                  var age_bins_liver=[]
+                 for(var i=0;i<=returndata_liver.age_distribute.bins.length;i++){
+                    if(i===returndata_liver.age_distribute.bins.length){
+                        age_bins_liver.push(returndata_liver.age_distribute.bins[i-1]+"~")
+                    }else {
+                        age_bins_liver.push((returndata_liver.age_distribute.bins[i]) + "~" + (returndata_liver.age_distribute.bins[i]+5))
+                    }
+
+                }
+                var ALT_data_liver=[],sc_data_liver=[],age_data_liver=[];
+                for(var i=0;i<returndata_liver.ALT_distribute.num.length;i++){
+                    ALT_data_liver.push([returndata_liver.ALT_distribute.bins[i]+20,returndata_liver.ALT_distribute.num[i]])
+                }
+
+                var ALT_dom_liver = document.getElementById('ALT_liver');
+                var ALT_chart_liver = echarts.init(ALT_dom_liver);
+                var ALT_option_liver= {
+                        title: {
+                      text: '谷丙转氨酶(ALT)值分布',
+                      left: 'center'
+                  },
+                     tooltip: {
+                    trigger: 'item',
+                    // formatter: '人 '
+                },
+                    xAxis: {
+                      name:"范围",
+                        // splitNumber:returndata_liver.ALT_distribute.bins.length-1,
+                    interval:returndata_liver.ALT_distribute.bins[1]-returndata_liver.ALT_distribute.bins[0],
+                    min:returndata_liver.ALT_distribute.bins[0],
+                    max:returndata_liver.ALT_distribute.bins[returndata_liver.ALT_distribute.num.length],
+                        nameGap:20,
+                        // data: ALT_bins,
+                        axisLabel: {
+                            interval: 0,
+                            // min:0,
+                            // max:480,
+                            inside: false,
+                            rotate:30,
+                            textStyle: {
+                                color: '#120d0d'
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                      splitLine:{show:false},
+                        // boundaryGap: true,
+                    },
+                    yAxis: {
+                      name:"人数",
+                        nameGap:10,
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#999'
+                            }
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside'
+                        }
+                    ],
+                    series: [
+                        {
+                                 tooltip: {
+                            trigger: 'item',
+                            formatter: function (params) {
+                                var la = 'ALT值区间:' + params.value[1] + '人'
+                                return la
+                            }
+                        },
+                            name:'ALT正常范围',
+                            type: 'bar',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#828787'},
+                                        {offset: 0.5, color: '#474a4a'},
+                                        {offset: 1, color: '#191a1a'}
+                                    ]
+                                )
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f53959'},
+                                            {offset: 0.7, color: '#cd0a2d'},
+                                            {offset: 1, color: '#a5011c'}
+                                        ]
+                                    )
+                                }
+                            },
+                            data: ALT_data_liver,
+                           markLine:{
+                                slient:true,
+                                // symbol:'none',
+                                itemStyle: {
+                                normal: {
+                                    lineStyle:{
+                                        width:2,
+                                        type:'dotted'  //'dotted'虚线 'solid'实线
+                                    },
+                                    show: true,
+                                    color: '#e20808',
+                                    }
+                                },
+                                label:{
+                                    show:false,
+
+                                },
+                                data: [{name:"最高阈值(U/L)",xAxis:40}]
+                            },
+                        }
+                    ]
+                };
+                ALT_chart_liver.setOption(ALT_option_liver);
+                var age_dom_liver = document.getElementById('age_liver');
+                var age_chart_liver = echarts.init(age_dom_liver);
+                var age_option_liver={
+                    title: {
+                      text: '患者年龄分布',
+                      left: 'center'
+                  },
+                    tooltip: {
+                    trigger: 'item',
+                    formatter: '{a}{b}: {c}人 '
+                },
+                    xAxis: {
+                      name:"岁数",
+                        nameGap:20,
+                        data: age_bins_liver,
+                        axisLabel: {
+                        interval: 1,
+                            inside: false,
+                          rotate:30,
+                            textStyle: {
+                                color: '#120d0d'
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                      splitLine:{show:false},
+                        // boundaryGap: true,
+                    },
+                    yAxis: {
+                      name:"人数",
+                        nameGap:10,
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#999'
+                            }
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '年龄段',
+                            type: 'bar',
+                            // barWidth:40,
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#828787'},
+                                        {offset: 0.5, color: '#474a4a'},
+                                        {offset: 1, color: '#191a1a'}
+                                    ]
+                                )
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f53959'},
+                                            {offset: 0.7, color: '#cd0a2d'},
+                                            {offset: 1, color: '#a5011c'}
+                                        ]
+                                    )
+                                }
+                            },
+                            data: returndata_liver.age_distribute.num
+                        }
+                    ]
+
+                        };
+                age_chart_liver.setOption(age_option_liver);
+                var sex_dom_liver = document.getElementById('sex_liver');
+                var sex_chart_liver = echarts.init(sex_dom_liver);
+                var sex_option_liver={
+                  title: {
+                      text: '患者性别分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                          // name: '访问来源',
+                          type: 'pie',
+                          radius: '60%',
+                          label: {
+                                   normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          data: [
+                              {value: returndata_liver.num_male, name: '男性'},
+                              {value:returndata_liver.num_female, name: '女性'},
+                          ],
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          }
+                      }
+                  ]
+                };
+                sex_chart_liver.setOption(sex_option_liver)
+                var symptom_dom_liver = document.getElementById('symptom_liver');
+                var symptom_chart_liver = echarts.init(symptom_dom_liver);
+                var symptom_option_liver={
+                  title: {
+                      text: '患者症状分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          type: 'pie',
+                          radius: '60%',
+                          tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        label: {
+                                  normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          data: [
+                              {value: returndata_liver.num_pos, name: '肝胆湿热'},
+                              {value: returndata_liver.num_neg, name: '肝郁脾虚' },
+                          ],
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          }
+                      }
+                  ]
+                };
+                symptom_chart_liver.setOption(symptom_option_liver);
+//肺科患者数据统计
+      let query_lung_obj = {
+            num_patient: "",
+            num_male: "",
+            num_female: "",
+            num_lung_qd: "",
+            num_spleen_qd: "",
+			num_kidney_qd: "",
+            age_distribute: JSON.stringify(["", ""]),
+          };
+      const orignQuery_lung = {...query_lung_obj}
+      layui.use(['form'], function() {
+          var form = layui.form, layer = layui.layer, $ = layui.jquery;
+          $.ajax({
+              url: "http://127.0.0.1:5000/lung_statistic",
+              data: orignQuery_lung,
+              dataType: "json",
+              type: 'GET',
+              success: function (returndata_lung) {
+                  console.log("请求数据成功")
+                  console.log(returndata_lung)
+
+                  var age_bins_lung=[]
+                 for(var i=0;i<=returndata_lung.age_distribute.bins.length;i++){
+                    if(i===returndata_lung.age_distribute.bins.length){
+                        age_bins_lung.push(returndata_lung.age_distribute.bins[i-1]+"~")
+                    }else {
+                        age_bins_lung.push((returndata_lung.age_distribute.bins[i]) + "~" + (returndata_lung.age_distribute.bins[i]+5))
+                    }
+
+                }
+                var age_dom_lung = document.getElementById('age_lung');
+                var age_chart_lung = echarts.init(age_dom_lung);
+                var age_option_lung={
+                    title: {
+                      text: '患者年龄分布',
+                      left: 'center'
+                  },
+                    tooltip: {
+                    trigger: 'item',
+                    formatter: '{a}{b}: {c}人 '
+                },
+                    xAxis: {
+                      name:"岁数",
+                        nameGap:20,
+                        data: age_bins_lung,
+                        axisLabel: {
+                        interval: 1,
+                            inside: false,
+                          rotate:30,
+                            textStyle: {
+                                color: '#120d0d'
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                      splitLine:{show:false},
+                        // boundaryGap: true,
+                    },
+                    yAxis: {
+                      name:"人数",
+                        nameGap:10,
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                color: '#999'
+                            }
+                        }
+                    },
+                    dataZoom: [
+                        {
+                            type: 'inside'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '年龄段',
+                            type: 'bar',
+                            // barWidth:40,
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#828787'},
+                                        {offset: 0.5, color: '#474a4a'},
+                                        {offset: 1, color: '#191a1a'}
+                                    ]
+                                )
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f53959'},
+                                            {offset: 0.7, color: '#cd0a2d'},
+                                            {offset: 1, color: '#a5011c'}
+                                        ]
+                                    )
+                                }
+                            },
+                            data: returndata_lung.age_distribute.num
+                        }
+                    ]
+
+                        };
+                age_chart_lung.setOption(age_option_lung);
+                var sex_dom_lung = document.getElementById('sex_lung');
+                var sex_chart_lung = echarts.init(sex_dom_lung);
+                var sex_option_lung={
+                  title: {
+                      text: '患者性别分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          // name: '访问来源',
+                          tooltip:{
+                              trigger:'item',
+                          formatter:'{b}:{c}人,，占比{d}%'
+                          },
+                          type: 'pie',
+                          radius: '60%',
+                          label: {
+                             normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          data: [
+                              {value: returndata_lung.num_male, name: '男性'},
+                              {value:returndata_lung.num_female, name: '女性'},
+                          ],
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          }
+                      }
+                  ]
+                };
+                sex_chart_lung.setOption(sex_option_lung)
+                var symptom_dom_lung_qd= document.getElementById('lung_symptom_lung_qd');
+                var symptom_chart_lung_qd = echarts.init(symptom_dom_lung_qd);
+                var symptom_option_lung_qd={
+                  title: {
+                      text: '肺气虚分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                     tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                          type: 'pie',
+                          radius: '60%',
+                        label: {
+                                normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          data: [
+                              {value: returndata_lung.num_lung_qd, name: '患病'},
+                              {value: returndata_lung.num_patient-returndata_lung.num_lung_qd, name: '未患病' },
+                          ],
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          }
+                      }
+                  ]
+                };
+                symptom_chart_lung_qd.setOption(symptom_option_lung_qd);
+
+				var symptom_dom_spleen_qd= document.getElementById('lung_symptom_spleen_qd');
+                var symptom_chart_spleen_qd = echarts.init(symptom_dom_spleen_qd);
+                var symptom_option_spleen_qd={
+                  title: {
+                      text: '脾气虚分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          type: 'pie',
+                          radius: '60%',
+                          tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        label: {
+                                        normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          data: [
+                              {value: returndata_lung.num_spleen_qd, name: '患病'},
+                              {value: returndata_lung.num_patient-returndata_lung.num_spleen_qd, name: '未患病' },
+                          ],
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          }
+                      }
+                  ]
+                };
+                symptom_chart_spleen_qd.setOption(symptom_option_spleen_qd);
+
+                 var symptom_dom_kidney_qd= document.getElementById('lung_symptom_kidney_qd');
+                var symptom_chart_kidney_qd = echarts.init(symptom_dom_kidney_qd);
+                var symptom_option_kidney_qd={
+                  title: {
+                      text: '肾气虚分布',
+                      left: 'center'
+                  },
+                  tooltip: {
+                      trigger: 'item'
+                  },
+                  legend:{  selectedMode:false,
+                      orient: 'vertical',
+                      left: 'left',
+                  },
+                  series: [
+                      {
+                          tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                          type: 'pie',
+                          radius: '60%',
+                        label: {
+                            normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                          },
+                          data: [
+                              {value: returndata_lung.num_kidney_qd, name: '患病'},
+                              {value: returndata_lung.num_patient-returndata_lung.num_kidney_qd, name: '未患病' },
+                          ],
+                          emphasis: {
+                              itemStyle: {
+                                  shadowBlur: 10,
+                                  shadowOffsetX: 0,
+                                  shadowColor: 'rgba(0,0,0,0.5)'
+                              }
+                          }
+                      }
+                  ]
+                };
+                symptom_chart_kidney_qd.setOption(symptom_option_kidney_qd);
+                          // return objdata
+              },
+              error: function () {
+                  console.log("请求数据失败")
+              }
+          })
+      });
+              },
+              error: function () {
+                  console.log("请求数据失败")
+              }
+          })
+      });
+  </script>
   </body>
-
 </html>

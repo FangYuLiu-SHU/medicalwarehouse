@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+ <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>test</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <style>
+      /*.layui-form-label{*/
+      /*  width: 90px;*/
+      /*  font-size: 14px;*/
+      /*}*/
+      .layui-input{
+        min-height: 20px;
+        margin-bottom: 20px;
+      }
+      .layui-select{
+        height: 35px;width: 50px;
+      }
+      .layui-input-block{
+          width: 350px;
+      }
+      .layui-form-item{
+          width: 100%;
+          margin-top: 10px;
+      }
+
+    </style>
+  </head>
+<body>
+  <div class="layui-body" style="left: 0">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+          <legend>输入肺科患者统计指标</legend>
+            <div style="text-align:right;"><a href="http://127.0.0.1:5000/datastatistic" style="color:gray;font-size:14px;">返回统计主页</a></div>
+        </fieldset>
+            <div id="container2"  style="width:35% ;float: left">
+                <form class="layui-form" action="" method="post" lay-filter="info_display">
+<!--                                <div class="layui-form-item" >
+            <label class="layui-form-label">肺气虚选择</label>
+                <div class="layui-input-block" >
+                  <select name="symptoms_type_lung" lay-filter="info_display_sym_lung"  class="layui-select" >
+                      <option value="" style="font-size: 14px;">请选择</option>
+                      <option value="1" style="font-size: 14px;">患病</option>
+                      <option value="2" style="font-size: 14px;">未患病</option>
+                  </select>
+&lt;!&ndash;                <button class="layui-btn submit_query" lay-submit lay-filter="bt1">提交</button>&ndash;&gt;
+                </div>
+            </div>
+                                <div class="layui-form-item" >
+            <label class="layui-form-label">脾气虚选择</label>
+                <div class="layui-input-block" >
+                  <select name="symptoms_type_spleen" lay-filter="info_display_sym_spleen"  class="layui-select" >
+                      <option value="" style="font-size: 14px;">请选择</option>
+                      <option value="1" style="font-size: 14px;">患病</option>
+                      <option value="2" style="font-size: 14px;">未患病</option>
+                  </select>
+&lt;!&ndash;                <button class="layui-btn submit_query" lay-submit lay-filter="bt1">提交</button>&ndash;&gt;
+                </div>
+            </div>
+            <div class="layui-form-item" >
+            <label class="layui-form-label">肾气虚选择</label>
+                <div class="layui-input-block" >
+                  <select name="symptoms_type_kidney" lay-filter="info_display_sym_kidney"  class="layui-select" >
+                      <option value="" style="font-size: 14px;">请选择</option>
+                      <option value="1" style="font-size: 14px;">患病</option>
+                      <option value="2" style="font-size: 14px;">未患病</option>
+                  </select>
+&lt;!&ndash;                <button class="layui-btn submit_query" lay-submit lay-filter="bt1">提交</button>&ndash;&gt;
+                </div>
+            </div>-->
+           <div class="layui-form-item">
+              <label class="layui-form-label">患者性别</label>
+              <div class="layui-input-block">
+                <select name="gender" lay-filter="info_display_gender"  class="layui-select"  >
+                  <option value="" >请选择</option>
+                  <option value="1"  >男</option>
+                  <option value="2" >女</option>
+                </select>
+<!--                <button class="layui-btn submit_query" lay-submit lay-filter="bt2">提交</button>-->
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline"><label class="layui-form-label">年龄范围</label>
+                    <div class="layui-input-inline"style="width: 160px;" >
+                        <input type="text" name="min_age" placeholder="最小值" autocomplete="off" class="layui-input" lay-verify="Mverify" >
+                    </div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-input-inline" style="width: 165px;">
+                        <input type="text" name="max_age" placeholder="最大值" autocomplete="off" class="layui-input" lay-verify="Mverify" >
+                    </div>
+                </div>
+            </div>
+                 <div class="layui-form-item">
+                <button  class="layui-btn submit_query" type="button" lay-submit lay-filter="*"  id="LAY-button-shen"  style="margin-left: 110px;width: 100px">立即提交</button>
+<!--                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+            </div>
+            <div class="layui-panel"  style="margin-top: 50px;margin-left: 120px;">
+                <div class="layui-tab-item layui-show"  id="content" style="font-size: 14px;"></div>
+            </div>
+                </form>
+          </div>
+
+      <div id="container3" style="width:65%;height: 85%;float: left" >
+          <div  id="symptoms_lung_fig"  style="width: 500px; height: 290px;float: left" ></div>
+           <div  id="symptoms_spleen_fig" style="width: 500px; height: 290px;float: left" ></div>
+           <div  id="symptoms_kidney_fig" style="width: 500px; height: 290px;float: left" ></div>
+          <div  id="gender_fig" style="width: 500px; height: 290px;float: left" >4</div>
+        </div>
+     </div>
+   <script src="../static/layui/layui.js"></script>
+    <script src="../static/js/jquery.js"></script>
+        <script type="text/javascript" src="../static/js/echarts.js"></script>
+      <script type="text/javascript" src="../static/js/function.js"></script>
+    <script>
+
+        var sex_dom = document.getElementById('gender_fig');
+        var sex_chart = echarts.init(sex_dom);
+        var symptom_dom_lung = document.getElementById('symptoms_lung_fig');
+        var symptom_chart_lung = echarts.init(symptom_dom_lung);
+        var symptom_dom_spleen = document.getElementById('symptoms_spleen_fig');
+        var symptom_chart_spleen = echarts.init(symptom_dom_spleen);
+        var symptom_dom_kidney = document.getElementById('symptoms_kidney_fig');
+        var symptom_chart_kidney = echarts.init(symptom_dom_kidney);
+        var yMax = 150;
+        var dataShadow = [];
+
+        function fig_dis(returndata_lung,symptom_chart_lung,symptom_chart_spleen,symptom_chart_kidney,sex_chart){
+            // symptom_chart_lung.clear();symptom_chart_kidney.clear();sex_chart.clear();symptom_chart_spleen.clear();
+            var sex_option = {
+                title: {
+                    text: '患者性别分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend:{  selectedMode:false,
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        // name: '访问来源',
+                        type: 'pie',
+                        radius: '60%',
+                        label: {
+                        normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                        },
+                        data: [
+                            {value: returndata_lung.num_male, name: '男性'},
+                            {value: returndata_lung.num_female, name: '女性'},
+                        ].filter(e => Number(e.value) !== 0),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            sex_chart.setOption(sex_option)
+            var symptom_option_lung = {
+                title: {
+                    text: '肺气虚患者分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend:{  selectedMode:false,
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        type: 'pie',
+                        radius: '60%',
+
+                        label: {
+                            normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                        },
+
+                        data: [
+                            {value: returndata_lung.num_lung_qd, name: '患病'},
+                            {value: returndata_lung.num_patient-returndata_lung.num_lung_qd, name: '未患病'},
+                        ].filter(e => Number(e.value) !== 0),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            symptom_chart_lung.setOption(symptom_option_lung);
+            var symptom_option_spleen = {
+                title: {
+                    text: '脾气虚患者分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend:{  selectedMode:false,
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        type: 'pie',
+                        radius: '60%',
+
+                        label: {
+                            normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                        },
+
+                        data: [
+                            {value: returndata_lung.num_spleen_qd, name: '患病'},
+                            {value: returndata_lung.num_patient-returndata_lung.num_spleen_qd, name: '未患病'},
+                        ].filter(e => Number(e.value) !== 0),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            symptom_chart_spleen.setOption(symptom_option_spleen);
+            var symptom_option_kidney = {
+                title: {
+                    text: '肾气虚患者分布',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend:{  selectedMode:false,
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        tooltip:{
+                          trigger:'item',
+                      formatter:'{b}:{c}人,，占比{d}%'
+                      },
+                        type: 'pie',
+                        radius: '60%',
+
+                        label: {
+                            normal: {
+                                position: "outside",
+                                show: true,
+                                formatter:'{b}:{c}人'
+                            }
+                        },
+
+                        data: [
+                            {value: returndata_lung.num_kidney_qd, name: '患病'},
+                            {value: returndata_lung.num_patient-returndata_lung.num_kidney_qd, name: '未患病'},
+                        ].filter(e => Number(e.value) !== 0),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0,0,0,0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            symptom_chart_kidney.setOption(symptom_option_kidney);
+        }
+
+        layui.use(['form'], function() {
+        var form = layui.form, layer = layui.layer, $ = layui.jquery;
+           form.verify({
+              Mverify: (value) => {
+                if (isNaN(value)||value<0||value>150) {
+                    layer.alert("非法数据,请重新输入!", {icon: 2, skin: 'layer-ext-demo',})
+                    return  false;
+                }
+              },
+            });
+
+
+        // //监听提交
+        form.on('submit(*)', function () {
+            var data = form.val('info_display');
+            var objectData = JSON.parse(JSON.stringify(data));//转成JSON对象
+            var min_age=Number(objectData.min_age),max_age=Number(objectData.max_age);
+            document.getElementById("content").innerText='';
+            symptom_chart_lung.clear();
+            symptom_chart_kidney.clear();
+            sex_chart.clear();
+            symptom_chart_spleen.clear();
+            if(!min_age){
+                min_age=0;
+            }
+            if(!max_age){
+                max_age=150;
+            }
+            if(objectData.gender==='1'){
+                gender='男'
+            }else if(objectData.gender==='2') {
+                gender='女'
+            }else {
+                gender='不区分'
+            }
+            if(min_age>=max_age) {
+                layer.alert("非法数据，请重新输入!", {icon: 2, skin: 'layer-ext-demo',})
+                return false
+            }
+            $.ajax({
+                    url:"http://127.0.0.1:5000/lung_statistic",
+                    data:data,
+                    dataType:"json",
+                    type:'POST',
+                    success:function (objdata){
+                        console.log("请求数据成功")
+                        var content="输入选项如下：\n\n患者性别： " + gender + "\n\n患者年龄范围： " + min_age + "~" + max_age+"岁"
+                        document.getElementById("content").innerText=content;
+                        if(objdata==='无数据'){
+                             layer.alert("不存在数据，请重新输入!", {icon: 0, skin: 'layer-ext-demo',})
+                             return false
+                        } else{
+                            var returndata_lung = JSON.parse(JSON.stringify(objdata));
+                            console.log(returndata_lung)
+                            fig_dis(returndata_lung,symptom_chart_lung,symptom_chart_spleen,symptom_chart_kidney,sex_chart)
+                            }
+                        },
+                     error: function() {
+                         console.log("请求数据失败")
+                     }
+                    })
+            });
+    });
+
+    </script>
+
+</body>
+</html>

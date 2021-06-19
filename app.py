@@ -224,9 +224,9 @@ def kidney_statistic():
         return data_json
 
 
-@app.route('/statistic_detail',methods=['GET', 'POST'])
-def statistic_detail():
-    return render_template('statistic_detail.html')
+@app.route('/statistic_kidney',methods=['GET', 'POST'])
+def statistic_detail_kidney():
+    return render_template('statistic_kidney.html')
 
 
 # 肝科病人信息统计
@@ -290,6 +290,9 @@ def liver_statistic():
         data_json = json.dumps(data)
         return data_json
 
+@app.route('/statistic_liver',methods=['GET', 'POST'])
+def statistic_detail_liver():
+    return render_template('statistic_liver.html')
 
 # 肺科病人信息统计
 @app.route('/lung_statistic', methods=["GET", "POST"])
@@ -352,6 +355,9 @@ def lung_statistic():
 
         data_json = json.dumps(data)
         return data_json
+@app.route('/statistic_lung',methods=['GET', 'POST'])
+def statistic_detail_lung():
+    return render_template('statistic_lung.html')
 
 # 病人信息展示页面
 @app.route('/patient_info_show')

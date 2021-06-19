@@ -1,9 +1,0 @@
-<changelist name="Uncommitted_changes_before_Update_at_2021_6_15_10_36_[Default_Changelist]" date="1623724599667" recycled="false" toDelete="true">
-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_6_15_10_36_[Default_Changelist]/shelved.patch" />
-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 2021/6/15 10:36 [Default Changelist]" />
-  <binary>
-    <option name="BEFORE_PATH" value="files/pulseFile.csv" />
-    <option name="AFTER_PATH" value="files/pulseFile.csv" />
-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_6_15_10_36_[Default_Changelist]/pulseFile.csv" />
-  </binary>
-</changelist>
