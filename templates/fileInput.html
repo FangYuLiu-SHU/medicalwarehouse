@@ -69,6 +69,14 @@
       .input_clear:hover {
         opacity: 1;
       }
+      .uploadProgress {
+        width: 200px;
+        display: inline-block;
+      }
+      .uploadZi {
+        display: inline-block;
+        margin-bottom: 7px;
+      }
     </style>
   </head>
   <body>
@@ -96,6 +104,13 @@
               name="data_source"
               value="MySQL"
               title="Mysql"
+              lay-filter="show"
+            />
+            <input
+              type="radio"
+              name="data_source"
+              value="SqlServer"
+              title="SqlServer"
               lay-filter="show"
             />
           </div>
@@ -192,7 +207,7 @@
               </div>
             </div>
           </div>
-          <div class="layui-inline">
+          <div class="layui-inline SqlServer">
             <div class="layui-form-item">
               <label class="layui-form-label">charset</label>
               <div class="layui-input-block">
@@ -249,6 +264,7 @@
                 name="infoFile"
                 id="selectFile"
                 class="file"
+                title=""
                 data-name="file"
               />
             </a>
@@ -304,11 +320,11 @@
                 id="selectDir"
                 class="file"
                 data-name="fileDir"
+                title=""
                 webkitdirectory
               />
             </a>
           </div>
-
           <div class="layui-inline local">
             <label class="layui-form-label">编码</label>
             <div class="layui-input-block">
@@ -320,7 +336,7 @@
           </div>
         </div>
         <div class="layui-form-item">
-          <div class="layui-input-block">
+          <div class="layui-inline">
             <button class="layui-btn" lay-submit lay-filter="formDemo">
               导入
             </button>
@@ -331,16 +347,24 @@
               重置
             </button>
           </div>
+          <div class="layui-inline uploadUi">
+            <div class="layui-progress uploadProgress" lay-filter="upload">
+              <div class="layui-progress-bar" lay-percent="0%"></div>
+            </div>
+            <span class="uploadZi"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63d;</i>上传中</span>
+          </div>
         </div>
+        
       </form>
     </div>
     <script src="../static/layui/layui.js"></script>
     <script src="../static/js/jquery.js"></script>
     <script>
       //Demo
-      layui.use(["form", "layer"], function () {
+      layui.use(["form", "layer", "element"], function () {
         const form = layui.form;
         const layer = layui.layer;
+        const element = layui.element;
         //监听提交
         form.on("radio(show)", (data) => {
           const { value } = data;
@@ -349,31 +373,31 @@
         });
         form.verify({
           host: (value) =>
-            formStatu === "MySQL" && value.trim().length === 0 && "请输入host",
+            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入host",
           port: (value) =>
-            formStatu === "MySQL" && value.trim().length === 0 && "请输入port",
+            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入port",
           user: (value) =>
-            formStatu === "MySQL" && value.trim().length === 0 && "请输入user",
+            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入user",
           password: (value) =>
-            formStatu === "MySQL" &&
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
             "请输入password",
           db: (value) =>
-            formStatu === "MySQL" && value.trim().length === 0 && "请输入db",
+            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入db",
           charset: (value) =>
-            formStatu === "MySQL" &&
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
             "请输入charset",
           patient_table_name: (value) =>
-            formStatu === "MySQL" &&
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
             "请输入病例信息表名",
           charset: (value) =>
-            formStatu === "MySQL" &&
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
             "请输入charset",
           pulse_table: (value) =>
-            formStatu === "MySQL" &&
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
             "请输入脉搏数据表名",
           pulse_dir: (value) =>
@@ -388,10 +412,20 @@
         form.on("submit(formDemo)", function (data) {
           const { field, form } = data;
           let uploadData = new FormData();
+          let sign = false;
           [...fileData].forEach((e) => uploadData.append(e[0], e[1]));
+          
           for (const key in field) {
+            if(key === "data_source" && field[key] !== "local") {
+              sign = true
+            }
             uploadData.append(key, field[key].trim());
           }
+          if(sign) {
+            uploadData.delete("file");
+            uploadData.delete("fileDir");
+          }
+          uploadUi.show();
           $.ajax({
             url: "/dataimport",
             type: "POST",
@@ -401,32 +435,66 @@
             contentType: false,
             success: (data) => {
               form.reset();
-              formStatu = "local"
+              formStatu = "local";
               switchUi(formStatu);
+              clearInput("file");
+              clearInput("fileDir");
+              uploadUi.hide();
+              element.progress("upload", `0%`);
               layer.msg(data);
+            },
+            error: (err) => {
+              uploadUi.hide();
+              element.progress("upload", `0%`);
+            },
+            xhr: function () {
+              myXhr = $.ajaxSettings.xhr();
+              if (myXhr.upload) {
+                myXhr.upload.addEventListener(
+                  "progress",
+                  function (e) {
+                    if (e.lengthComputable) {
+                      var percent = Math.floor((e.loaded / e.total) * 100);
+                      element.progress("upload", `${percent}%`);
+                    }
+                  },
+                  false
+                );
+              }
+              return myXhr;
             },
           });
           return false;
         });
       });
+
       $("#selectFile").on("change", (e) => {
         const { files, dataset } = e.target;
-        if(files.length === 0) return
+        if (files.length === 0) return;
+        // let reader = new FileReader();
+        // reader.readAsText(files[0])
+        // reader.onload = function () {
+        //   console.log(reader.result.split("\n"));
+        // }
         const { name } = dataset;
         clearInput("file");
-        addFile(files, name);
+        addFile([...files], name);
+        e.target.value = "";
       });
       $("#selectDir").on("change", (e) => {
         const { files, dataset } = e.target;
         const { name } = dataset;
-        addFile(files, name);
+        addFile([...files], name);
+        e.target.value = "";
       });
       $(".input_clear").on("click", (e) => {
         const { dataset } = e.target;
         clearInput(dataset.relateInput);
       });
       $(".import_reset").on("click", (e) => {
-        formStatu = "local"
+        formStatu = "local";
+        clearInput("file");
+        clearInput("fileDir");
         switchUi(formStatu);
       });
       function switchUi(value) {
@@ -434,11 +502,19 @@
           case "MySQL": {
             sourceMysql.removeClass("hide");
             sourceLocal.addClass("hide");
+            sourceSqlserver.removeClass("hide");
             break;
           }
           case "local": {
             sourceMysql.addClass("hide");
             sourceLocal.removeClass("hide");
+            sourceSqlserver.addClass("hide");
+            break;
+          }
+          case "SqlServer": {
+            sourceMysql.removeClass("hide");
+            sourceLocal.addClass("hide");
+            sourceSqlserver.addClass("hide");
             break;
           }
         }
@@ -462,6 +538,9 @@
       }
       const sourceMysql = $(".mysql");
       const sourceLocal = $(".local");
+      const sourceSqlserver = $(".SqlServer");
+      const uploadUi = $(".uploadUi");
+      uploadUi.hide();
       let formStatu = "local";
       let fileData = new FormData();
       let fileInputName = {
