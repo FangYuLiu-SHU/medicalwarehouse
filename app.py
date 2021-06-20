@@ -8,6 +8,7 @@ from utils import load_data
 import os
 from algorithm import predict
 from sqlalchemy import create_engine
+import pymssql
 
 # 连接数据库
 try:
@@ -99,7 +100,7 @@ def dataimport():
             load_data.clear_folder('./tmp/')
             return 'Data importing fialed！'
         load_data.clear_folder('./tmp/')
-     elif data_source == 'MySQL':            # 从MySQL导入数据到数据仓库
+    elif data_source == 'MySQL':            # 从MySQL导入数据到数据仓库
         host = request.form.get('host')
         port = request.form.get('port')
         user = request.form.get('user')
@@ -110,8 +111,7 @@ def dataimport():
         pulse_table_na_rule = request.form.get('pulse_table_na_rule')
         # print(host, port, user, passwd, db, charset, patient_info_table)
         import_database_data(patient_info_table_name, pulse_table_name, host, port, user, passwd, db, charset,
-                              patient_info_table,data_source)
-
+                                  patient_info_table,data_source)
         # try:
         #     # 连接数据库
         #     src_db = pymysql.connect(host=host, port=int(port), user=user, passwd=passwd, db=db, charset=charset)
