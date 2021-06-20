@@ -401,6 +401,8 @@
             contentType: false,
             success: (data) => {
               form.reset();
+              formStatu = "local"
+              switchUi(formStatu);
               layer.msg(data);
             },
           });
