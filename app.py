@@ -99,7 +99,7 @@ def dataimport():
             load_data.clear_folder('./tmp/')
             return 'Data importing fialed！'
         load_data.clear_folder('./tmp/')
-    elif data_source == 'MySQL':            # 从MySQL导入数据到数据仓库
+     elif data_source == 'MySQL':            # 从MySQL导入数据到数据仓库
         host = request.form.get('host')
         port = request.form.get('port')
         user = request.form.get('user')
@@ -109,44 +109,95 @@ def dataimport():
         patient_info_table = request.form.get('patient_info_table')
         pulse_table_na_rule = request.form.get('pulse_table_na_rule')
         # print(host, port, user, passwd, db, charset, patient_info_table)
+        import_database_data(patient_info_table_name, pulse_table_name, host, port, user, passwd, db, charset,
+                              patient_info_table,data_source)
 
-        try:
-            # 连接数据库
-            src_db = pymysql.connect(host=host, port=int(port), user=user, passwd=passwd, db=db, charset=charset)
-            src_cursor = src_db.cursor()
-            # 读取病例信息表
-            sql = 'select * from ' + str(patient_info_table)
-            src_cursor.execute(sql)
-            query_result = src_cursor.fetchall()
-            if len(query_result) == 0:
-                print('Empty table!')
-                return 'Empty table!'
-            elif len(query_result[0]) != len(col_names):
-                print('Columns do not match!')
-                return 'Columns do not match!'
-            pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-            # print(pd_patient_info)
-            # 导入病例信息表到数据仓库
-            # print(patient_info_table_name)
-            pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
-
-            # 读取并导入脉象数据
-            for patient_id in pd_patient_info['id']:
-                sql = 'select * from ' + pulse_table_name + patient_id
-                try:
-                    src_cursor.execute(sql)
-                except:
-                    print(patient_id, '脉博数据表不存在！')
-                    continue
-                query_result = src_cursor.fetchall()
-                pd_pulse = pd.DataFrame(list(query_result))
-                # print(pd_pulse)
-                pd_pulse.to_sql(name=pulse_table_name+patient_id.lower(), con=engine, if_exists='replace', index=False)
-        except:
-            print('Data importing failed！')
-            return 'Data importing failed！'
+        # try:
+        #     # 连接数据库
+        #     src_db = pymysql.connect(host=host, port=int(port), user=user, passwd=passwd, db=db, charset=charset)
+        #     src_cursor = src_db.cursor()
+        #     # 读取病例信息表
+        #     sql = 'select * from ' + str(patient_info_table)
+        #     src_cursor.execute(sql)
+        #     query_result = src_cursor.fetchall()
+        #     if len(query_result) == 0:
+        #         print('Empty table!')
+        #         return 'Empty table!'
+        #     elif len(query_result[0]) != len(col_names):
+        #         print('Columns do not match!')
+        #         return 'Columns do not match!'
+        #     pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
+        #     # print(pd_patient_info)
+        #     # 导入病例信息表到数据仓库
+        #     # print(patient_info_table_name)
+        #     pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
+        #
+        #     # 读取并导入脉象数据
+        #     for patient_id in pd_patient_info['id']:
+        #         sql = 'select * from ' + pulse_table_name + patient_id
+        #         try:
+        #             src_cursor.execute(sql)
+        #         except:
+        #             print(patient_id, '脉博数据表不存在！')
+        #             continue
+        #         query_result = src_cursor.fetchall()
+        #         pd_pulse = pd.DataFrame(list(query_result))
+        #         # print(pd_pulse)
+        #         pd_pulse.to_sql(name=pulse_table_name+patient_id.lower(), con=engine, if_exists='replace', index=False)
+        # except:
+        #     print('Data importing failed！')
+        #     return 'Data importing failed！'
+    elif data_source == 'SqlServer':  # 从MySQL导入数据到数据仓库
+        host = request.form.get('host')
+        port = request.form.get('port')
+        user = request.form.get('user')
+        passwd = request.form.get('passwd')
+        db = request.form.get('db')
+        patient_info_table = request.form.get('patient_info_table')
+        pulse_table_na_rule = request.form.get('pulse_table_na_rule')
+        charset="GBK"
+        import_database_data(patient_info_table_name, pulse_table_name, host, port, user, passwd, db,charset,
+                              patient_info_table,data_source)
 
     return 'Data importing succeed！'
+    
+
+#patient_info_table_name 表名 pulse_table_name脉冲表名字
+def import_database_data(patient_info_table_name,pulse_table_name,host,port,user,passwd,db,charset,patient_info_table,data_source):
+    try:
+        #连接数据库
+        conn=""
+        if data_source=='MySQL':
+            conn=pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, charset=charset)
+        if data_source == 'SqlServer':
+            conn= pymssql.connect( host=host, port=port,  user=user,password=passwd,  database=db ,charset=charset)
+        cursor = conn.cursor()
+        # 读取病例信息表
+        sqlstr = 'select * from ' + patient_info_table
+        cursor.execute(sqlstr)
+        data = cursor.fetchall()  # 读取数据
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        pd_patient_info = pd.DataFrame(list(data), columns=col_names)
+        if len(pd_patient_info) == 0:
+            print('No data!')
+            return 'No data!'
+        # 导入病例信息表到数据仓库
+        pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
+        # 读取并导入脉象数据
+        for patient_id in pd_patient_info['id']:
+            sql = 'select * from ' + pulse_table_name + patient_id
+            try:
+                cursor.execute(sql)
+            except:
+                print(patient_id, '脉博数据表不存在！')
+                continue
+            query_result = cursor.fetchall()
+            pd_pulse = pd.DataFrame(list(query_result))
+            print(pd_pulse)
+            pd_pulse.to_sql(name=pulse_table_name + patient_id.lower(), con=engine, if_exists='replace', index=False)
+    except:
+        print('Data import failed！')
+        return 'Data import failed！'
 
 @app.route('/fileInput', methods=["GET", "POST"])
 def fileInpute():
