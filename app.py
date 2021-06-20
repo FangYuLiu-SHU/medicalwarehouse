@@ -43,15 +43,10 @@ def hello_world():
 # 数据导入
 @app.route('/dataimport', methods=["GET", "POST"])
 def dataimport():
-    # data = request.get_data()
-    # data = json.loads(data)
-    # print(data)
-    # print(data['data_source'])
-    # print(data['patient_info_file'])
     data_source = request.form.get('data_source')   # 数据来源
     dept = request.form.get('dept')     # 科室
     # print(data_source, dept)
-
+    # 确定信息表字段
     if dept == 'kidney':
         patient_info_table_name = 'ods_kidney_info'
         pulse_table_name = 'ods_kidney_pulse_'
@@ -73,9 +68,6 @@ def dataimport():
         patient_info_file_encoding = request.form.get('patient_info_file_encoding') # 病例信息表编码格式
         pulse_files = request.files.getlist("fileDir")  # 脉搏信号表,多个，数组存放
         pulse_file_encoding = request.form.get('pulse_file_encoding')  # 脉搏信号表编码格式
-        # print(patient_info_file)
-        # print(pulse_files)
-        # print(patient_info_file_encoding, pulse_file_encoding)
         try:
             # 清空临时文件目录下的所有内容
             load_data.clear_folder('./tmp/')
@@ -102,10 +94,11 @@ def dataimport():
             elif dept == 'lung':
                 load_data.load_lung_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding=patient_info_file_encoding)
                 load_data.load_lung_pulse_to_mysql(pulse_path, encoding=pulse_file_encoding)
-            load_data.clear_folder('./tmp/')
         except:
             print('Data importing fialed！')
+            load_data.clear_folder('./tmp/')
             return 'Data importing fialed！'
+        load_data.clear_folder('./tmp/')
     elif data_source == 'MySQL':            # 从MySQL导入数据到数据仓库
         host = request.form.get('host')
         port = request.form.get('port')
@@ -115,30 +108,26 @@ def dataimport():
         charset = request.form.get('charset')
         patient_info_table = request.form.get('patient_info_table')
         pulse_table_na_rule = request.form.get('pulse_table_na_rule')
+        # print(host, port, user, passwd, db, charset, patient_info_table)
 
-        # host = 'localhost'
-        # port = 3306
-        # user = 'root'
-        # passwd = '000000'
-        # db = 'srcdb'
-        # charset = 'utf8'
-        # patient_info_table = 'ods_kidney_info'
         try:
             # 连接数据库
-            src_db = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, charset=charset)
+            src_db = pymysql.connect(host=host, port=int(port), user=user, passwd=passwd, db=db, charset=charset)
             src_cursor = src_db.cursor()
             # 读取病例信息表
-            sql = 'select * from ' + patient_info_table
+            sql = 'select * from ' + str(patient_info_table)
             src_cursor.execute(sql)
             query_result = src_cursor.fetchall()
-            print(query_result)
+            if len(query_result) == 0:
+                print('Empty table!')
+                return 'Empty table!'
+            elif len(query_result[0]) != len(col_names):
+                print('Columns do not match!')
+                return 'Columns do not match!'
             pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-            print(pd_patient_info)
-            if len(pd_patient_info)==0:
-                print('No data!')
-                return 'No data!'
+            # print(pd_patient_info)
             # 导入病例信息表到数据仓库
-            print(patient_info_table_name)
+            # print(patient_info_table_name)
             pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
 
             # 读取并导入脉象数据
@@ -151,7 +140,7 @@ def dataimport():
                     continue
                 query_result = src_cursor.fetchall()
                 pd_pulse = pd.DataFrame(list(query_result))
-                print(pd_pulse)
+                # print(pd_pulse)
                 pd_pulse.to_sql(name=pulse_table_name+patient_id.lower(), con=engine, if_exists='replace', index=False)
         except:
             print('Data importing failed！')
