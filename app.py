@@ -43,14 +43,14 @@ def hello_world():
 # 数据导入
 @app.route('/dataimport', methods=["GET", "POST"])
 def dataimport():
-    data = request.get_data()
-    data = json.loads(data)
-    print(data)
-    print(data['data_source'])
-    print(data['patient_info_file'])
+    # data = request.get_data()
+    # data = json.loads(data)
+    # print(data)
+    # print(data['data_source'])
+    # print(data['patient_info_file'])
     data_source = request.form.get('data_source')   # 数据来源
     dept = request.form.get('dept')     # 科室
-    print(data_source, dept)
+    # print(data_source, dept)
 
     if dept == 'kidney':
         patient_info_table_name = 'ods_kidney_info'
@@ -66,13 +66,16 @@ def dataimport():
         col_names = ['id', 'sex', 'age', 'wm_diagnosis', 'lung_qi_deficiency', 'spleen_qi_deficiency', 'kidney_qi_deficiency',
                       'FEV1', 'FVC', 'FEV1%', 'FEV1/FVC', 'PEF', 'tongueA', 'tongueB', 'tongueC', 'pulseA', 'pulseB', 'pulseC', ]
 
-    patient_info_path = './tmp/patientinfo/'
-    pulse_path = './tmp/pulse/'
+    patient_info_path = './tmp/patientinfo'
+    pulse_path = './tmp/pulse'
     if data_source == 'local':              # 从本地导入数据到数据仓库
-        patient_info_file = request.files.get('patient_info_file')  # 病例信息表
-        patient_info_file_encoding = request.files.get('patient_info_file_encoding') # 病例信息表编码格式
-        pulse_files = request.files.get('pulse_files')  # 脉搏信号表,多个，数组存放
-        pulse_file_encoding = request.files.get('pulse_file_encoding')  # 脉搏信号表编码格式
+        patient_info_file = request.files.getlist("file")[0]  # 病例信息表
+        patient_info_file_encoding = request.form.get('patient_info_file_encoding') # 病例信息表编码格式
+        pulse_files = request.files.getlist("fileDir")  # 脉搏信号表,多个，数组存放
+        pulse_file_encoding = request.form.get('pulse_file_encoding')  # 脉搏信号表编码格式
+        # print(patient_info_file)
+        # print(pulse_files)
+        # print(patient_info_file_encoding, pulse_file_encoding)
         try:
             # 清空临时文件目录下的所有内容
             load_data.clear_folder('./tmp/')
@@ -81,7 +84,9 @@ def dataimport():
                 patient_info_file.save(os.path.join(patient_info_path, 'patient_info.csv'))
             if pulse_files is not None:
                 for pulse_file in pulse_files:
-                    pulse_file.save(os.path.join(pulse_path, pulse_file.filename))
+                    filename = pulse_file.filename
+                    filename = filename[filename.index('/')+1:]
+                    pulse_file.save(os.path.join(pulse_path, filename))
         except:
             print('Data uploading failed！')
             return 'Data uploading failed！'
@@ -89,14 +94,15 @@ def dataimport():
         # 将数据导入数据仓库
         try:
             if dept == 'kidney':
-                load_data.load_kidney_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding='utf-8')
-                load_data.load_kidney_pulse_to_mysql(pulse_path, encoding='utf-16 le')
+                load_data.load_kidney_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding=patient_info_file_encoding)
+                load_data.load_kidney_pulse_to_mysql(pulse_path, encoding=pulse_file_encoding)
             elif dept == 'liver':
-                load_data.load_liver_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding='utf-8')
-                load_data.load_liver_pulse_to_mysql(pulse_path, encoding='utf-16 le')
+                load_data.load_liver_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding=patient_info_file_encoding)
+                load_data.load_liver_pulse_to_mysql(pulse_path, encoding=pulse_file_encoding)
             elif dept == 'lung':
-                load_data.load_lung_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding='utf-8')
-                load_data.load_lung_pulse_to_mysql(pulse_path, encoding='utf-16 le')
+                load_data.load_lung_info_to_mysql(os.path.join(patient_info_path, 'patient_info.csv'), encoding=patient_info_file_encoding)
+                load_data.load_lung_pulse_to_mysql(pulse_path, encoding=pulse_file_encoding)
+            load_data.clear_folder('./tmp/')
         except:
             print('Data importing fialed！')
             return 'Data importing fialed！'
@@ -148,8 +154,8 @@ def dataimport():
                 print(pd_pulse)
                 pd_pulse.to_sql(name=pulse_table_name+patient_id.lower(), con=engine, if_exists='replace', index=False)
         except:
-            print('Data import failed！')
-            return 'Data import failed！'
+            print('Data importing failed！')
+            return 'Data importing failed！'
 
     return 'Data importing succeed！'
 
