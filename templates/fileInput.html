@@ -54,7 +54,7 @@
       .layui-form-pane .layui-input-block {
         margin-left: 130px;
       }
-      .file_icon:hover+.input_clear{
+      .file_icon:hover + .input_clear {
         opacity: 1;
       }
       .input_clear {
@@ -85,7 +85,7 @@
           <div class="layui-input-block">
             <input
               type="radio"
-              name="source"
+              name="data_source"
               value="local"
               title="本地"
               lay-filter="show"
@@ -93,7 +93,7 @@
             />
             <input
               type="radio"
-              name="source"
+              name="data_source"
               value="MySQL"
               title="Mysql"
               lay-filter="show"
@@ -168,7 +168,7 @@
               <div class="layui-input-block">
                 <input
                   type="password"
-                  name="password"
+                  name="passwd"
                   value="000000"
                   placeholder="请输入"
                   class="layui-input"
@@ -199,7 +199,7 @@
                 <input
                   type="text"
                   name="charset"
-                  value="utf-8"
+                  value="utf8"
                   placeholder="请输入"
                   class="layui-input"
                   lay-verify="charset"
@@ -222,7 +222,9 @@
                 readonly="readonly"
                 lay-verify="patient_info"
               />
-              <i class="layui-icon input_clear" data-relate-input="file">&#x1006;</i>
+              <i class="layui-icon input_clear" data-relate-input="file"
+                >&#x1006;</i
+              >
               <!-- &#x1007; -->
             </div>
           </div>
@@ -231,7 +233,7 @@
             <div class="layui-input-inline">
               <input
                 type="text"
-                name="fileTableName"
+                name="patient_info_table"
                 placeholder="请输入"
                 class="layui-input"
                 lay-verify="patient_table_name"
@@ -242,13 +244,19 @@
             <!--					<input type="file" name="pulseFile" class="file">-->
             <a href="javascript:;" class="file"
               >点击选择文件
-              <input type="file" name="infoFile" id="selectFile" class="file" />
+              <input
+                type="file"
+                name="infoFile"
+                id="selectFile"
+                class="file"
+                data-name="file"
+              />
             </a>
           </div>
           <div class="layui-inline local">
             <label class="layui-form-label">编码</label>
             <div class="layui-input-block">
-              <select name="encode_info">
+              <select name="patient_info_file_encoding">
                 <option value="utf-8" selected>utf-8</option>
                 <option value="utf-16 le">utf-16 le</option>
               </select>
@@ -269,7 +277,9 @@
                 readonly="readonly"
                 lay-verify="pulse_dir"
               />
-              <i class="layui-icon input_clear" data-relate-input="dir">&#x1006;</i>
+              <i class="layui-icon input_clear" data-relate-input="fileDir"
+                >&#x1006;</i
+              >
             </div>
           </div>
           <div class="layui-inline mysql hide">
@@ -277,7 +287,7 @@
             <div class="layui-input-inline">
               <input
                 type="text"
-                name="fileStrName"
+                name="pulse_table_na_rule"
                 value="病例编号"
                 class="layui-input"
                 lay-verify="pulse_table"
@@ -293,6 +303,7 @@
                 name="pulseDir"
                 id="selectDir"
                 class="file"
+                data-name="fileDir"
                 webkitdirectory
               />
             </a>
@@ -301,7 +312,7 @@
           <div class="layui-inline local">
             <label class="layui-form-label">编码</label>
             <div class="layui-input-block">
-              <select name="encode_dir" lay-verify="">
+              <select name="pulse_file_encoding" lay-verify="">
                 <option value="utf-8">utf-8</option>
                 <option value="utf-16 le" selected>utf-16 le</option>
               </select>
@@ -313,7 +324,10 @@
             <button class="layui-btn" lay-submit lay-filter="formDemo">
               导入
             </button>
-            <button type="reset" class="layui-btn layui-btn-primary">
+            <button
+              type="reset"
+              class="layui-btn layui-btn-primary import_reset"
+            >
               重置
             </button>
           </div>
@@ -331,18 +345,7 @@
         form.on("radio(show)", (data) => {
           const { value } = data;
           formStatu = value;
-          switch (value) {
-            case "MySQL": {
-              sourceMysql.removeClass("hide");
-              sourceLocal.addClass("hide");
-              break;
-            }
-            case "local": {
-              sourceMysql.addClass("hide");
-              sourceLocal.removeClass("hide");
-              break;
-            }
-          }
+          switchUi(value);
         });
         form.verify({
           host: (value) =>
@@ -384,20 +387,11 @@
         });
         form.on("submit(formDemo)", function (data) {
           const { field, form } = data;
-          uploadData.append("data_source", field.source.trim());
-          uploadData.append("dept", field.dept.trim());
-          uploadData.append(
-            "patient_info_file_encoding",
-            field.encode_info.trim()
-          );
-          uploadData.append("pulse_file_encoding", field.encode_dir.trim());
-          uploadData.append("host", field.host.trim());
-          uploadData.append("port", field.port.trim());
-          uploadData.append("user", field.user.trim());
-          uploadData.append("passwd", field.password.trim());
-          uploadData.append("db", field.db.trim());
-          uploadData.append("charset", field.charset.trim());
-          uploadData.append("pulse_table_na_rule", field.fileTableName.trim());
+          let uploadData = new FormData();
+          [...fileData].forEach((e) => uploadData.append(e[0], e[1]));
+          for (const key in field) {
+            uploadData.append(key, field[key].trim());
+          }
           $.ajax({
             url: "/dataimport",
             type: "POST",
@@ -407,47 +401,77 @@
             contentType: false,
             success: (data) => {
               form.reset();
-              layer.msg("上传成功11111");
+              layer.msg(data);
             },
           });
           return false;
         });
       });
       $("#selectFile").on("change", (e) => {
-        const { files } = e.target;
-        for (let i = 0; i < files.length; ++i) {
-          if (fileName.indexOf(files[i].name) === -1) {
-            uploadData.append("file", files[i]);
-            fileName.push(files[i].name);
-          }
-        }
-        $("#selectFileName").val(fileName.join(";"));
+        const { files, dataset } = e.target;
+        if(files.length === 0) return
+        const { name } = dataset;
+        clearInput("file");
+        addFile(files, name);
       });
       $("#selectDir").on("change", (e) => {
-        const { files } = e.target;
-        for (let i = 0; i < files.length; ++i) {
-          if (dirFileName.indexOf(files[i].name) === -1) {
-            uploadData.append("fileDir", files[i]);
-            dirFileName.push(files[i].name);
+        const { files, dataset } = e.target;
+        const { name } = dataset;
+        addFile(files, name);
+      });
+      $(".input_clear").on("click", (e) => {
+        const { dataset } = e.target;
+        clearInput(dataset.relateInput);
+      });
+      $(".import_reset").on("click", (e) => {
+        formStatu = "local"
+        switchUi(formStatu);
+      });
+      function switchUi(value) {
+        switch (value) {
+          case "MySQL": {
+            sourceMysql.removeClass("hide");
+            sourceLocal.addClass("hide");
+            break;
+          }
+          case "local": {
+            sourceMysql.addClass("hide");
+            sourceLocal.removeClass("hide");
+            break;
           }
         }
-        $("#selectDirName").val(dirFileName.join(";"));
-      });
-      $(".input_clear").on("click", e => {
-        const { dataset } = e.target;
-        clearInput(dataset);
-      })
-      function clearInput(dataset) {
-        if(dataset.relateInput) {
-          a = 1
+      }
+      function addFile(files, name) {
+        const { data, el } = fileInputName[name];
+        for (let i = 0; i < files.length; ++i) {
+          if (data.indexOf(files[i].name) === -1) {
+            fileData.append(name, files[i]);
+            data.push(files[i].name);
+          }
         }
+        el.val(data.join(";"));
+      }
+      function clearInput(str) {
+        const { data, el } = fileInputName[str];
+        fileData.delete(str);
+        data.length = 0;
+        el.val("");
+        console.log([...fileData]);
       }
       const sourceMysql = $(".mysql");
       const sourceLocal = $(".local");
       let formStatu = "local";
-      let uploadData = new FormData();
-      let fileName = [];
-      let dirFileName = [];
+      let fileData = new FormData();
+      let fileInputName = {
+        file: {
+          data: [],
+          el: $("#selectFileName"),
+        },
+        fileDir: {
+          data: [],
+          el: $("#selectDirName"),
+        },
+      };
     </script>
   </body>
 </html>
