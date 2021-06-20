@@ -15,7 +15,7 @@ from torch.utils import data
 
 # 2模型输入参数加载模型
 K = 90  # history 35
-L = 4  # 分类数
+L = 6  # 分类数
 in_dim = 57
 rows = 2560
 HIDDEN_SIZE = K
@@ -25,7 +25,7 @@ EPOCH = 1000  # iteration times
 class FCLSTM(nn.Module):
     def __init__(self):
         super(FCLSTM, self).__init__()
-        #输入维度in_dim=56
+        #输入维度in_dim=57
         self.rnn = nn.LSTM(in_dim, HIDDEN_SIZE, batch_first=True)
         self.layer = nn.Sequential(nn.Linear(HIDDEN_SIZE, int(HIDDEN_SIZE / 2)),
                                    nn.ReLU(True),
