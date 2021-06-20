@@ -45,7 +45,6 @@ def hello_world():
 def dataimport():
     data = request.get_data()
     data = json.loads(data)
-    return "111"
     print(data)
     print(data['data_source'])
     print(data['patient_info_file'])
