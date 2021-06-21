@@ -714,6 +714,15 @@ def liver_patient_info():
 
 @app.route('/tongue_data',methods=['GET','POST'])
 def tongue_data():
+    from PIL import Image
+
+    def Image_PreProcessing(id,patient,figpath):
+        # 待处理图片存储路径
+        im = Image.open(figpath)
+        # Resize图片大小，入口参数为一个tuple，新的图片大小
+        imBackground = im.resize((260, 184))
+        imBackground.save('data/' +patient+'/'+id+'_processed.jpg', 'JPEG')
+
     def patient_type(patient):
         type = {
             0: "kidney",
@@ -735,17 +744,19 @@ def tongue_data():
             img_stream = img_f.read()
             img_stream = base64.b64encode(img_stream).decode()
         return img_stream
-
     id=request.form.get('id')
     patient= request.form.get('patient')
-    patient_office=patient_type(patient)
-    cur_path='data/'+patient+'/'+id+'.bmp'
-    # cur_path='D:/pycharm/work/data_warehouse/medicalwarehouse_bak/data/kidney/k0559.bmp'
-    img_stream=return_img_stream(cur_path)
+    cur_path_raw='data/' + patient + '/' + id + '.bmp'
     json_data = {}
-    # json_data['tongue_data']=cur_path
-    json_data['tongue_data'] = img_stream
+    if(os.path.exists(cur_path_raw)):
+        Image_PreProcessing(id, patient, cur_path_raw)
+        cur_path = 'data/' + patient + '/' + id + '_processed.jpg'
+        img_stream=return_img_stream(cur_path)
+        json_data['tongue_data'] = img_stream
+    else:
+        json_data['tongue_data'] = 'None'
     return json_data
+
 
 if __name__ == '__main__':
     app.run(debug=True)
