@@ -8,10 +8,16 @@ function getTable(postData, dir, sign = false, layer = null, msg = "") {
     data: postData, // 携带的数据，POST方法用
     success: function (returnData) {
       // 请求成功时的回调函数
-      switch(postData.table) {
-        case "kidney": renderTable(returnData);break;
-        case "lung": renderTable_lung(returnData);break;
-        case "liver": renderTable_liver(returnData);break;
+      switch (postData.table) {
+        case "kidney":
+          renderTable(returnData);
+          break;
+        case "lung":
+          renderTable_lung(returnData);
+          break;
+        case "liver":
+          renderTable_liver(returnData);
+          break;
       }
       if (sign) {
         layer.msg(msg);
@@ -41,16 +47,22 @@ function getPage(total, laypage, dir, queryObj) {
 
 let url = "/patient_info_by_condition";
 
-layui.use(["element"], function() {
+layui.use(["element"], function () {
   const element = layui.element;
-  element.on('tab(patient)', function(data){
-    switch(data.index) {
-      case 0: getTable(query_kidney_Obj, "/patient_info_by_condition"); break;
-      case 1: getTable(query_liver_obj, "/liver_patient_info"); break;
-      case 2: getTable(query_lung_obj, "/lung_patient_info"); break;
+  element.on("tab(patient)", function (data) {
+    switch (data.index) {
+      case 0:
+        getTable(query_kidney_Obj, "/patient_info_by_condition");
+        break;
+      case 1:
+        getTable(query_liver_obj, "/liver_patient_info");
+        break;
+      case 2:
+        getTable(query_lung_obj, "/lung_patient_info");
+        break;
     }
-  });  
-})
+  });
+});
 
 function rowToolEvent(obj, cols, data, form, table, type) {
   //行工具栏事件，点击详细的相关处理
@@ -80,7 +92,8 @@ function rowToolEvent(obj, cols, data, form, table, type) {
           layer.open({
             type: 1,
             shadeClose: true,
-            area: ["1200", "450"],
+            resize: false,
+            area: "1000px",
             title: "详细信息",
             content: $(".patient_detail"),
             end: () => {
@@ -93,15 +106,25 @@ function rowToolEvent(obj, cols, data, form, table, type) {
               $(`<option value="none" disabled>没有数据</option>`)
             );
           } else {
-            channelSelect.append(
-              $(`<option value="">请选择一个通道</option>`)
-            );
+            channelSelect.append($(`<option value="">请选择一个通道</option>`));
             for (let i = 1; i <= channelNumber; ++i) {
               const newOption = $(`<option value=${i}>通道${i}</option>`);
               channelSelect.append(newOption);
             }
           }
           form.render("select", "channel_form"); // 重新渲染select
+        },
+      });
+      $.ajax({
+        type: "POST",
+        url: `/tongue_data`,
+        data: {
+          id,
+          patient: type,
+        },
+        success: function (data) {
+          const { tongue_data } = data;
+          tougeImg.attr("src", baseURL + tongue_data);
         },
       });
     }
@@ -133,6 +156,8 @@ function channel_select(data, id, type) {
   });
 }
 
+const baseURL = "data:;base64,";
+const tougeImg = $(".touge_img img");
 const channelDom = $(".show_div")[0];
 const channelSelect = $(".channel");
 const channelChart = echarts.init(channelDom);

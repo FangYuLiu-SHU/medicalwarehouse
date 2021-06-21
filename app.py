@@ -8,7 +8,7 @@ from utils import load_data
 import os
 from algorithm import predict
 from sqlalchemy import create_engine
-import pymssql
+import pymysql
 
 # 连接数据库
 try:
@@ -170,7 +170,7 @@ def import_database_data(patient_info_table_name,pulse_table_name,host,port,user
         if data_source=='MySQL':
             conn=pymysql.connect(host=host, port=port, user=user, passwd=passwd, db=db, charset=charset)
         if data_source == 'SqlServer':
-            conn= pymssql.connect( host=host, port=port,  user=user,password=passwd,  database=db ,charset=charset)
+            conn= pymysql.connect( host=host, port=port,  user=user,password=passwd,  database=db ,charset=charset)
         cursor = conn.cursor()
         # 读取病例信息表
         sqlstr = 'select * from ' + patient_info_table
@@ -712,6 +712,40 @@ def liver_patient_info():
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
 
+@app.route('/tongue_data',methods=['GET','POST'])
+def tongue_data():
+    def patient_type(patient):
+        type = {
+            0: "kidney",
+            1: "liver",
+            2: "lung",
+        }
+        return type.get(patient,None)
+
+    def return_img_stream(img_local_path):
+        """
+        工具函数:
+        获取本地图片流
+        :param img_local_path:文件单张图片的本地绝对路径
+        :return: 图片流
+        """
+        import base64
+        img_stream = ''
+        with open(img_local_path, 'rb') as img_f:
+            img_stream = img_f.read()
+            img_stream = base64.b64encode(img_stream).decode()
+        return img_stream
+
+    id=request.form.get('id')
+    patient= request.form.get('patient')
+    patient_office=patient_type(patient)
+    cur_path='data/'+patient+'/'+id+'.bmp'
+    # cur_path='D:/pycharm/work/data_warehouse/medicalwarehouse_bak/data/kidney/k0559.bmp'
+    img_stream=return_img_stream(cur_path)
+    json_data = {}
+    # json_data['tongue_data']=cur_path
+    json_data['tongue_data'] = img_stream
+    return json_data
 
 if __name__ == '__main__':
     app.run(debug=True)

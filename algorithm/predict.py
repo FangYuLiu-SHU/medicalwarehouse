@@ -19,7 +19,7 @@ from algorithm.modelLSTM import FCLSTM
 def pulsePrediction(pulseData):
     puseType=['沉细', '细', '弦', '弦细', '滑', '濡']
     rnn_model = FCLSTM()
-    rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt'))
+    rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt', map_location=torch.device('cpu') ))
     rnn_model.eval()
     # n = torch.load("./files/LSTM_predict.pt").cpu()
     pulseData = torch.from_numpy(pulseData).to(torch.float32)
