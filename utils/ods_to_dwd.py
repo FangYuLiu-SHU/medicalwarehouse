@@ -17,6 +17,7 @@ except:
 cursor = db.cursor()
 
 def ods_to_dwd_kidney():
+    print('update dwd_kidney_info!')
     create_table_sql="CREATE TABLE `medical_dw`.`dwd_kidney_info` (" \
         "`id` varchar(10) CHARACTER SET 'utf8' NOT NULL COMMENT '编号'," \
         "`sex` char(1) COMMENT '性别（1=男 2=女）'," \
@@ -56,11 +57,13 @@ def ods_to_dwd_kidney():
             cursor.execute(sql)
             db.commit()
     except:
+        print('ods_to_dwd_kidney failed!')
         db.rollback()
-    db.close()
+    # db.close()
 
 
 def ods_to_dwd_lung():
+    print('update dwd_lung_info!')
     create_table_sql="CREATE TABLE `medical_dw`.`dwd_lung_info` (" \
                      "`id` varchar(10) CHARACTER SET 'utf8' NOT NULL COMMENT '编号'," \
                      "`sex` char(1) COMMENT '性别（1=女 2=男）'," \
@@ -95,12 +98,14 @@ def ods_to_dwd_lung():
             cursor.execute(sql)
             db.commit()
     except:
+        print('ods_to_dwd_lung failed!')
         db.rollback()
-    db.close()
+    # db.close()
 
 
 
 def ods_to_dwd_liver():
+    print('update dwd_liver_info!')
     create_table_sql="CREATE TABLE `medical_dw`.`dwd_liver_info` (" \
                      "`id` varchar(20) CHARACTER SET 'utf8' NOT NULL COMMENT '编号'," \
                      " `sex` char(1) COMMENT '性别（1=女 2=男）'," \
@@ -128,7 +133,11 @@ def ods_to_dwd_liver():
             cursor.execute(sql)
             db.commit()
     except:
+        print('ods_to_dwd_liver failed!')
         db.rollback()
-    db.close()
+    # db.close()
 
-
+if __name__ == '__main__':
+    ods_to_dwd_kidney()
+    ods_to_dwd_liver()
+    ods_to_dwd_lung()

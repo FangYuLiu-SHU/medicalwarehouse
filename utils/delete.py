@@ -15,7 +15,6 @@ try:
              )
 except:
     print('数据库连接失败！')
-    exit(0)
 
 cursor = db.cursor()
 
@@ -46,7 +45,22 @@ def load_csvfile_data_to_mysql(path):
     print('上传完毕，文件数：', len(readed_files), ' 耗时：', time.time()-t1, 's!')
 
 
+def clear_ods_layer():
+    sql = 'show tables;'
+    cursor.execute(sql)
+    tables = cursor.fetchall()
+    for table in tables:
+        if 'ods' in table[0]:
+            try:
+                sql = "drop table if exists `" + table[0] + "`"
+                print(sql)
+                cursor.execute(sql)
+            except:
+                print(sql, '删除失败')
+
 
 if __name__ == '__main__':
-    path = 'C:/Users/Lenovo/Desktop/医疗数据/肾病科脉诊数据/肾病脉诊仪'
-    load_csvfile_data_to_mysql(path)
+    # path = 'C:/Users/Lenovo/Desktop/医疗数据/肾病科脉诊数据/肾病脉诊仪'
+    # load_csvfile_data_to_mysql(path)
+
+    clear_ods_layer()

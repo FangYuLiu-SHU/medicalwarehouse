@@ -3,12 +3,11 @@ from flask import Flask, render_template, request
 import pymysql
 import pandas as pd
 import json
-from utils import tool
-from utils import load_data
+from utils import tool, load_data, ods_to_dwd
 import os
 from algorithm import predict
 from sqlalchemy import create_engine
-import pymysql
+import pymssql
 
 # 连接数据库
 try:
@@ -47,22 +46,21 @@ def dataimport():
     data_source = request.form.get('data_source')   # 数据来源
     dept = request.form.get('dept')     # 科室
     # 确定表名和信息表字段
-    patient_info_table_name = ''
-    pulse_table_name = ''
-    col_names = []
-    if dept == 'kidney':
-        patient_info_table_name = 'ods_kidney_info'
-        pulse_table_name = 'ods_kidney_pulse_'
-        col_names = ['id', 'sex', 'age', 'staging', 'serum_creatinine', 'eGFR', 'symptoms_type', 'tongue', 'pulse']
-    elif dept == 'liver':
+    patient_info_table_name = 'ods_kidney_info'
+    pulse_table_name = 'ods_kidney_pulse_'
+    col_names = ['id', 'sex', 'age', 'staging', 'serum_creatinine', 'eGFR', 'symptoms_type', 'tongue', 'pulse']
+    ods_to_dwd_update_func = ods_to_dwd.ods_to_dwd_kidney
+    if dept == 'liver':
         patient_info_table_name = 'ods_liver_info'
         pulse_table_name = 'ods_liver_pulse_'
         col_names = ['id', 'sex', 'age', 'ALT', 'symptoms_type', 'tongue', 'pulse']
+        ods_to_dwd_update_func = ods_to_dwd.ods_to_dwd_liver
     elif dept == 'lung':
         patient_info_table_name = 'ods_lung_info'
         pulse_table_name = 'ods_lung_pulse_'
         col_names = ['id', 'sex', 'age', 'wm_diagnosis', 'lung_qi_deficiency', 'spleen_qi_deficiency', 'kidney_qi_deficiency',
                       'FEV1', 'FVC', 'FEV1%', 'FEV1/FVC', 'PEF', 'tongueA', 'tongueB', 'tongueC', 'pulseA', 'pulseB', 'pulseC', ]
+        ods_to_dwd_update_func = ods_to_dwd.ods_to_dwd_lung
 
     patient_info_path = './tmp/patientinfo'
     pulse_path = './tmp/pulse'
@@ -107,7 +105,7 @@ def dataimport():
         port = request.form.get('port')
         user = request.form.get('user')
         passwd = request.form.get('passwd')
-        db = request.form.get('db')
+        src_db = request.form.get('db')
         charset = request.form.get('charset')
         patient_info_table = request.form.get('patient_info_table')
         pulse_table_na_rule = request.form.get('pulse_table_na_rule')
@@ -116,9 +114,9 @@ def dataimport():
         # 连接数据库
             conn = ""
             if data_source == 'MySQL':
-                conn = pymysql.connect(host=host, port=int(port), user=user, passwd=passwd, db=db, charset=charset)
+                conn = pymysql.connect(host=host, port=int(port), user=user, passwd=passwd, db=src_db, charset=charset)
             if data_source == 'SqlServer':
-                conn = pymssql.connect(host=host, port=int(port), user=user, password=passwd, database=db, charset='GBK')
+                conn = pymssql.connect(host=host, port=int(port), user=user, password=passwd, database=src_db, charset='GBK')
             src_cursor = conn.cursor()
             # 读取病例信息表
             sql = 'select * from ' + str(patient_info_table)
@@ -131,7 +129,7 @@ def dataimport():
                 print('Columns do not match!')
                 return 'Columns do not match!'
             pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-            print(pd_patient_info)
+            # print(pd_patient_info)
             # 导入病例信息表到数据仓库
             # print(patient_info_table_name)
             pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
@@ -152,6 +150,7 @@ def dataimport():
             print('Data importing failed！')
             return 'Data importing failed！'
 
+    ods_to_dwd_update_func()
     return 'Data importing succeed！'
 
 
@@ -695,22 +694,6 @@ def liver_patient_info():
 
 @app.route('/tongue_data',methods=['GET','POST'])
 def tongue_data():
-    from PIL import Image
-
-    def Image_PreProcessing(id,patient,figpath):
-        # 待处理图片存储路径
-        im = Image.open(figpath)
-        # Resize图片大小，入口参数为一个tuple，新的图片大小
-        imBackground = im.resize((260, 184))
-        imBackground.save('data/' +patient+'/'+id+'_processed.jpg', 'JPEG')
-
-    def patient_type(patient):
-        type = {
-            0: "kidney",
-            1: "liver",
-            2: "lung",
-        }
-        return type.get(patient,None)
 
     def return_img_stream(img_local_path):
         """
@@ -727,12 +710,10 @@ def tongue_data():
         return img_stream
     id=request.form.get('id')
     patient= request.form.get('patient')
-    cur_path_raw='data/' + patient + '/' + id + '.bmp'
+    cur_path_raw='static/data/tongueimage/' + patient + '/' + id + '.bmp'
     json_data = {}
     if(os.path.exists(cur_path_raw)):
-        Image_PreProcessing(id, patient, cur_path_raw)
-        cur_path = 'data/' + patient + '/' + id + '_processed.jpg'
-        img_stream=return_img_stream(cur_path)
+        img_stream=return_img_stream(cur_path_raw)
         json_data['tongue_data'] = img_stream
     else:
         json_data['tongue_data'] = 'None'

@@ -122,14 +122,22 @@ def load_lung_pulse_to_mysql(path, encoding='utf-16 le'):
 
 
 # 批量文件重命名处理
+# def file_rename(path):
+#     for root, dirs, files in os.walk(path):
+#         if len(files) != 0:
+#             for file in files:
+#                 if 'L' not in file:
+#                     newname = 'L' + file
+#                     print(file, newname)
+#                     os.rename(os.path.join(path, file), os.path.join(path, newname))
+
 def file_rename(path):
     for root, dirs, files in os.walk(path):
         if len(files) != 0:
             for file in files:
-                if 'L' not in file:
-                    newname = 'L' + file
-                    print(file, newname)
-                    os.rename(os.path.join(path, file), os.path.join(path, newname))
+                newname = file[0:5] + '.csv'
+                print(file, newname)
+                os.rename(os.path.join(path, file), os.path.join(path, newname))
 
 # 清空文件夹
 def clear_folder(path):
@@ -148,29 +156,31 @@ def clear_folder(path):
 
 
 if __name__ == '__main__':
+    base_path = 'C:/Users/Lenovo/Desktop/医疗数据/医疗数据-整理'
     print('载入肾病数据...')
-    path_kidney_info = 'C:/Users/Lenovo/Desktop/医疗数据/kidney_info.csv'
+    path_kidney_info = base_path + '/kidney_info.csv'
     load_kidney_info_to_mysql(path_kidney_info)
-    #
-    # path_kidney_pulse = 'C:/Users/Lenovo/Desktop/医疗数据/肾病脉诊仪'
-    # load_kidney_pulse_to_mysql(path_kidney_pulse)
 
-    # print('\n载入肝病数据...')
-    # path_liver_info = 'C:/Users/Lenovo/Desktop/医疗数据/liver_info.csv'
-    # load_liver_info_to_mysql(path_liver_info)
-    #
-    # path_liver_pulse = 'C:/Users/Lenovo/Desktop/医疗数据/肝病脉诊仪'
-    # load_liver_pulse_to_mysql(path_liver_pulse)
-    #
-    # print('\n载入肺病数据...')
-    # path_lung_info = 'C:/Users/Lenovo/Desktop/医疗数据/lung_info.csv'
-    # load_lung_info_to_mysql(path_lung_info)
+    path_kidney_pulse = base_path + '/肾病脉诊仪'
+    load_kidney_pulse_to_mysql(path_kidney_pulse)
 
-    # path_lung_pulse = 'C:/Users/Lenovo/Desktop/医疗数据/肺病脉诊仪'
-    # load_lung_pulse_to_mysql(path_lung_pulse)
+    print('\n载入肝病数据...')
+    path_liver_info = base_path + '/liver_info.csv'
+    load_liver_info_to_mysql(path_liver_info)
+
+    path_liver_pulse = base_path + '/肝病脉诊仪'
+    load_liver_pulse_to_mysql(path_liver_pulse)
+
+    print('\n载入肺病数据...')
+    path_lung_info = base_path + '/lung_info.csv'
+    load_lung_info_to_mysql(path_lung_info)
+
+    path_lung_pulse = base_path + '/肺病脉诊仪'
+    load_lung_pulse_to_mysql(path_lung_pulse)
 
 
-
+    # path_lung_pulse = base_path + '/肺病脉诊仪'
+    # file_rename(path_lung_pulse)
 
     # file_rename(path_lung_pulse)
     #
