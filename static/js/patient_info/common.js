@@ -47,7 +47,8 @@ function getPage(total, laypage, dir, queryObj) {
 
 let url = "/patient_info_by_condition";
 
-layui.use(["element"], function () {
+layui.use(["element", "layer"], function () {
+  const layer = layui.layer;
   const element = layui.element;
   element.on("tab(patient)", function (data) {
     switch (data.index) {
@@ -60,6 +61,12 @@ layui.use(["element"], function () {
       case 2:
         getTable(query_lung_obj, "/lung_patient_info");
         break;
+    }
+  });
+  element.on("tab(patientDetail)", function (data) {
+    console.log(111);
+    if(data.index === 1 && !isHasTongue) {
+      layer.msg("没有对应的舌苔数据")
     }
   });
 });
@@ -124,7 +131,12 @@ function rowToolEvent(obj, cols, data, form, table, type) {
         },
         success: function (data) {
           const { tongue_data } = data;
-          tougeImg.attr("src", baseURL + tongue_data);
+          if(tongue_data !== "None") {
+            tougeImg.attr("src", baseURL + tongue_data);
+            isHasTongue = true;
+          } else {
+            tougeImg.css("display", "None");
+          }
         },
       });
     }
@@ -156,6 +168,7 @@ function channel_select(data, id, type) {
   });
 }
 
+let isHasTongue = false;
 const baseURL = "data:;base64,";
 const tougeImg = $(".touge_img img");
 const channelDom = $(".show_div")[0];
