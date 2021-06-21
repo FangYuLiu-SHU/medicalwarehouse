@@ -32,16 +32,16 @@ EPOCH = 1000  # iteration times
 rnn_model = FCLSTM()
 rnn_model.load_state_dict(torch.load('../files/LSTM_predict.pt'))
 rnn_model.eval()
-# 2读取测试数据 #数据857
+# 2读取测试数据 857
 test_set_size = 857
 tst_dataset = Dataset(0, 857)
-tst_dataloader = data.DataLoader(tst_dataset, batch_size=BATCH_SIZE, shuffle=True)
+tst_dataloader = data.DataLoader(tst_dataset, batch_size=test_set_size, shuffle=True)
 # 3 全部测试集测试准确度
 correct = 0
 total = 0
 with torch.no_grad():
-    for data in tst_dataloader:
-        pulse_data, labels = data
+    for tempdata in tst_dataloader:
+        pulse_data, labels = tempdata
         print(pulse_data.shape)
         outputs = rnn_model(pulse_data)
         _, predicted = torch.max(outputs.data, 1)
