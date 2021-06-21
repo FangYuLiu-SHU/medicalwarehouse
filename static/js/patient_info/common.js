@@ -64,7 +64,6 @@ layui.use(["element", "layer"], function () {
     }
   });
   element.on("tab(patientDetail)", function (data) {
-    console.log(111);
     if(data.index === 1 && !isHasTongue) {
       layer.msg("没有对应的舌苔数据")
     }
@@ -73,74 +72,78 @@ layui.use(["element", "layer"], function () {
 
 function rowToolEvent(obj, cols, data, form, table, type) {
   //行工具栏事件，点击详细的相关处理
-  switch (obj.event) {
-    case "detail": {
-      let id = obj.data.id;
-      $.ajax({
-        type: "POST",
-        url: `/find_channelNumber`,
-        data: {
-          type,
-          id,
-        }, // 携带的数据，POST方法用
-        success: function (returnData) {
-          let { channelNumber } = JSON.parse(returnData);
-          channelNumber = parseInt(channelNumber);
-          setTimeout(() => {
-            //使用计时器，防止表格渲染出现格式问题
-            table.render({
-              elem: ".patient_info", // 定位表格ID
-              title: "病人信息",
-              cols,
-              data: [data.find((e) => e.id === id)],
-              limit: query_kidney_Obj.limit, // 每一页数据条数
+  layui.use(["element", "layer"], function() {
+    element = layui.element
+    switch (obj.event) {
+      case "detail": {
+        let id = obj.data.id;
+        $.ajax({
+          type: "POST",
+          url: `/find_channelNumber`,
+          data: {
+            type,
+            id,
+          }, // 携带的数据，POST方法用
+          success: function (returnData) {
+            let { channelNumber } = JSON.parse(returnData);
+            channelNumber = parseInt(channelNumber);
+            setTimeout(() => {
+              //使用计时器，防止表格渲染出现格式问题
+              table.render({
+                elem: ".patient_info", // 定位表格ID
+                title: "病人信息",
+                cols,
+                data: [data.find((e) => e.id === id)],
+                limit: query_kidney_Obj.limit, // 每一页数据条数
+              });
+            }, 0);
+            layer.open({
+              type: 1,
+              shadeClose: true,
+              resize: false,
+              area: "1000px",
+              title: "详细信息",
+              content: $(".patient_detail"),
+              end: () => {
+                element.tabChange('patientDetail', 'pulse')
+                channelChart.clear();
+              }, // 弹出层关闭后的回调， 清除eCharts图表, 切换tab栏
             });
-          }, 0);
-          layer.open({
-            type: 1,
-            shadeClose: true,
-            resize: false,
-            area: "1000px",
-            title: "详细信息",
-            content: $(".patient_detail"),
-            end: () => {
-              channelChart.clear();
-            }, // 弹出层关闭后的回调， 清除eCharts图表
-          });
-          channelSelect.empty(); // 清空select中的option选项， 防止冲突
-          if (channelNumber === 0) {
-            channelSelect.append(
-              $(`<option value="none" disabled>没有数据</option>`)
-            );
-          } else {
-            channelSelect.append($(`<option value="">请选择一个通道</option>`));
-            for (let i = 1; i <= channelNumber; ++i) {
-              const newOption = $(`<option value=${i}>通道${i}</option>`);
-              channelSelect.append(newOption);
+            channelSelect.empty(); // 清空select中的option选项， 防止冲突
+            if (channelNumber === 0) {
+              channelSelect.append(
+                $(`<option value="none" disabled>没有数据</option>`)
+              );
+            } else {
+              channelSelect.append($(`<option value="">请选择一个通道</option>`));
+              for (let i = 1; i <= channelNumber; ++i) {
+                const newOption = $(`<option value=${i}>通道${i}</option>`);
+                channelSelect.append(newOption);
+              }
             }
-          }
-          form.render("select", "channel_form"); // 重新渲染select
-        },
-      });
-      $.ajax({
-        type: "POST",
-        url: `/tongue_data`,
-        data: {
-          id,
-          patient: type,
-        },
-        success: function (data) {
-          const { tongue_data } = data;
-          if(tongue_data !== "None") {
-            tougeImg.attr("src", baseURL + tongue_data);
-            isHasTongue = true;
-          } else {
-            tougeImg.css("display", "None");
-          }
-        },
-      });
+            form.render("select", "channel_form"); // 重新渲染select
+          },
+        });
+        $.ajax({
+          type: "POST",
+          url: `/tongue_data`,
+          data: {
+            id,
+            patient: type,
+          },
+          success: function (data) {
+            const { tongue_data } = data;
+            if(tongue_data !== "None") {
+              tougeImg.attr("src", baseURL + tongue_data);
+              isHasTongue = true;
+            } else {
+              tougeImg.css("display", "None");
+            }
+          },
+        });
+      }
     }
-  }
+  })
 }
 
 function channel_select(data, id, type) {
