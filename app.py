@@ -8,7 +8,7 @@ from utils import load_data
 import os
 from algorithm import predict
 from sqlalchemy import create_engine
-import pymssql
+import pymysql
 
 # 连接数据库
 try:
@@ -431,7 +431,7 @@ def patient_info_by_condition():
 @app.route('/disease_prediction', methods=["GET", "POST"])
 def disease_prediction():
     if request.method == "GET":
-        formData={'sex': '男', 'userage': '', 'stage': '', 'bloodCreatinine': '', 'egfr': '', 'fileName': '', 'pulseType': ''}
+        formData={'sex': '男', 'userage': '', 'stage': '', 'bloodCreatinine': '', 'egfr': '', 'fileName': '', 'pulseType': '', 'fileRead': 'success'}
         newData = json.dumps(formData)  # json.dumps封装
         return render_template('diseasePrediction.html', newData=newData)
     if request.method == "POST":
@@ -448,33 +448,38 @@ def disease_prediction():
         #print(pulseFile)
 
         filename_in = './files/pulseFile.csv'
-        #filename_out = './files/pulseFileUTF.csv'
+        # filename_out = './files/pulseFileUTF.csv'
 
         # 输入文件的编码类型
-        #encode_in = 'utf-16 le'
-
-        # 输出文件的编码类型
-        # encode_out = 'utf-8'
-        #
-        # with codecs.open(filename=filename_in, mode='r', encoding=encode_in) as fi:
-        #     data = fi.read()
-        #     with open(filename_out, mode='w', encoding=encode_out) as fo:
-        #         fo.write(data)
-        #         fo.close()
+        encode_in = 'utf-16 le'
         #输入表维度大小
         rows=2560
         cols=57
-        data = pd.read_csv(filename_in, encoding="utf-8", header=None, nrows=rows, usecols=[i for i in range(cols)])
-        # 调用模型计算脉搏类型预测结果
-        result=predict.pulsePrediction(data.values)
-        #print(data.dropna(axis=1).values)
-        #print(data)
-        formData['pulseType'] = result
-        formData['fileName'] = ''
-        # print(formData)
+        formData['fileRead'] = 'success'
+        try:
+            data = pd.read_csv(filename_in, encoding=encode_in, header=None, nrows=rows,usecols=[i for i in range(cols)])
+            # 调用模型计算脉搏类型预测结果
+            result = predict.pulsePrediction(data.values)
+            formData['pulseType'] = result
+            formData['fileName'] = ''
+        except UnicodeDecodeError as e:
+            data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows,usecols=[i for i in range(cols)])
+            # 调用模型计算脉搏类型预测结果
+            result = predict.pulsePrediction(data.values)
+            formData['pulseType'] = result
+            formData['fileName'] = ''
+        except ValueError as e:
+            data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows,usecols=[i for i in range(cols)])
+            # 调用模型计算脉搏类型预测结果
+            result = predict.pulsePrediction(data.values)
+            formData['pulseType'] = result
+            formData['fileName'] = ''
+        else:
+            formData = {'sex': '男', 'userage': '', 'stage': '', 'bloodCreatinine': '', 'egfr': '', 'fileName': '',
+                        'pulseType': '', 'fileRead': 'fail'}
+
         newData = json.dumps(formData)  # json.dumps封装
-        #print(newData)
-        return render_template('diseasePrediction.html', newData=newData)
+        return newData
     
     
 #用户通道数量      
@@ -661,6 +666,51 @@ def liver_patient_info():
     json_data['total'] = len(total_data)
     json_data['data'] = result_data
     json_data = json.dumps(json_data, ensure_ascii=False)
+    return json_data
+
+@app.route('/tongue_data',methods=['GET','POST'])
+def tongue_data():
+    from PIL import Image
+
+    def Image_PreProcessing(id,patient,figpath):
+        # 待处理图片存储路径
+        im = Image.open(figpath)
+        # Resize图片大小，入口参数为一个tuple，新的图片大小
+        imBackground = im.resize((260, 184))
+        imBackground.save('data/' +patient+'/'+id+'_processed.jpg', 'JPEG')
+
+    def patient_type(patient):
+        type = {
+            0: "kidney",
+            1: "liver",
+            2: "lung",
+        }
+        return type.get(patient,None)
+
+    def return_img_stream(img_local_path):
+        """
+        工具函数:
+        获取本地图片流
+        :param img_local_path:文件单张图片的本地绝对路径
+        :return: 图片流
+        """
+        import base64
+        img_stream = ''
+        with open(img_local_path, 'rb') as img_f:
+            img_stream = img_f.read()
+            img_stream = base64.b64encode(img_stream).decode()
+        return img_stream
+    id=request.form.get('id')
+    patient= request.form.get('patient')
+    cur_path_raw='data/' + patient + '/' + id + '.bmp'
+    json_data = {}
+    if(os.path.exists(cur_path_raw)):
+        Image_PreProcessing(id, patient, cur_path_raw)
+        cur_path = 'data/' + patient + '/' + id + '_processed.jpg'
+        img_stream=return_img_stream(cur_path)
+        json_data['tongue_data'] = img_stream
+    else:
+        json_data['tongue_data'] = 'None'
     return json_data
 
 

@@ -45,7 +45,6 @@
       }
       .patient_detail {
         width: 1000px;
-        height: 450px;
       }
       .show_div {
         width: 80%;
@@ -58,6 +57,9 @@
       .patient_detail form[lay-filter="channel_form"],
       .patient_detail .show_div {
         float: left;
+      }
+      .touge_img img {
+        height: 300px;
       }
     </style>
   </head>
@@ -221,14 +223,29 @@
     </div>
     <div class="patient_detail">
       <table class="patient_info"></table>
-      <form class="layui-form" lay-filter="channel_form">
-        <select
-          name="channel"
-          class="channel"
-          lay-filter="channel_select"
-        ></select>
-      </form>
-      <div class="show_div"></div>
+      <div class="layui-tab layui-tab-brief" lay-filter="patientDetail">
+        <ul class="layui-tab-title">
+          <li class="layui-this">脉搏通道</li>
+          <li>舌苔图片</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <form class="layui-form" lay-filter="channel_form">
+              <select
+                name="channel"
+                class="channel"
+                lay-filter="channel_select"
+              ></select>
+            </form>
+            <div class="show_div"></div>
+          </div>
+          <div class="layui-tab-item">
+            <div class="touge_img">
+              <img src="" alt="舌苔图片获取失败">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 肺相关 -->
@@ -598,7 +615,11 @@
         </div>
         <div class="layui-form-item">
           <div class="layui-input-block">
-            <button class="layui-btn submit_query" lay-submit lay-filter="liver">
+            <button
+              class="layui-btn submit_query"
+              lay-submit
+              lay-filter="liver"
+            >
               立即提交
             </button>
             <button type="reset" class="layui-btn layui-btn-primary">
