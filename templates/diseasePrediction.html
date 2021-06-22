@@ -138,8 +138,21 @@
           </div>
           <div class="layui-tab-item">
             <div id="container" style="width:100px;height:100px;position: absolute; left: 0; top: 0; right: 0; bottom: 0;margin: auto;"></div>
-            <div id="pulsePredictChartDom" style="width: 30%; height: 600%;float: left"></div><!--症状统计-->
-            <div id="pulsePredictChartBar" style="width: 70%; height: 600%;float: right"></div><!--验证详情-->
+            <form name="myForm2" id="form2" class="layui-form layui-form-pane" action="##" onsubmit="return false"
+                  method="post" lay-filter="selectNumber" enctype='multipart/form-data'>
+              <div class="layui-form-item">
+                <label class="layui-form-label">验证表格数</label>
+                <div class="layui-input-inline">
+                  <select name="selectNumber" lay-verify="required" lay-filter="selectNum" class="select">
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+            <div id="pulsePredictChartDom" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
+            <div id="pulsePredictChartBar" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
           </div>
           <div class="layui-tab-item">内容3</div>
           <div class="layui-tab-item">内容4</div>
@@ -168,7 +181,7 @@
                 // processData: false,
                 // contentType:false,
                 // data: $('#form1').serialize(),
-                data: {"postData": "data" },
+                data: {"selectTestNum": "50" },
                 success: function (newData) {
                   myChart.hideLoading();
                   var pulsePredict_dom = document.getElementById('pulsePredictChartDom');
@@ -235,7 +248,7 @@
                           str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
                           str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
                           return str;
-                        },
+                        }
                     },
                     legend: {
                         data:['预测类别', '标签类别']
@@ -526,5 +539,149 @@
       //alert(fileNameText.placeholder);
     })
     </script>
+      <script>
+        layui.use(['element', 'form'], function () {
+          var $ = layui.jquery
+          var element = layui.element;
+          var form = layui.form;
+          var layer = layui.layer;
+          form.on('select(selectNum)', function (data) {
+            var postData={"selectTestNum": "50" };
+            var message = data.value;
+            if(message == "50"){
+              postData={"selectTestNum": "50" };
+            }
+            else if (message == "100") {
+              postData={"selectTestNum": "100" };
+            } else if (message == "200") {
+              postData={"selectTestNum": "200" };
+            }
+            var maindiv=document.getElementById('container')
+            var myChart = echarts.init(maindiv);
+            myChart.showLoading();
+            $.ajax({
+                url: "pulsePrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                // processData: false,
+                // contentType:false,
+                // data: $('#form1').serialize(),
+                data: postData,
+                success: function (newData) {
+                  myChart.hideLoading();
+                  var pulsePredict_dom = document.getElementById('pulsePredictChartDom');
+                  var pulsePredict_chart = echarts.init(pulsePredict_dom);
+                  var pulsePredict_option={
+                    title: {
+                        text: '脉搏预测验证情况分布',
+                        subtext: newData.testNum+'个脉搏验证表格',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos, name: '预测正确' },
+                                {value: newData.num_neg, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart.setOption(pulsePredict_option);
+
+                  var pulsePredict_bar = document.getElementById('pulsePredictChartBar');
+                  var pulsePredict_chartBar = echarts.init(pulsePredict_bar);
+                  var pulsePredictBar_option = {
+                    title: {
+                      text: '脉搏预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'脉搏表格编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'脉搏类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '沉细', '细', '弦', '弦细', '滑', '濡']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar.setOption(pulsePredictBar_option);
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
+          });
+        });
+      </script>
   </body>
 </html>
