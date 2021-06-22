@@ -1,6 +1,4 @@
 function getTable(postData, dir, sign = false, layer = null, msg = "") {
-  console.log(dir);
-  console.log(postData);
   $.ajax({
     // 向后端请求数据
     type: "POST", //请求的方法
@@ -105,7 +103,7 @@ function rowToolEvent(obj, cols, data, form, table, type) {
               title: "详细信息",
               content: $(".patient_detail"),
               end: () => {
-                element.tabChange('patientDetail', 'pulse')
+                element.tabChange('patientDetail', 'pulse');
                 channelChart.clear();
               }, // 弹出层关闭后的回调， 清除eCharts图表, 切换tab栏
             });
@@ -132,6 +130,8 @@ function rowToolEvent(obj, cols, data, form, table, type) {
             patient: type,
           },
           success: function (data) {
+            
+            tougeImg.css("display", "block");
             const { tongue_data } = data;
             if(tongue_data !== "None") {
               tougeImg.attr("src", baseURL + tongue_data);

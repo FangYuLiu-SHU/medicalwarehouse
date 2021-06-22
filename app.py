@@ -7,7 +7,7 @@ from utils import tool, load_data, ods_to_dwd
 import os
 from algorithm import predict
 from sqlalchemy import create_engine
-import pymssql
+import pymysql
 
 # 连接数据库
 try:
