@@ -483,8 +483,8 @@ def disease_prediction():
 @app.route('/pulsePrediction_accuracy', methods=["POST"])
 def pulsePrediction_accuracy():
     # 获取前端请求的数据
-    data = request.form.get('postData')
-    testNum=100;
+    selectTestNum = request.form.get('selectTestNum')
+    testNum=int(selectTestNum)
     totalNum=857
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
     idSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction(testNum,totalNum)
