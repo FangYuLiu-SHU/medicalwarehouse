@@ -46,10 +46,14 @@
         <ul class="layui-tab-title">
           <li class="layui-this">脉象预测</li>
           <li>脉象预测准确率展示</li>
-          <li>舌预测</li>
-          <li>舌预测准确率展示</li>
-          <li>肾预测</li>
-          <li>肾预测准确率展示</li>
+          <li>舌象预测</li>
+          <li>舌象预测准确率展示</li>
+          <li>肾象预测</li>
+          <li>肾象预测准确率展示</li>
+          <li>肝象预测</li>
+          <li>肝象预测准确率展示</li>
+          <li>肺象预测</li>
+          <li>肺象预测准确率展示</li>
         </ul>
         <div class="layui-tab-content" style="height: 100px;">
           <div class="layui-tab-item layui-show">
@@ -135,7 +139,7 @@
                 </div>
               </div>
             </form>
-          </div>
+          </div>     <!--脉象预测-->
           <div class="layui-tab-item">
             <form name="myForm2" id="form2" class="layui-form layui-form-pane" action="##" onsubmit="return false"
                   method="post" lay-filter="selectNumber" enctype='multipart/form-data'>
@@ -153,100 +157,257 @@
             <div id="pulsePredictChartDom" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
             <div id="pulsePredictChartBar" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
             <div id="pulsePredictDisplay" style="width: 30%; float: left;text-align: center;"></div><!--准确率显示-->
-          </div>
-          <div class="layui-tab-item">内容3</div>
-          <div class="layui-tab-item">内容4</div>
+          </div>                <!--脉象预测准确率展示-->
+          <div class="layui-tab-item">内容3</div>         <!--舌象预测-->
+          <div class="layui-tab-item">内容4</div>         <!--舌象预测准确率展示-->
           <div class="layui-tab-item">
-<!--            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">-->
-<!--              <legend>输入病人的各项指标</legend>-->
-<!--            </fieldset>-->
-<!--            <form name="myForm3" id="form3" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation3"-->
-<!--                  enctype='multipart/form-data'>-->
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+              <legend>输入病人的各项指标</legend>
+            </fieldset>
+            <form name="myForm3" id="form3" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation3"
+                  enctype='multipart/form-data'>
 
-<!--              <div class="layui-form-item" pane="">-->
-<!--                <label class="layui-form-label">性别</label>-->
-<!--                <div class="layui-input-block">-->
-<!--                  <input type="radio" name="sex" value="男" title="男" checked="">-->
-<!--                  <input type="radio" name="sex" value="女" title="女">-->
-<!--                  &lt;!&ndash;<input type="radio" name="sex" value="禁" title="禁用" disabled="">&ndash;&gt;-->
-<!--                </div>-->
-<!--              </div>-->
+              <div class="layui-form-item" pane="">
+                <label class="layui-form-label">性别</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="sex" value="男" title="男" checked="">
+                  <input type="radio" name="sex" value="女" title="女">
+                  <!--<input type="radio" name="sex" value="禁" title="禁用" disabled="">-->
+                </div>
+              </div>
 
-<!--              <div class="layui-form-item">-->
-<!--                <div class="layui-inline">-->
-<!--                  <label class="layui-form-label">年龄</label>-->
-<!--                  <div class="layui-input-inline">-->
-<!--                    <input type="text" name="userage3" lay-verify="userAge" autocomplete="off" placeholder="请输入年龄" class="layui-input">-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="layui-inline">-->
-<!--                  <label class="layui-form-label">分期</label>-->
-<!--                  <div class="layui-input-inline">-->
-<!--                    <input type="text" name="stage3" autocomplete="off" placeholder="请输入分期" class="layui-input">-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="layui-inline">-->
-<!--                  <label class="layui-form-label">血肌酐</label>-->
-<!--                  <div class="layui-input-inline">-->
-<!--                    <input type="text" name="bloodCreatinine3" autocomplete="off" placeholder="请输入血肌酐指标"-->
-<!--                           lay-verify="userBloodCreatinine" class="layui-input">-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">年龄</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="userage" lay-verify="userAge" autocomplete="off" placeholder="请输入年龄" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">分期</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="stage" autocomplete="off" placeholder="请输入分期" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">血肌酐</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="bloodCreatinine" autocomplete="off" placeholder="请输入血肌酐指标"
+                           lay-verify="userBloodCreatinine" class="layui-input">
+                  </div>
+                </div>
+              </div>
 
-<!--              <div class="layui-form-item">-->
-<!--                <div class="layui-inline">-->
-<!--                  <label class="layui-form-label">eGFR值</label>-->
-<!--                  <div class="layui-input-inline">-->
-<!--                    <input type="text" name="egfr3" lay-verify="required" lay-reqtext="eGFR值不能为空" autocomplete="off"-->
-<!--                           placeholder="请先计算eGFR值" class="layui-input">-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="layui-inline">-->
-<!--                  <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-egfr3">计算eGFR值</button>-->
-<!--                </div>-->
-<!--              </div>-->
+              <div class="layui-form-item">
+                <label class="layui-form-label">舌象症状</label>
+                <div class="layui-input-block">
+                  <input type="text" name="tongueSymptoms" lay-verify="required" lay-reqtext="请输入舌象症状" placeholder="请输入舌象症状" autocomplete="off" class="layui-input">
+                </div>
+              </div>
 
-<!--              <div class="layui-form-item">-->
-<!--                <div class="layui-inline">-->
-<!--                  <label class="layui-form-label">脉搏表格</label>-->
-<!--                  <div class="layui-input-inline">-->
-<!--                    <input type="text" name="fileName" id="selectFileName" lay-verify="fileName"-->
-<!--                           lay-reqtext="请先选择脉搏数据文件" autocomplete="off" placeholder="未选择文件" class="layui-input"-->
-<!--                           readonly="readonly">-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="layui-inline">-->
-<!--                  &lt;!&ndash;					<input type="file" name="pulseFile" class="file">&ndash;&gt;-->
-<!--                  <a href="javascript:;" class="file">点击选择文件-->
-<!--                    <input type="file" name="pulseFile" id="selectFile" class="file">-->
-<!--                  </a>-->
-<!--                </div>-->
-<!--              </div>-->
+              <div class="layui-form-item">
+                <label class="layui-form-label">脉象症状</label>
+                <div class="layui-input-block">
+                  <input type="text" name="pulseSymptoms" lay-verify="required" lay-reqtext="请输入脉象症状" placeholder="请输入脉象症状" autocomplete="off" class="layui-input">
+                </div>
+              </div>
 
-<!--              <div class="layui-form-item">-->
-<!--                <div class="layui-inline">-->
-<!--                  <label class="layui-form-label">脉搏类型</label>-->
-<!--                  <div class="layui-input-inline">-->
-<!--                    <input type="text" name="pulseType" id="pulseType" autocomplete="off" placeholder="预测结果"-->
-<!--                           class="layui-input">-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--                <div class="layui-inline">-->
-<!--                  <button class="layui-btn" id="commit" lay-submit="*" lay-filter="forecastInformation"-->
-<!--                          id="LAY-component-form-result">脉搏类型预测-->
-<!--                  </button>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </form>-->
-          </div>
-          <div class="layui-tab-item">内容6</div>
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">eGFR值</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="egfr" lay-verify="required" lay-reqtext="eGFR值不能为空" autocomplete="off"
+                           placeholder="请先计算eGFR值" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-egfr3">计算eGFR值</button>
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">肾象类型</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="kindneyType" id="kindneyType" autocomplete="off" placeholder="预测结果"
+                           class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <button class="layui-btn" id="commit3" lay-submit="*" lay-filter="forecastInformation3"
+                          id="LAY-component-form-result3">肾象类型预测
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>                <!--肾象预测-->
+          <div class="layui-tab-item">内容6</div>         <!--肾象预测准确率展示-->
+          <div class="layui-tab-item">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+              <legend>输入病人的各项指标</legend>
+            </fieldset>
+            <form name="myForm4" id="form4" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation4"
+                  enctype='multipart/form-data'>
+
+              <div class="layui-form-item" pane="">
+                <label class="layui-form-label">性别</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="sex" value="男" title="男" checked="">
+                  <input type="radio" name="sex" value="女" title="女">
+                  <!--<input type="radio" name="sex" value="禁" title="禁用" disabled="">-->
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">年龄</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="userage" lay-verify="userAge" autocomplete="off" placeholder="请输入年龄" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">ALT值</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="alt" autocomplete="off" placeholder="请输入ALT指标" lay-verify="verify_alt" class="layui-input">
+                  </div>
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">舌象症状</label>
+                <div class="layui-input-block">
+                  <input type="text" name="tongueSymptoms" lay-verify="required" lay-reqtext="请输入舌象症状" placeholder="请输入舌象症状" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">脉象症状</label>
+                <div class="layui-input-block">
+                  <input type="text" name="pulseSymptoms" lay-verify="required" lay-reqtext="请输入脉象症状" placeholder="请输入脉象症状" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">肝象类型</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="liverType" id="liverType" autocomplete="off" placeholder="预测结果"
+                           class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <button class="layui-btn" id="commit4" lay-submit="*" lay-filter="forecastInformation4"
+                          id="LAY-component-form-result4">肝象类型预测
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>                <!--肝象预测-->
+          <div class="layui-tab-item">内容8</div>         <!--肝象预测准确率展示-->
+          <div class="layui-tab-item">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+              <legend>输入病人的各项指标</legend>
+            </fieldset>
+            <form name="myForm3" id="form5" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation5"
+                  enctype='multipart/form-data'>
+
+              <div class="layui-form-item" pane="">
+                <label class="layui-form-label">性别</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="sex" value="男" title="男" checked="">
+                  <input type="radio" name="sex" value="女" title="女">
+                  <!--<input type="radio" name="sex" value="禁" title="禁用" disabled="">-->
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">年龄</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="userage" lay-verify="userAge" autocomplete="off" placeholder="请输入年龄" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">FEV1</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="FEV1" autocomplete="off" placeholder="请输入FEV1指标"
+                           lay-verify="verify_number" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">FVC</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="FVC" lay-verify="verify_number" autocomplete="off" placeholder="请输入FVC指标" class="layui-input">
+                  </div>
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">FEV1%</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="FEV1%" lay-verify="verify_number" autocomplete="off" placeholder="请输入FEV1%指标" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">FEV1/FVC</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="FEV1/FVC" lay-verify="verify_number" autocomplete="off" placeholder="请输入FEV1/FVC改指标" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <label class="layui-form-label">PEF</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="PEF" lay-verify="verify_number" autocomplete="off" placeholder="请输入PEF指标" class="layui-input">
+                  </div>
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">西医诊断</label>
+                <div class="layui-input-block">
+                  <input type="text" name="wm_diagnosis" lay-verify="required" autocomplete="off" placeholder="请输入西医诊断结果" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">舌象症状</label>
+                <div class="layui-input-block">
+                  <input type="text" name="tongueSymptoms" lay-verify="required" lay-reqtext="请输入舌象症状" placeholder="请输入舌象症状" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label class="layui-form-label">脉象症状</label>
+                <div class="layui-input-block">
+                  <input type="text" name="pulseSymptoms" lay-verify="required" lay-reqtext="请输入脉象症状" placeholder="请输入脉象症状" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">肺象类型</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="lungType" id="lungType" autocomplete="off" placeholder="预测结果"
+                           class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-inline">
+                  <button class="layui-btn" id="commit5" lay-submit="*" lay-filter="forecastInformation5"
+                          id="LAY-component-form-result5">肺象类型预测
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>                <!--肺象预测-->
+          <div class="layui-tab-item">内容10</div>         <!--肺象预测准确率展示-->
         </div>
       </div>
     <script src="../static/layui/layui.js"></script>
     <script src="../static/js/jquery.js"></script>
     <script type="text/javascript" src="../static/js/echarts.js"></script>
     <script type="text/javascript" src="../static/js/echarts.min.js"></script>
+    <!--脉搏预测子页面js-->
     <script>
     layui.use('element', function(){
       var $ = layui.jquery
@@ -449,6 +610,9 @@
       form.verify({
         userAge: function(value){
           var re = /^[0-9]+.?[0-9]*$/;
+          if(value==''){
+            return '年龄不能为空！';
+          }
           if (!re.test(value)){
             return '输入的年龄不是数字！';
           }
@@ -573,48 +737,49 @@
         //alert(JSON.stringify(data));
         //更新计算得到的结果
         form.val('forecastInformation', {
-          "sex": objectData.sex.toString() // "name": "value"
-          ,"userage": objectData.userage.toString()
-          ,"stage": objectData.stage.toString()
-          ,"bloodCreatinine": objectData.bloodCreatinine.toString()
-          ,"egfr": egfr.toString()
+          // "sex": objectData.sex.toString() // "name": "value"
+          // ,"userage": objectData.userage.toString()
+          // ,"stage": objectData.stage.toString()
+          // ,"bloodCreatinine": objectData.bloodCreatinine.toString(),
+          "egfr": egfr.toString()
         });
       });
-      //layui框架渲染（否则下拉框不显示）
-      layui.use('form', function () {
-          var form = layui.form;
-          form.render();
-          //更新数据
-          var newData = {{newData | tojson}};//获取后端返回的结果
-          objectData = JSON.parse(newData);
-          //alert(objectData.pulseType.toString());
-          //document.getElementById("pulseType").innerText = objectData.pulseType.toString();
-          if(objectData.fileRead=='success'){
-            form.val('forecastInformation', {
-            "sex": objectData.sex.toString() // "name": "value"
-            ,"userage": objectData.userage.toString()
-            ,"stage": objectData.stage.toString()
-            ,"bloodCreatinine": objectData.bloodCreatinine.toString()
-            ,"egfr": objectData.egfr.toString()
-            ,"fileName" : objectData.fileName.toString()
-            ,"pulseType": objectData.pulseType.toString()
-            });
-          }
-          else if(objectData.fileRead=='fail'){
-            form.val('forecastInformation', {
-            "sex": '男' // "name": "value"
-            ,"userage": ''
-            ,"stage": ''
-            ,"bloodCreatinine": ''
-            ,"egfr": ''
-            ,"fileName" : ''
-            ,"pulseType": ''
-            });
-            layer.msg('导入csv文件行列小于2560*57，或文件编码格式不是\'utf-16 le\'和\'utf-8\'', { icon: 7, time: 4000, shade: [0.6, '#000', true] });
-          }
-      });
+      // //layui框架渲染（否则下拉框不显示）
+      // layui.use('form', function () {
+      //     var form = layui.form;
+      //     form.render();
+      //     //更新数据
+      //     var newData = {{newData | tojson}};//获取后端返回的结果
+      //     objectData = JSON.parse(newData);
+      //     //alert(objectData.pulseType.toString());
+      //     //document.getElementById("pulseType").innerText = objectData.pulseType.toString();
+      //     if(objectData.fileRead=='success'){
+      //       form.val('forecastInformation', {
+      //       "sex": objectData.sex.toString() // "name": "value"
+      //       ,"userage": objectData.userage.toString()
+      //       ,"stage": objectData.stage.toString()
+      //       ,"bloodCreatinine": objectData.bloodCreatinine.toString()
+      //       ,"egfr": objectData.egfr.toString()
+      //       ,"fileName" : objectData.fileName.toString()
+      //       ,"pulseType": objectData.pulseType.toString()
+      //       });
+      //     }
+      //     else if(objectData.fileRead=='fail'){
+      //       form.val('forecastInformation', {
+      //       "sex": '男' // "name": "value"
+      //       ,"userage": ''
+      //       ,"stage": ''
+      //       ,"bloodCreatinine": ''
+      //       ,"egfr": ''
+      //       ,"fileName" : ''
+      //       ,"pulseType": ''
+      //       });
+      //       layer.msg('导入csv文件行列小于2560*57，或文件编码格式不是\'utf-16 le\'和\'utf-8\'', { icon: 7, time: 4000, shade: [0.6, '#000', true] });
+      //     }
+      // });
     });
     </script>
+    <!--文件名展示框与文件上传按钮关联js-->
     <script>
     $(".file").on("change","input[type='file']",function(){
       var fileNameText=document.getElementById("selectFileName");
@@ -766,5 +931,175 @@
           });
         });
       </script>
+    <!--肾象预测子页面js-->
+    <script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+      var form = layui.form
+      ,layer = layui.layer
+      ,layedit = layui.layedit
+      ,laydate = layui.laydate;
+      //监听提交
+      form.on('submit(forecastInformation3)', function(data){
+        var submitData = new FormData($("#form3")[0]);
+        $.ajax({
+            url: "kindney_prediction",
+            type: "POST",
+            dataType : "json",
+            processData: false,
+            contentType:false,
+            // data: $('#form1').serialize(),
+            data:submitData,
+            success: function (newData) {
+              if(newData.execute=='success'){
+                form.val('forecastInformation3', {
+                  "kindneyType": newData.kindneyType.toString()
+                });
+                layer.alert(newData.kindneyType.toString(), {icon: 6,title:'肾象预测结果',time:5000,skin: 'layui-layer-lan',anim:4});
+              }
+              else if(newData.execute=='fail'){
+                layer.msg('处理出错', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+              }
+            },
+            error: function () {
+              layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+            }
+        });
+        return false;
+      });
+      //利用表单已填信息计算eGFR值
+      layui.$('#LAY-component-form-egfr3').on('click', function(){
+        var data = form.val('forecastInformation3');
+        var jsonData = JSON.stringify(data);// 转成JSON格式
+        //var result = $.parseJSON(jsonData);// 转成JSON对象
+        var objectData = JSON.parse(jsonData);//转成JSON对象
+        if(objectData.userage==""){
+          layer.msg('请输入年龄用于计算！', { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+          return ;
+        }
+        var re = /^[0-9]+.?[0-9]*$/;//数字判断验证规则
+        age=parseFloat(objectData.userage);
+        if (age==NaN || !re.test(age)){
+          layer.msg('输入的年龄非正常数字！', { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+          return ;
+        }
+        if(age<0||age>120){
+          layer.msg('年龄超出正常范围！', { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+          return ;
+        }
+        if(objectData.bloodCreatinine==""){
+          layer.msg('请输入血肌酐值用于计算！', { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+          return ;
+        }
+        bloodCreatinine=parseFloat(objectData.bloodCreatinine);
+        if (bloodCreatinine==NaN || !re.test(bloodCreatinine)){
+          layer.msg('请输入正确的血肌酐指标值！', { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+          return ;
+        }
+        var egfr = 0;
+        if(objectData.sex.toString()=="男"){
+          egfr=186*(objectData.bloodCreatinine/88.41)**-1.154*(objectData.userage**-0.203)*1.233;
+        }
+        else if(objectData.sex.toString()=="女"){
+          egfr=186*(objectData.bloodCreatinine/88.41)**-1.154*0.742*(objectData.userage**-0.203)*1.233;
+        }
+        //更新计算得到的结果
+        form.val('forecastInformation3', {
+          "egfr": egfr.toString()
+        });
+      });
+    });
+    </script>
+    <!--肝象预测子页面js-->
+    <script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+      var form = layui.form
+      ,layer = layui.layer
+      ,layedit = layui.layedit
+      ,laydate = layui.laydate;
+      //自定义验证规则
+      form.verify({
+        verify_alt: function(value){
+          var re = /^[0-9]+.?[0-9]*$/;
+          if (!re.test(value)){
+            return '请输入正确的ALT指标值！';
+          }
+        }
+      });
+      //监听提交
+      form.on('submit(forecastInformation4)', function(data){
+        var submitData = new FormData($("#form4")[0]);
+        $.ajax({
+            url: "liver_prediction",
+            type: "POST",
+            dataType : "json",
+            processData: false,
+            contentType:false,
+            // data: $('#form1').serialize(),
+            data:submitData,
+            success: function (newData) {
+              if(newData.execute=='success'){
+                form.val('forecastInformation4', {
+                  "liverType": newData.liverType.toString()
+                });
+                layer.alert(newData.liverType.toString(), {icon: 6,title:'肝象预测结果',time:5000,skin: 'layui-layer-lan',anim:4});
+              }
+              else if(newData.execute=='fail'){
+                layer.msg('处理出错', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+              }
+            },
+            error: function () {
+              layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+            }
+        });
+        return false;
+      });
+    });
+    </script>
+    <!--肺象预测子页面js-->
+    <script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+      var form = layui.form
+      ,layer = layui.layer
+      ,layedit = layui.layedit
+      ,laydate = layui.laydate;
+      //自定义验证规则
+      form.verify({
+        verify_number: function(value){
+          var re = /^[0-9]+.?[0-9]*$/;
+          if (!re.test(value)){
+            return '请输入正确的数值指标！';
+          }
+        }
+      });
+      //监听提交
+      form.on('submit(forecastInformation5)', function(data){
+        var submitData = new FormData($("#form5")[0]);
+        $.ajax({
+            url: "lung_prediction",
+            type: "POST",
+            dataType : "json",
+            processData: false,
+            contentType:false,
+            // data: $('#form1').serialize(),
+            data:submitData,
+            success: function (newData) {
+              if(newData.execute=='success'){
+                form.val('forecastInformation5', {
+                  "lungType": newData.lungType.toString()
+                });
+                layer.alert(newData.lungType.toString(), {icon: 6,title:'肺象预测结果',time:5000,skin: 'layui-layer-lan',anim:4});
+              }
+              else if(newData.execute=='fail'){
+                layer.msg('处理出错', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+              }
+            },
+            error: function () {
+              layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+            }
+        });
+        return false;
+      });
+    });
+    </script>
   </body>
 </html>
