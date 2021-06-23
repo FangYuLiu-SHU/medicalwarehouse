@@ -31,7 +31,7 @@ function getPage(total, laypage, dir, queryObj) {
     elem: queryObj.page_el, // 根据ID定位
     count: total, // 获取的数据总数
     limit: queryObj.limit, // 每页默认显示的数量，同上
-    layout: ["prev", "page", "next", "limit"],
+    layout: ["prev", "page", "next", "limit", "skip"],
     curr: queryObj.page, // 页码
     jump: function (obj, first) {
       if (!first) {
@@ -130,8 +130,8 @@ function rowToolEvent(obj, cols, data, form, table, type) {
             patient: type,
           },
           success: function (data) {
-            
             tougeImg.css("display", "block");
+            isHasTongue = false;
             const { tongue_data } = data;
             if(tongue_data !== "None") {
               tougeImg.attr("src", baseURL + tongue_data);
