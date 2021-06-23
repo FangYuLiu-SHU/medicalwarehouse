@@ -547,6 +547,25 @@ def kindney_prediction():
     newData = json.dumps(formData)  # json.dumps封装
     return newData
 
+#肾象准确率验证服务
+@app.route('/kindneyPrediction_accuracy', methods=["POST"])
+def kindneyPrediction_accuracy():
+    # 获取前端请求的数据
+    selectTestNum = request.form.get('selectTestNum')
+    testNum=int(selectTestNum)
+    # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    idSet,predictType,labelType,correct,total,accuracy = kindney_symptom_predict.multi_predict(testNum)
+    formData = {}
+    formData['testNum']=str(testNum)
+    formData['num_pos']=correct
+    formData['num_neg']=total-correct
+    formData['accuracy']=accuracy
+    formData['predictType']=predictType
+    formData['labelType']=labelType
+    formData['idSet']=idSet
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
+
 #肝象预测服务
 @app.route('/liver_prediction', methods=["POST"])
 def liver_prediction():
@@ -568,15 +587,34 @@ def liver_prediction():
         # 调用模型计算脉搏类型预测结果
         result = liver_symptom_predict.sigle_predict(parm)
         if(result[0]==1):
-            formData['liverType']='肝胆湿热证'
+            formData['liverType']='肝胆湿热症'
         elif(result[0]==2):
-            formData['liverType']='肝郁脾虚证'
+            formData['liverType']='肝郁脾虚症'
         formData['execute'] = 'success'
         return json.dumps(formData)  # json.dumps封装
     except Exception as e:
         formData['execute'] = 'fail'
     else:
         formData['execute'] = 'fail'
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
+
+#肝象准确率验证服务
+@app.route('/liverPrediction_accuracy', methods=["POST"])
+def liverPrediction_accuracy():
+    # 获取前端请求的数据
+    selectTestNum = request.form.get('selectTestNum')
+    testNum=int(selectTestNum)
+    # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    idSet,predictType,labelType,correct,total,accuracy = liver_symptom_predict.multi_predict(testNum)
+    formData = {}
+    formData['testNum']=str(testNum)
+    formData['num_pos']=correct
+    formData['num_neg']=total-correct
+    formData['accuracy']=accuracy
+    formData['predictType']=predictType
+    formData['labelType']=labelType
+    formData['idSet']=idSet
     newData = json.dumps(formData)  # json.dumps封装
     return newData
 
@@ -621,6 +659,35 @@ def lung_prediction():
         formData['execute'] = 'fail'
     else:
         formData['execute'] = 'fail'
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
+
+#肺象准确率验证服务
+@app.route('/lungPrediction_accuracy', methods=["POST"])
+def lungPrediction_accuracy():
+    # 获取前端请求的数据
+    selectTestNum = request.form.get('selectTestNum')
+    testNum=int(selectTestNum)
+    # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    idSet,predictType1,predictType2,predictType3,labelType1,labelType2,labelType3,correct1,correct2,correct3,total,accuracy1,accuracy2,accuracy3 = lung_symptom_predict.multi_predict(testNum)
+    formData = {}
+    formData['testNum']=str(testNum)
+    formData['num_pos1']=correct1
+    formData['num_pos2'] = correct2
+    formData['num_pos3'] = correct3
+    formData['num_neg1']=total-correct1
+    formData['num_neg2'] = total - correct2
+    formData['num_neg3'] = total - correct3
+    formData['accuracy1']=accuracy1
+    formData['accuracy2'] = accuracy2
+    formData['accuracy3'] = accuracy3
+    formData['predictType1']=predictType1
+    formData['predictType2'] = predictType2
+    formData['predictType3'] = predictType3
+    formData['labelType1']=labelType1
+    formData['labelType2'] = labelType2
+    formData['labelType3'] = labelType3
+    formData['idSet']=idSet
     newData = json.dumps(formData)  # json.dumps封装
     return newData
     
