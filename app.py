@@ -461,22 +461,24 @@ def disease_prediction():
             result = predict.pulsePrediction(data.values)
             formData['pulseType'] = result
             formData['fileName'] = ''
+            return json.dumps(formData)  # json.dumps封装
         except UnicodeDecodeError as e:
             data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows,usecols=[i for i in range(cols)])
             # 调用模型计算脉搏类型预测结果
             result = predict.pulsePrediction(data.values)
             formData['pulseType'] = result
             formData['fileName'] = ''
+            return json.dumps(formData)  # json.dumps封装
         except ValueError as e:
             data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows,usecols=[i for i in range(cols)])
             # 调用模型计算脉搏类型预测结果
             result = predict.pulsePrediction(data.values)
             formData['pulseType'] = result
             formData['fileName'] = ''
+            return json.dumps(formData)  # json.dumps封装
         else:
             formData = {'sex': '男', 'userage': '', 'stage': '', 'bloodCreatinine': '', 'egfr': '', 'fileName': '',
                         'pulseType': '', 'fileRead': 'fail'}
-
         newData = json.dumps(formData)  # json.dumps封装
         return newData
     

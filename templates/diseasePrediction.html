@@ -44,8 +44,8 @@
   <body>
       <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
-          <li class="layui-this">脉搏预测</li>
-          <li>脉搏预测准确率展示</li>
+          <li class="layui-this">脉象预测</li>
+          <li>脉象预测准确率展示</li>
           <li>舌预测</li>
           <li>舌预测准确率展示</li>
           <li>肾预测</li>
@@ -105,7 +105,7 @@
 
               <div class="layui-form-item">
                 <div class="layui-inline">
-                  <label class="layui-form-label">脉搏表格</label>
+                  <label class="layui-form-label">脉波表格</label>
                   <div class="layui-input-inline">
                     <input type="text" name="fileName" id="selectFileName" lay-verify="fileName"
                            lay-reqtext="请先选择脉搏数据文件" autocomplete="off" placeholder="未选择文件" class="layui-input"
@@ -122,7 +122,7 @@
 
               <div class="layui-form-item">
                 <div class="layui-inline">
-                  <label class="layui-form-label">脉搏类型</label>
+                  <label class="layui-form-label">脉象类型</label>
                   <div class="layui-input-inline">
                     <input type="text" name="pulseType" id="pulseType" autocomplete="off" placeholder="预测结果"
                            class="layui-input">
@@ -130,14 +130,13 @@
                 </div>
                 <div class="layui-inline">
                   <button class="layui-btn" id="commit" lay-submit="*" lay-filter="forecastInformation"
-                          id="LAY-component-form-result">脉搏类型预测
+                          id="LAY-component-form-result">脉象类型预测
                   </button>
                 </div>
               </div>
             </form>
           </div>
           <div class="layui-tab-item">
-            <div id="container" style="width:100px;height:100px;position: absolute; left: 0; top: 0; right: 0; bottom: 0;margin: auto;"></div>
             <form name="myForm2" id="form2" class="layui-form layui-form-pane" action="##" onsubmit="return false"
                   method="post" lay-filter="selectNumber" enctype='multipart/form-data'>
               <div class="layui-form-item">
@@ -153,10 +152,94 @@
             </form>
             <div id="pulsePredictChartDom" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
             <div id="pulsePredictChartBar" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
+            <div id="pulsePredictDisplay" style="width: 30%; float: left;text-align: center;"></div><!--准确率显示-->
           </div>
           <div class="layui-tab-item">内容3</div>
           <div class="layui-tab-item">内容4</div>
-          <div class="layui-tab-item">内容5</div>
+          <div class="layui-tab-item">
+<!--            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">-->
+<!--              <legend>输入病人的各项指标</legend>-->
+<!--            </fieldset>-->
+<!--            <form name="myForm3" id="form3" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation3"-->
+<!--                  enctype='multipart/form-data'>-->
+
+<!--              <div class="layui-form-item" pane="">-->
+<!--                <label class="layui-form-label">性别</label>-->
+<!--                <div class="layui-input-block">-->
+<!--                  <input type="radio" name="sex" value="男" title="男" checked="">-->
+<!--                  <input type="radio" name="sex" value="女" title="女">-->
+<!--                  &lt;!&ndash;<input type="radio" name="sex" value="禁" title="禁用" disabled="">&ndash;&gt;-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              <div class="layui-form-item">-->
+<!--                <div class="layui-inline">-->
+<!--                  <label class="layui-form-label">年龄</label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                    <input type="text" name="userage3" lay-verify="userAge" autocomplete="off" placeholder="请输入年龄" class="layui-input">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="layui-inline">-->
+<!--                  <label class="layui-form-label">分期</label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                    <input type="text" name="stage3" autocomplete="off" placeholder="请输入分期" class="layui-input">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="layui-inline">-->
+<!--                  <label class="layui-form-label">血肌酐</label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                    <input type="text" name="bloodCreatinine3" autocomplete="off" placeholder="请输入血肌酐指标"-->
+<!--                           lay-verify="userBloodCreatinine" class="layui-input">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              <div class="layui-form-item">-->
+<!--                <div class="layui-inline">-->
+<!--                  <label class="layui-form-label">eGFR值</label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                    <input type="text" name="egfr3" lay-verify="required" lay-reqtext="eGFR值不能为空" autocomplete="off"-->
+<!--                           placeholder="请先计算eGFR值" class="layui-input">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="layui-inline">-->
+<!--                  <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-egfr3">计算eGFR值</button>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              <div class="layui-form-item">-->
+<!--                <div class="layui-inline">-->
+<!--                  <label class="layui-form-label">脉搏表格</label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                    <input type="text" name="fileName" id="selectFileName" lay-verify="fileName"-->
+<!--                           lay-reqtext="请先选择脉搏数据文件" autocomplete="off" placeholder="未选择文件" class="layui-input"-->
+<!--                           readonly="readonly">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="layui-inline">-->
+<!--                  &lt;!&ndash;					<input type="file" name="pulseFile" class="file">&ndash;&gt;-->
+<!--                  <a href="javascript:;" class="file">点击选择文件-->
+<!--                    <input type="file" name="pulseFile" id="selectFile" class="file">-->
+<!--                  </a>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              <div class="layui-form-item">-->
+<!--                <div class="layui-inline">-->
+<!--                  <label class="layui-form-label">脉搏类型</label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                    <input type="text" name="pulseType" id="pulseType" autocomplete="off" placeholder="预测结果"-->
+<!--                           class="layui-input">-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="layui-inline">-->
+<!--                  <button class="layui-btn" id="commit" lay-submit="*" lay-filter="forecastInformation"-->
+<!--                          id="LAY-component-form-result">脉搏类型预测-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </form>-->
+          </div>
           <div class="layui-tab-item">内容6</div>
         </div>
       </div>
@@ -169,11 +252,8 @@
       var $ = layui.jquery
       ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
        $('.layui-tab-title').on('click', function(title) {
-          if(title.toElement.textContent=="脉搏预测准确率展示"){
-            // var data = { "postData": "data" };
-            var maindiv=document.getElementById('container')
-            var myChart = echarts.init(maindiv);
-            myChart.showLoading();
+          if(title.toElement.textContent=="脉象预测准确率展示"){
+            layer.load(2);
             $.ajax({
                 url: "pulsePrediction_accuracy",
                 type: "POST",
@@ -183,7 +263,7 @@
                 // data: $('#form1').serialize(),
                 data: {"selectTestNum": "50" },
                 success: function (newData) {
-                  myChart.hideLoading();
+                  layer.closeAll('loading');
                   var pulsePredict_dom = document.getElementById('pulsePredictChartDom');
                   var pulsePredict_chart = echarts.init(pulsePredict_dom);
                   var pulsePredict_option={
@@ -290,6 +370,9 @@
                     ]
                   };
                   pulsePredict_chartBar.setOption(pulsePredictBar_option);
+
+                  var pulsePredictDisplay=document.getElementById('pulsePredictDisplay');
+                  pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100+'%</b></h2>';
                 },
                 error: function () {
                   layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
@@ -390,6 +473,7 @@
                 form.val('forecastInformation', {
                   "pulseType": newData.pulseType.toString()
                 });
+                layer.alert(newData.pulseType.toString(), {icon: 6,title:'脉象预测结果',time:5000,skin: 'layui-layer-lan',anim:4});
               }
               else if(newData.fileRead=='fail'){
                 layer.msg('导入csv文件行列小于2560*57，或文件编码格式不是\'utf-16 le\'和\'utf-8\'', { icon: 7, time: 4000, shade: [0.6, '#000', true] });
@@ -533,9 +617,7 @@
             } else if (message == "200") {
               postData={"selectTestNum": "200" };
             }
-            var maindiv=document.getElementById('container')
-            var myChart = echarts.init(maindiv);
-            myChart.showLoading();
+            layer.load(2);
             $.ajax({
                 url: "pulsePrediction_accuracy",
                 type: "POST",
@@ -545,7 +627,7 @@
                 // data: $('#form1').serialize(),
                 data: postData,
                 success: function (newData) {
-                  myChart.hideLoading();
+                  layer.closeAll('loading');
                   var pulsePredict_dom = document.getElementById('pulsePredictChartDom');
                   var pulsePredict_chart = echarts.init(pulsePredict_dom);
                   var pulsePredict_option={
@@ -652,6 +734,7 @@
                     ]
                   };
                   pulsePredict_chartBar.setOption(pulsePredictBar_option);
+                  pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100+'%</b></h2>';
                 },
                 error: function () {
                   layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
