@@ -6,6 +6,9 @@ import json
 from utils import tool, load_data, ods_to_dwd
 import os
 from algorithm import predict
+from algorithm import kindney_symptom_predict
+from algorithm import liver_symptom_predict
+from algorithm import lung_symptom_predict
 from sqlalchemy import create_engine
 import pymysql
 
@@ -426,7 +429,7 @@ def patient_info_by_condition():
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
 
-
+#脉象预测服务
 @app.route('/disease_prediction', methods=["GET", "POST"])
 def disease_prediction():
     if request.method == "GET":
@@ -476,12 +479,14 @@ def disease_prediction():
             formData['pulseType'] = result
             formData['fileName'] = ''
             return json.dumps(formData)  # json.dumps封装
+        except Exception as e:
+            formData['fileRead'] = 'fail'
         else:
-            formData = {'sex': '男', 'userage': '', 'stage': '', 'bloodCreatinine': '', 'egfr': '', 'fileName': '',
-                        'pulseType': '', 'fileRead': 'fail'}
+            formData['fileRead'] = 'fail'
         newData = json.dumps(formData)  # json.dumps封装
         return newData
-    
+
+#脉象准确率验证服务
 @app.route('/pulsePrediction_accuracy', methods=["POST"])
 def pulsePrediction_accuracy():
     # 获取前端请求的数据
@@ -506,7 +511,118 @@ def pulsePrediction_accuracy():
     formData['labelType']=labelType
     formData['idSet']=idSet
     newData = json.dumps(formData)  # json.dumps封装
-    return newData    
+    return newData
+
+#肾象预测服务
+@app.route('/kindney_prediction', methods=["POST"])
+def kindney_prediction():
+    # 获取前端请求的表单数据
+    formData = request.form.to_dict()
+    # 预测函数输入指标参数格式
+    # dict1 = {'sex': '1', 'userage': '37', 'bloodCreatinine': '124.9', 'egfr': '73.953822', 'Tou': '舌红少苔', 'pulseType': '弦细'}
+    # 转换前端参数为-》预测函数参数格式
+    parm={}
+    if(formData['sex']=='男'):
+        parm['sex']=1
+    elif(formData['sex']=='女'):
+        parm['sex']=2
+    parm['userage']=formData['userage']
+    parm['bloodCreatinine']=formData['bloodCreatinine']
+    parm['egfr']=formData['egfr']
+    parm['Tou']=formData['tongueSymptoms']
+    parm['pulseType']=formData['pulseSymptoms']
+    try:
+        # 调用模型计算脉搏类型预测结果
+        result = kindney_symptom_predict.sigle_predict(parm)
+        if(result[0]==1):
+            formData['kindneyType']='肾阳虚'
+        elif(result[0]==2):
+            formData['kindneyType']='肾阴虚'
+        formData['execute'] = 'success'
+        return json.dumps(formData)  # json.dumps封装
+    except Exception as e:
+        formData['execute'] = 'fail'
+    else:
+        formData['execute'] = 'fail'
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
+
+#肝象预测服务
+@app.route('/liver_prediction', methods=["POST"])
+def liver_prediction():
+    # 获取前端请求的表单数据
+    formData = request.form.to_dict()
+    # 预测函数输入指标参数格式
+    # dict1 = {'sex': '2', 'userage': '65', 'ALTD': '30', 'Tou': '舌苔黄腻', 'pulseType': '弦数'}
+    # 转换前端参数为-》预测函数参数格式
+    parm={}
+    if(formData['sex']=='男'):
+        parm['sex']=2
+    elif(formData['sex']=='女'):
+        parm['sex']=1
+    parm['userage']=formData['userage']
+    parm['ALTD']=formData['alt']
+    parm['Tou']=formData['tongueSymptoms']
+    parm['pulseType']=formData['pulseSymptoms']
+    try:
+        # 调用模型计算脉搏类型预测结果
+        result = liver_symptom_predict.sigle_predict(parm)
+        if(result[0]==1):
+            formData['liverType']='肝胆湿热证'
+        elif(result[0]==2):
+            formData['liverType']='肝郁脾虚证'
+        formData['execute'] = 'success'
+        return json.dumps(formData)  # json.dumps封装
+    except Exception as e:
+        formData['execute'] = 'fail'
+    else:
+        formData['execute'] = 'fail'
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
+
+#肝象预测服务
+@app.route('/lung_prediction', methods=["POST"])
+def lung_prediction():
+    # 获取前端请求的表单数据
+    formData = request.form.to_dict()
+    # 预测函数输入指标参数格式
+    # dict1 = {'sex': '1', 'userage': '75', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄', 'pulseType': '脉弦滑'}
+    # 转换前端参数为-》预测函数参数格式
+    parm={}
+    if(formData['sex']=='男'):
+        parm['sex']=1
+    elif(formData['sex']=='女'):
+        parm['sex']=2
+    parm['userage']=formData['userage']
+    parm['FEV1']=formData['FEV1']
+    parm['FVC'] = formData['FVC']
+    parm['FEV1%'] = formData['FEV1%']
+    parm['FEV1/FVC'] = formData['FEV1/FVC']
+    parm['PEF'] = formData['PEF']
+    parm['Tou']=formData['tongueSymptoms']
+    parm['pulseType']=formData['pulseSymptoms']
+    try:
+        formData['lungType'] = ''
+        # 调用模型计算脉搏类型预测结果
+        result = lung_symptom_predict.sigle_predict(parm)
+        if(result[0]==1):
+            formData['lungType']='肝气虚'
+        if(result[1]==1 and formData['lungType']==''):
+            formData['lungType'] += '脾气虚'
+        else:
+            formData['lungType'] += '，脾气虚'
+        if (result[2] == 1 and formData['lungType']==''):
+            formData['lungType'] += '肾气虚'
+        else:
+            formData['lungType'] += '，肾气虚'
+        formData['execute'] = 'success'
+        return json.dumps(formData)  # json.dumps封装
+    except Exception as e:
+        formData['execute'] = 'fail'
+    else:
+        formData['execute'] = 'fail'
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
     
 #用户通道数量      
 @app.route('/find_channelNumber',methods=['GET','POST'])
@@ -720,6 +836,78 @@ def tongue_data():
     else:
         json_data['tongue_data'] = 'None'
     return json_data
+
+@app.route('/tongue_predict',methods=['GET','POST'])
+def tougue_predict():
+    def tongue_code(tongue):
+        import re
+        # 对舌的标签描述进行编码
+        tongue['tongue_proper_color'] = 0  # 舌质颜色 淡红（正常）0 淡白1 红2 暗/紫3
+        tongue['tongue_proper_shape_pang'] = 0  # 舌质形态 正常0 胖1  裂纹齿印(太少不用)
+        tongue['tongue_proper_shape_neng'] = 0  # 舌质形态 正常0  嫩1
+        tongue['tongue_proper_shape_chi'] = 0  # 舌质形态 正常0  有齿痕或齿印 1
+        tongue['tongue_moss_color'] = 0  # 苔色白（正常）0 黄1
+        tongue['tongue_moss_nature'] = 0  # 苔质 薄（正常）0  少1  腻2
+        # 舌色编码
+        patt0 = r'.*淡(?!红).*'
+        tongue.loc[~tongue['tongue'].apply(lambda x: re.match(patt0, x)).isna(), 'tongue_proper_color'] = 1
+        patt1 = r'.*[^淡]红.*'
+        tongue.loc[~tongue['tongue'].apply(lambda x: re.match(patt1, x)).isna(), 'tongue_proper_color'] = 2
+        tongue.loc[tongue['tongue'].str.contains('暗'), 'tongue_proper_color'] = 3
+        tongue.loc[tongue['tongue'].str.contains('紫'), 'tongue_proper_color'] = 3
+        # 舌形编码
+        tongue.loc[tongue['tongue'].str.contains('胖'), 'tongue_proper_shape_pang'] = 1
+        tongue.loc[tongue['tongue'].str.contains('嫩'), 'tongue_proper_shape_neng'] = 1
+        tongue.loc[tongue['tongue'].str.contains('齿'), 'tongue_proper_shape_chi'] = 1
+        # 苔色编码
+        tongue.loc[tongue['tongue'].str.contains('黄'), 'tongue_moss_color'] = 1
+        # 苔质编码
+        tongue.loc[tongue['tongue'].str.contains('少'), 'tongue_moss_nature'] = 1
+        tongue.loc[tongue['tongue'].str.contains('腻'), 'tongue_moss_nature'] = 2
+        return tongue
+
+    if request.method == "GET":
+        # 从数据库获取病人信息表
+        try:
+            cursor.execute("SELECT id,tongue FROM ods_kidney_info;")
+        except:
+            print('从服务器获取肾病舌形数据失败')
+            return 0
+        query_result_kidney = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        tongue_kidney= pd.DataFrame(list(query_result_kidney), columns=col_names)
+
+        try:
+            cursor.execute("SELECT id,tongue FROM ods_liver_info;")
+        except:
+            print('从服务器获取肝病舌形数据失败')
+            return 0
+        query_result_liver = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        tongue_liver= pd.DataFrame(list(query_result_liver), columns=col_names)
+        try:
+            cursor.execute("SELECT id,tongueA as tongue FROM ods_lung_info;")
+        except:
+            print('从服务器获取肺病舌形数据失败')
+            return 0
+        query_result_lung = cursor.fetchall()
+        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        tongue_lung= pd.DataFrame(list(query_result_lung), columns=col_names)
+        result_raw=[]
+        for i in range(len(tongue_kidney)):
+            result_raw.append([tongue_kidney.iloc[:,0][i],str(tongue_kidney.iloc[:,1][i])])
+        for i in range(len(tongue_liver)):
+            result_raw.append([tongue_liver.iloc[:,0][i],str(tongue_liver.iloc[:,1][i])])
+        for i in range(len(tongue_lung)):
+            result_raw.append([tongue_lung.iloc[:,0][i],str(tongue_lung.iloc[:,1][i])])
+        result_raw=pd.DataFrame(result_raw)
+        result_raw.columns=['id','tongue']
+        result=tongue_code(result_raw)
+        # result.to_excel('files/tongue_all_features.xls', index=False)
+        result.to_csv('files/tongue_all_features.csv', index=False)
+        print(result)
+        # return render_template('/tongue_predict.html')
+
 
 
 if __name__ == '__main__':
