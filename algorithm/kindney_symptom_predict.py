@@ -7,6 +7,7 @@ from sklearn import metrics
 import pandas as pd
 import re
 from imblearn.over_sampling import SMOTE
+import random
 
 def kidney_tongue_pulse_code(df_kidney):
     # 对脉的标签描述进行清洗
@@ -206,6 +207,36 @@ def sigle_predict(dict):
     classification = model.predict(df_sig_kidney.values)
     #print(classification)
     return classification
+
+def multi_predict(num):
+    kindneyType = ['肾阳虚', '肾阴虚']
+    # 读取数据，随机选择num个样本进行验证
+    df_kindney = pd.read_csv('./files/dwd_kidney_info.csv')
+    kindeySet = df_kindney.values
+    indexs=random.sample(range(0,df_kindney.shape[0]),num)
+    idSet=[]
+    predictType=[]
+    labelType=[]
+    correct=0
+    total=num
+    tempParms = {'sex': '1', 'userage': '37', 'bloodCreatinine': '124.9', 'egfr': '73.953822', 'Tou': '舌红少苔',
+             'pulseType': '弦细'}
+    for index in indexs:
+        idSet.append(kindeySet[index, 0])
+        tempParms['sex']=kindeySet[index,1]
+        tempParms['userage']=kindeySet[index,2]
+        tempParms['bloodCreatinine']=kindeySet[index,3]
+        tempParms['egfr']=kindeySet[index,4]
+        tempParms['Tou']=kindeySet[index,6]
+        tempParms['pulseType']=kindeySet[index,7]
+        predictIndex = sigle_predict(tempParms)[0]-1
+        labelIndex=kindeySet[index, 5]-1
+        predictType.append(kindneyType[predictIndex])
+        labelType.append(kindneyType[labelIndex])
+        if(predictIndex==labelIndex):
+            correct+=1
+    accuracy = round(correct / total,4)
+    return idSet,predictType,labelType,correct,total,accuracy
 
 # if __name__ == '__main__':
 # 

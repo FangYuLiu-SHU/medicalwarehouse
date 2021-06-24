@@ -8,6 +8,7 @@ from sklearn import model_selection
 from sklearn import metrics
 import pandas as pd
 import re
+import random
 
 def lung_tongue_pulse_code(df_lung):
     # 对脉的标签描述进行清洗
@@ -288,6 +289,61 @@ def sigle_predict(dict):
     result = np.append(result, classification_kidney)
     #print(result)
     return result
+
+def multi_predict(num):
+    Type1 = ['无肺气虚', '有肺气虚']
+    Type2 = ['无脾气虚', '有脾气虚']
+    Type3 = ['无肾气虚', '有肾气虚']
+    # 读取数据，随机选择num个样本进行验证
+    df_data = pd.read_csv('./files/dwd_lung_info.csv')
+    set = df_data.values
+    indexs=random.sample(range(0,df_data.shape[0]),num)
+    idSet=[]
+    predictType1=[]
+    predictType2 = []
+    predictType3 = []
+    labelType1 = []
+    labelType2 = []
+    labelType3 = []
+    correct1 = 0
+    correct2 = 0
+    correct3 = 0
+    total = num
+    tempParms={'sex': '1', 'userage': '75', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄', 'pulseType': '脉弦滑'}
+    # tempParms = {'sex': '2', 'userage': '65', 'ALTD': '30', 'Tou': '舌苔黄腻', 'pulseType': '弦数'}
+    for index in indexs:
+        idSet.append(set[index, 0])
+        tempParms['sex']=set[index,2]
+        tempParms['userage']=set[index,3]
+        tempParms['FEV1']=set[index,8]
+        tempParms['FEV1%'] = set[index, 9]
+        tempParms['FEV1/FVC'] = set[index, 10]
+        tempParms['PEF'] = set[index, 11]
+        tempParms['Tou']=set[index,12]
+        tempParms['pulseType']=set[index,13]
+        predictIndex1 = sigle_predict(tempParms)[0]
+        predictIndex2 = sigle_predict(tempParms)[1]
+        predictIndex3 = sigle_predict(tempParms)[2]
+        #第4列数据没用上
+        labelIndex1 = set[index, 5]
+        labelIndex2 = set[index, 6]
+        labelIndex3 = set[index, 7]
+        predictType1.append(Type1[predictIndex1])
+        predictType2.append(Type2[predictIndex2])
+        predictType3.append(Type3[predictIndex3])
+        labelType1.append(Type1[labelIndex1])
+        labelType2.append(Type2[labelIndex2])
+        labelType3.append(Type3[labelIndex3])
+        if(predictIndex1==labelIndex1):
+            correct1+=1
+        if (predictIndex2 == labelIndex2):
+            correct2 += 1
+        if (predictIndex3 == labelIndex3):
+            correct3 += 1
+    accuracy1 = round(correct1 / total, 3)
+    accuracy2 = round(correct2 / total, 3)
+    accuracy3 = round(correct3 / total, 3)
+    return idSet,predictType1,predictType2,predictType3,labelType1,labelType2,labelType3,correct1,correct2,correct3,total,accuracy1,accuracy2,accuracy3
 
 # if __name__ == '__main__':
     # df_lung = process_data()

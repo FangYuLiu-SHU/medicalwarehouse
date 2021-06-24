@@ -7,6 +7,7 @@ from sklearn import model_selection
 from sklearn import metrics
 import pandas as pd
 import re
+import random
 
 def liver_tongue_pulse_code(df_liver):
     # 对脉的标签描述进行清洗
@@ -203,6 +204,34 @@ def sigle_predict(dict):
     classification = model.predict(df_sig_liver.values)
     #print(classification)
     return classification
+
+def multi_predict(num):
+    Type = ['肝胆湿热症', '肝郁脾虚症']
+    # 读取数据，随机选择num个样本进行验证
+    df_data = pd.read_csv('./files/dwd_liver_info.csv')
+    set = df_data.values
+    indexs=random.sample(range(0,df_data.shape[0]),num)
+    idSet=[]
+    predictType=[]
+    labelType=[]
+    correct=0
+    total=num
+    tempParms = {'sex': '2', 'userage': '65', 'ALTD': '30', 'Tou': '舌苔黄腻', 'pulseType': '弦数'}
+    for index in indexs:
+        idSet.append(set[index, 0])
+        tempParms['sex']=set[index,1]
+        tempParms['userage']=set[index,2]
+        tempParms['ALTD']=set[index,3]
+        tempParms['Tou']=set[index,5]
+        tempParms['pulseType']=set[index,6]
+        predictIndex = sigle_predict(tempParms)[0]-1
+        labelIndex=set[index, 4]-1
+        predictType.append(Type[predictIndex])
+        labelType.append(Type[labelIndex])
+        if(predictIndex==labelIndex):
+            correct+=1
+    accuracy = round(correct / total,4)
+    return idSet,predictType,labelType,correct,total,accuracy
 
 # if __name__ == '__main__':
 # 

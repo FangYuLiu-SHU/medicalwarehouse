@@ -7,6 +7,7 @@ import torch.nn.functional as F
 from torch import optim
 import logging
 import sys
+import random
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from torch import cuda
 from torch import nn
@@ -23,7 +24,7 @@ from algorithm.pulsePredictLSTM import Dataset
 def pulsePrediction(pulseData):
     pulseType=['沉细', '细', '弦', '弦细', '滑', '濡']
     rnn_model = FCLSTM()
-    rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt',map_location='cpu'))
+    rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt', map_location='cpu'))
     rnn_model.eval()
     # n = torch.load("./files/LSTM_predict.pt").cpu()
     pulseData = torch.from_numpy(pulseData).to(torch.float32)
@@ -37,10 +38,11 @@ def pulsePrediction(pulseData):
 def mulPulsePrediction(testSize,totalSize):
     # 1 加载模型
     rnn_model = FCLSTM()
-    rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt',map_location='cpu'))
+    rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt', map_location='cpu'))
     rnn_model.eval()
     # 2读取测试数据 200个
-    tst_dataset = Dataset(totalSize-testSize, totalSize)
+    index = random.randint(0,totalSize-testSize)
+    tst_dataset = Dataset(index, index+testSize)
     tst_dataloader = data.DataLoader(tst_dataset, batch_size=testSize, shuffle=True)
     # 3 全部测试集测试准确度
     correct = 0
@@ -55,7 +57,7 @@ def mulPulsePrediction(testSize,totalSize):
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
-    return idSet,predicted.numpy(),labels.numpy(),correct,total,round(correct / total, 3)
+    return idSet,predicted.numpy(),labels.numpy(),correct,total,round(correct / total, 4)
 
 # id,pv,lv,x,n,a=mulPulsePrediction(200,857)
 # print(id)

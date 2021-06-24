@@ -141,10 +141,10 @@
             </form>
           </div>     <!--脉象预测-->
           <div class="layui-tab-item">
-            <form name="myForm2" id="form2" class="layui-form layui-form-pane" action="##" onsubmit="return false"
+            <form name="theForm2" id="the_form2" class="layui-form layui-form-pane" action="##" onsubmit="return false"
                   method="post" lay-filter="selectNumber" enctype='multipart/form-data'>
               <div class="layui-form-item">
-                <label class="layui-form-label">验证表格数</label>
+                <label class="layui-form-label">验证人数</label>
                 <div class="layui-input-inline">
                   <select name="selectNumber" lay-verify="required" lay-filter="selectNum" class="select">
                     <option value="50" selected="selected">50</option>
@@ -241,7 +241,24 @@
               </div>
             </form>
           </div>                <!--肾象预测-->
-          <div class="layui-tab-item">内容6</div>         <!--肾象预测准确率展示-->
+          <div class="layui-tab-item">
+            <form name="theForm3" id="the_form3" class="layui-form layui-form-pane" action="##" onsubmit="return false"
+                  method="post" lay-filter="selectKindneyNumber" enctype='multipart/form-data'>
+              <div class="layui-form-item">
+                <label class="layui-form-label">验证表格数</label>
+                <div class="layui-input-inline">
+                  <select name="selectKindneyNumber" lay-verify="required" lay-filter="selectKindneyNum" class="select">
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+            <div id="kindneyPredictChartDom" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
+            <div id="kindneyPredictChartBar" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
+            <div id="kindneyPredictDisplay" style="width: 30%; float: left;text-align: center;"></div><!--准确率显示-->
+          </div>                <!--肾象预测准确率展示-->
           <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
               <legend>输入病人的各项指标</legend>
@@ -266,7 +283,7 @@
                   </div>
                 </div>
                 <div class="layui-inline">
-                  <label class="layui-form-label">ALT值</label>
+                  <label class="layui-form-label">ALT</label>
                   <div class="layui-input-inline">
                     <input type="text" name="alt" autocomplete="off" placeholder="请输入ALT指标" lay-verify="verify_alt" class="layui-input">
                   </div>
@@ -303,12 +320,29 @@
               </div>
             </form>
           </div>                <!--肝象预测-->
-          <div class="layui-tab-item">内容8</div>         <!--肝象预测准确率展示-->
+          <div class="layui-tab-item">
+            <form name="theForm4" id="the_form4" class="layui-form layui-form-pane" action="##" onsubmit="return false"
+                  method="post" lay-filter="selectLiverNumber" enctype='multipart/form-data'>
+              <div class="layui-form-item">
+                <label class="layui-form-label">验证人数</label>
+                <div class="layui-input-inline">
+                  <select name="selectLiverNumber" lay-verify="required" lay-filter="selectLiverNum" class="select">
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                    <option value="150">150</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+            <div id="liverPredictChartDom" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
+            <div id="liverPredictChartBar" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
+            <div id="liverPredictDisplay" style="width: 30%; float: left;text-align: center;"></div><!--准确率显示-->
+          </div>                <!--肝象预测准确率展示-->
           <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
               <legend>输入病人的各项指标</legend>
             </fieldset>
-            <form name="myForm3" id="form5" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation5"
+            <form name="myForm5" id="form5" class="layui-form layui-form-pane" action="##" onsubmit="return false" method="post" lay-filter="forecastInformation5"
                   enctype='multipart/form-data'>
 
               <div class="layui-form-item" pane="">
@@ -400,7 +434,36 @@
               </div>
             </form>
           </div>                <!--肺象预测-->
-          <div class="layui-tab-item">内容10</div>         <!--肺象预测准确率展示-->
+          <div class="layui-tab-item">
+            <form name="theForm5" id="the_form5" class="layui-form layui-form-pane" action="##" onsubmit="return false"
+                  method="post" lay-filter="selectLungNumber" enctype='multipart/form-data'>
+              <div class="layui-form-item">
+                <label class="layui-form-label">验证人数</label>
+                <div class="layui-input-inline">
+                  <select name="selectLungNumber" lay-verify="required" lay-filter="selectLungNum" class="select">
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+            <div class="layui-show-xs-block" style="display: block;">
+              <div id="lungPredictChartDom1" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
+              <div id="lungPredictChartBar1" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
+              <div id="lungPredictDisplay1" style="width: 30%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            </div>
+            <div class="layui-show-xs-block"  style="display: block;margin-top: 10px;">
+              <div id="lungPredictChartDom2" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
+              <div id="lungPredictChartBar2" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
+              <div id="lungPredictDisplay2" style="width: 30%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            </div>
+            <div class="layui-show-xs-block"  style="display: block;margin-top: 10px;">
+              <div id="lungPredictChartDom3" style="width: 30%; height: 500%;float: left"></div><!--症状统计-->
+              <div id="lungPredictChartBar3" style="width: 70%; height: 500%;float: right"></div><!--验证详情-->
+              <div id="lungPredictDisplay3" style="width: 30%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            </div>
+          </div>        <!--肺象预测准确率展示-->
         </div>
       </div>
     <script src="../static/layui/layui.js"></script>
@@ -429,8 +492,8 @@
                   var pulsePredict_chart = echarts.init(pulsePredict_dom);
                   var pulsePredict_option={
                     title: {
-                        text: '脉搏预测验证情况分布',
-                        subtext: newData.testNum+'个脉搏验证表格',
+                        text: '脉象预测验证情况分布',
+                        subtext: newData.testNum+'个脉波验证表格',
                         left: 'center'
                     },
                     tooltip: {
@@ -471,7 +534,7 @@
                   var pulsePredict_chartBar = echarts.init(pulsePredict_bar);
                   var pulsePredictBar_option = {
                     title: {
-                      text: '脉搏预测验证',
+                      text: '脉象预测验证',
                       subtext: '验证详情',
                     },
                     tooltip: {
@@ -501,7 +564,7 @@
                     },
                     xAxis:
                     {
-                      name:'脉搏表格编号',
+                      name:'脉波表格编号',
                       nameLocation:'end',
                         type: 'category',
                         boundaryGap: true,
@@ -509,7 +572,7 @@
                     },
                     yAxis:
                     {
-                      name:'脉搏类型',
+                      name:'脉象类型',
                       nameLocation:'end',
                         type: 'category',
                         boundaryGap: false,
@@ -539,15 +602,633 @@
                   layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
                 }
             });
-          }else if(title.toElement.textContent=="B标题"){
-            alert(title.toElement.textContent);
-          }else if(title.toElement.textContent=="C标题"){
-            alert(title.toElement.textContent);
+          }
+          else if(title.toElement.textContent=="肾象预测准确率展示"){
+            layer.load(2);
+            $.ajax({
+                url: "kindneyPrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                // processData: false,
+                // contentType:false,
+                // data: $('#form1').serialize(),
+                data: {"selectTestNum": "50" },
+                success: function (newData) {
+                  layer.closeAll('loading');
+                  var pulsePredict_dom = document.getElementById('kindneyPredictChartDom');
+                  var pulsePredict_chart = echarts.init(pulsePredict_dom);
+                  var pulsePredict_option={
+                    title: {
+                        text: '肾象预测验证情况分布',
+                        subtext: newData.testNum+'个人的肾象验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos, name: '预测正确' },
+                                {value: newData.num_neg, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart.setOption(pulsePredict_option);
+
+                  var pulsePredict_bar = document.getElementById('kindneyPredictChartBar');
+                  var pulsePredict_chartBar = echarts.init(pulsePredict_bar);
+                  var pulsePredictBar_option = {
+                    title: {
+                      text: '肾象预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肾象类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '肾阳虚', '肾阴虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar.setOption(pulsePredictBar_option);
+
+                  var pulsePredictDisplay=document.getElementById('kindneyPredictDisplay');
+                  pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100+'%</b></h2>';
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
+          }
+          else if(title.toElement.textContent=="肝象预测准确率展示"){
+            layer.load(2);
+            $.ajax({
+                url: "liverPrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                // processData: false,
+                // contentType:false,
+                data: {"selectTestNum": "50" },
+                success: function (newData) {
+                  layer.closeAll('loading');
+                  var pulsePredict_dom = document.getElementById('liverPredictChartDom');
+                  var pulsePredict_chart = echarts.init(pulsePredict_dom);
+                  var pulsePredict_option={
+                    title: {
+                        text: '肝象预测验证情况分布',
+                        subtext: newData.testNum+'个人的肝象验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos, name: '预测正确' },
+                                {value: newData.num_neg, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart.setOption(pulsePredict_option);
+
+                  var pulsePredict_bar = document.getElementById('liverPredictChartBar');
+                  var pulsePredict_chartBar = echarts.init(pulsePredict_bar);
+                  var pulsePredictBar_option = {
+                    title: {
+                      text: '肝象预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肝象类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '肝胆湿热症', '肝郁脾虚症', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar.setOption(pulsePredictBar_option);
+
+                  var pulsePredictDisplay=document.getElementById('liverPredictDisplay');
+                  pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100.0+'%</b></h2>';
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
+          }
+          else if(title.toElement.textContent=="肺象预测准确率展示"){
+            layer.load(2);
+            $.ajax({
+                url: "lungPrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                // processData: false,
+                // contentType:false,
+                data: {"selectTestNum": "50" },
+                success: function (newData) {
+                  layer.closeAll('loading');
+                  var pulsePredict_dom1 = document.getElementById('lungPredictChartDom1');
+                  var pulsePredict_chart1 = echarts.init(pulsePredict_dom1);
+                  var pulsePredict_option1={
+                    title: {
+                        text: '肺气虚预测验证情况分布',
+                        subtext: newData.testNum+'个人的肺气虚验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy1*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos1, name: '预测正确' },
+                                {value: newData.num_neg1, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart1.setOption(pulsePredict_option1);
+
+                  var pulsePredict_bar1 = document.getElementById('lungPredictChartBar1');
+                  var pulsePredict_chartBar1 = echarts.init(pulsePredict_bar1);
+                  var pulsePredictBar_option1 = {
+                    title: {
+                      text: '肺气虚预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肺气虚类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '无肺气虚', '有肺气虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType1
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType1
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar1.setOption(pulsePredictBar_option1);
+
+                  var pulsePredictDisplay1=document.getElementById('lungPredictDisplay1');
+                  pulsePredictDisplay1.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy1*100.0+'%</b></h2>';
+
+                  var pulsePredict_dom2 = document.getElementById('lungPredictChartDom2');
+                  var pulsePredict_chart2 = echarts.init(pulsePredict_dom2);
+                  var pulsePredict_option2={
+                    title: {
+                        text: '脾气虚预测验证情况分布',
+                        subtext: newData.testNum+'个人的脾气虚验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy2*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos2, name: '预测正确' },
+                                {value: newData.num_neg2, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart2.setOption(pulsePredict_option2);
+
+                  var pulsePredict_bar2 = document.getElementById('lungPredictChartBar2');
+                  var pulsePredict_chartBar2 = echarts.init(pulsePredict_bar2);
+                  var pulsePredictBar_option2 = {
+                    title: {
+                      text: '脾气虚预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肺气虚类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '无脾气虚', '有脾气虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType2
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType2
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar2.setOption(pulsePredictBar_option2);
+
+                  var pulsePredictDisplay2=document.getElementById('lungPredictDisplay2');
+                  pulsePredictDisplay2.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy2*100.0+'%</b></h2>';
+
+                  var pulsePredict_dom3 = document.getElementById('lungPredictChartDom3');
+                  var pulsePredict_chart3 = echarts.init(pulsePredict_dom3);
+                  var pulsePredict_option3={
+                    title: {
+                        text: '肾气虚预测验证情况分布',
+                        subtext: newData.testNum+'个人的肾气虚验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy3*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos3, name: '预测正确' },
+                                {value: newData.num_neg3, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart3.setOption(pulsePredict_option3);
+
+                  var pulsePredict_bar3 = document.getElementById('lungPredictChartBar3');
+                  var pulsePredict_chartBar3 = echarts.init(pulsePredict_bar3);
+                  var pulsePredictBar_option3 = {
+                    title: {
+                      text: '肾气虚预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肾气虚类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '无肾气虚', '有肾气虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType3
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType3
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar3.setOption(pulsePredictBar_option3);
+
+                  var pulsePredictDisplay3=document.getElementById('lungPredictDisplay3');
+                  pulsePredictDisplay3.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy3*100.0+'%</b></h2>';
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
           }
        });
 
       //触发事件
-      
+      var active = {
+        tabAdd: function(){
+          //新增一个Tab项
+          element.tabAdd('demo', {
+            title: '新选项'+ (Math.random()*1000|0) //用于演示
+            ,content: '内容'+ (Math.random()*1000|0)
+            ,id: new Date().getTime() //实际使用一般是规定好的id，这里以时间戳模拟下
+          })
+        }
+        ,tabDelete: function(othis){
+          //删除指定Tab项
+          element.tabDelete('demo', '44'); //删除：“商品管理”
+
+
+          othis.addClass('layui-btn-disabled');
+          console.log(222)
+        }
+        ,tabChange: function(){
+          //切换到指定Tab项
+          element.tabChange('demo', '22'); //切换到：用户管理
+          console.log(55)
+        }
+      };
+
       $('.site-demo-active').on('click', function(){
         var othis = $(this), type = othis.data('type');
         active[type] ? active[type].call(this, othis) : '';
@@ -771,6 +1452,7 @@
           var element = layui.element;
           var form = layui.form;
           var layer = layui.layer;
+          //脉波下拉框选择验证数据量
           form.on('select(selectNum)', function (data) {
             var postData={"selectTestNum": "50" };
             var message = data.value;
@@ -900,6 +1582,635 @@
                   };
                   pulsePredict_chartBar.setOption(pulsePredictBar_option);
                   pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100+'%</b></h2>';
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
+          });
+          //肾下拉框选择验证数据量
+          form.on('select(selectKindneyNum)', function (data) {
+            var postData={"selectTestNum": "50" };
+            var message = data.value;
+            if(message == "50"){
+              postData={"selectTestNum": "50" };
+            }
+            else if (message == "100") {
+              postData={"selectTestNum": "100" };
+            } else if (message == "200") {
+              postData={"selectTestNum": "200" };
+            }
+            layer.load(2);
+            $.ajax({
+                url: "kindneyPrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                data: postData,
+                success: function (newData) {
+                  layer.closeAll('loading');
+                  var pulsePredict_dom = document.getElementById('kindneyPredictChartDom');
+                  var pulsePredict_chart = echarts.init(pulsePredict_dom);
+                  var pulsePredict_option={
+                    title: {
+                        text: '肾象预测验证情况分布',
+                        subtext: newData.testNum+'个人的肾象验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos, name: '预测正确' },
+                                {value: newData.num_neg, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart.setOption(pulsePredict_option);
+
+                  var pulsePredict_bar = document.getElementById('kindneyPredictChartBar');
+                  var pulsePredict_chartBar = echarts.init(pulsePredict_bar);
+                  var pulsePredictBar_option = {
+                    title: {
+                      text: '肾象预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肾象类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '肾阳虚', '肾阴虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar.setOption(pulsePredictBar_option);
+
+                  var pulsePredictDisplay=document.getElementById('kindneyPredictDisplay');
+                  pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100+'%</b></h2>';
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
+          });
+          //肝下拉框选择验证数据量
+          form.on('select(selectLiverNum)', function (data) {
+            var postData={"selectTestNum": "50" };
+            var message = data.value;
+            if(message == "50"){
+              postData={"selectTestNum": "50" };
+            }
+            else if (message == "100") {
+              postData={"selectTestNum": "100" };
+            } else if (message == "150") {
+              postData={"selectTestNum": "150" };
+            }
+            layer.load(2);
+            $.ajax({
+                url: "liverPrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                // processData: false,
+                // contentType:false,
+                data: postData,
+                success: function (newData) {
+                  layer.closeAll('loading');
+                  var pulsePredict_dom = document.getElementById('liverPredictChartDom');
+                  var pulsePredict_chart = echarts.init(pulsePredict_dom);
+                  var pulsePredict_option={
+                    title: {
+                        text: '肝象预测验证情况分布',
+                        subtext: newData.testNum+'个人的肝象验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos, name: '预测正确' },
+                                {value: newData.num_neg, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart.setOption(pulsePredict_option);
+
+                  var pulsePredict_bar = document.getElementById('liverPredictChartBar');
+                  var pulsePredict_chartBar = echarts.init(pulsePredict_bar);
+                  var pulsePredictBar_option = {
+                    title: {
+                      text: '肝象预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肝象类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '肝胆湿热症', '肝郁脾虚症', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar.setOption(pulsePredictBar_option);
+
+                  var pulsePredictDisplay=document.getElementById('liverPredictDisplay');
+                  pulsePredictDisplay.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy*100.0+'%</b></h2>';
+                },
+                error: function () {
+                  layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
+                }
+            });
+          });
+          //肺下拉框选择验证数据量
+          form.on('select(selectLungNum)', function (data) {
+            var postData={"selectTestNum": "50" };
+            var message = data.value;
+            if(message == "50"){
+              postData={"selectTestNum": "50" };
+            }
+            else if (message == "100") {
+              postData={"selectTestNum": "100" };
+            } else if (message == "200") {
+              postData={"selectTestNum": "200" };
+            }
+            layer.load(2);
+            $.ajax({
+                url: "lungPrediction_accuracy",
+                type: "POST",
+                dataType : "json",
+                // processData: false,
+                // contentType:false,
+                data: postData,
+                success: function (newData) {
+                  layer.closeAll('loading');
+                  var pulsePredict_dom1 = document.getElementById('lungPredictChartDom1');
+                  var pulsePredict_chart1 = echarts.init(pulsePredict_dom1);
+                  var pulsePredict_option1={
+                    title: {
+                        text: '肺气虚预测验证情况分布',
+                        subtext: newData.testNum+'个人的肺气虚验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy1*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos1, name: '预测正确' },
+                                {value: newData.num_neg1, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart1.setOption(pulsePredict_option1);
+
+                  var pulsePredict_bar1 = document.getElementById('lungPredictChartBar1');
+                  var pulsePredict_chartBar1 = echarts.init(pulsePredict_bar1);
+                  var pulsePredictBar_option1 = {
+                    title: {
+                      text: '肺气虚预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肺气虚类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '无肺气虚', '有肺气虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType1
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType1
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar1.setOption(pulsePredictBar_option1);
+
+                  var pulsePredictDisplay1=document.getElementById('lungPredictDisplay1');
+                  pulsePredictDisplay1.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy1*100.0+'%</b></h2>';
+
+                  var pulsePredict_dom2 = document.getElementById('lungPredictChartDom2');
+                  var pulsePredict_chart2 = echarts.init(pulsePredict_dom2);
+                  var pulsePredict_option2={
+                    title: {
+                        text: '脾气虚预测验证情况分布',
+                        subtext: newData.testNum+'个人的脾气虚验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy2*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos2, name: '预测正确' },
+                                {value: newData.num_neg2, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart2.setOption(pulsePredict_option2);
+
+                  var pulsePredict_bar2 = document.getElementById('lungPredictChartBar2');
+                  var pulsePredict_chartBar2 = echarts.init(pulsePredict_bar2);
+                  var pulsePredictBar_option2 = {
+                    title: {
+                      text: '脾气虚预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肺气虚类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '无脾气虚', '有脾气虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType2
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType2
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar2.setOption(pulsePredictBar_option2);
+
+                  var pulsePredictDisplay2=document.getElementById('lungPredictDisplay2');
+                  pulsePredictDisplay2.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy2*100.0+'%</b></h2>';
+
+                  var pulsePredict_dom3 = document.getElementById('lungPredictChartDom3');
+                  var pulsePredict_chart3 = echarts.init(pulsePredict_dom3);
+                  var pulsePredict_option3={
+                    title: {
+                        text: '肾气虚预测验证情况分布',
+                        subtext: newData.testNum+'个人的肾气虚验证',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            name: '预测准确率'+newData.accuracy3*100+'%',
+                            type: 'pie',
+                            radius: '60%',
+                          label: {
+                                normal: {
+                                    position:"inner",
+                                    show:false,
+                                }
+                            },
+                            data: [
+                                {value: newData.num_pos3, name: '预测正确' },
+                                {value: newData.num_neg3, name: '预测错误' },
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0,0,0,0.5)'
+                                }
+                            }
+                        }
+                    ]
+                  };
+                  pulsePredict_chart3.setOption(pulsePredict_option3);
+
+                  var pulsePredict_bar3 = document.getElementById('lungPredictChartBar3');
+                  var pulsePredict_chartBar3 = echarts.init(pulsePredict_bar3);
+                  var pulsePredictBar_option3 = {
+                    title: {
+                      text: '肾气虚预测验证',
+                      subtext: '验证详情',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross',
+                            label: {
+                                backgroundColor: '#283b56'
+                            }
+                        },
+                        formatter : function(params){
+                          var a=params[0];
+                          var b=params[1];
+                          var str='编号：'+a.axisValue;
+                          str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+a.color+'"></span>' + a.seriesName + " : " + a.value + "<br />";
+                          str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:'+b.color+'"></span>' + b.seriesName + " : " + b.value;
+                          return str;
+                        }
+                    },
+                    legend: {
+                        data:['预测类别', '标签类别']
+                    },
+                    dataZoom: {
+                        show: false,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:
+                    {
+                      name:'被验证者编号',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: true,
+                        data: newData.idSet
+                    },
+                    yAxis:
+                    {
+                      name:'肾气虚类型',
+                      nameLocation:'end',
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['', '无肾气虚', '有肾气虚', '']
+                    },
+                    series: [
+                        {
+                            name: '标签类别',
+                            type: 'line',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: newData.labelType3
+                        },
+                        {
+                            name: '预测类别',
+                            type: 'line',
+                            data: newData.predictType3
+                        }
+                    ]
+                  };
+                  pulsePredict_chartBar3.setOption(pulsePredictBar_option3);
+
+                  var pulsePredictDisplay3=document.getElementById('lungPredictDisplay3');
+                  pulsePredictDisplay3.innerHTML='<h2 class="layui-timeline-title"><b>预测准确率：'+newData.accuracy3*100.0+'%</b></h2>';
                 },
                 error: function () {
                   layer.msg('处理出错！', { icon: 7, time: 2000, shade: [0.6, '#000', true] });
