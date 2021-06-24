@@ -351,10 +351,14 @@
             <div class="layui-progress uploadProgress" lay-filter="upload">
               <div class="layui-progress-bar" lay-percent="0%"></div>
             </div>
-            <span class="uploadZi"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63d;</i>上传中</span>
+            <span class="uploadZi"
+              ><i
+                class="layui-icon layui-anim layui-anim-rotate layui-anim-loop"
+                >&#xe63d;</i
+              >上传中</span
+            >
           </div>
         </div>
-        
       </form>
     </div>
     <script src="../static/layui/layui.js"></script>
@@ -373,17 +377,25 @@
         });
         form.verify({
           host: (value) =>
-            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入host",
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
+            value.trim().length === 0 &&
+            "请输入host",
           port: (value) =>
-            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入port",
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
+            value.trim().length === 0 &&
+            "请输入port",
           user: (value) =>
-            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入user",
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
+            value.trim().length === 0 &&
+            "请输入user",
           password: (value) =>
             (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
             "请输入password",
           db: (value) =>
-            (formStatu === "MySQL" || formStatu === "SqlServer") && value.trim().length === 0 && "请输入db",
+            (formStatu === "MySQL" || formStatu === "SqlServer") &&
+            value.trim().length === 0 &&
+            "请输入db",
           charset: (value) =>
             (formStatu === "MySQL" || formStatu === "SqlServer") &&
             value.trim().length === 0 &&
@@ -414,18 +426,17 @@
           let uploadData = new FormData();
           let sign = false;
           [...fileData].forEach((e) => uploadData.append(e[0], e[1]));
-          
+
           for (const key in field) {
-            if(key === "data_source" && field[key] !== "local") {
-              sign = true
+            if (key === "data_source" && field[key] !== "local") {
+              sign = true;
             }
             uploadData.append(key, field[key].trim());
           }
-          if(sign) {
+          if (sign) {
             uploadData.delete("file");
             uploadData.delete("fileDir");
           }
-          uploadUi.show();
           $.ajax({
             url: "/dataimport",
             type: "POST",
@@ -439,15 +450,12 @@
               switchUi(formStatu);
               clearInput("file");
               clearInput("fileDir");
-              uploadUi.hide();
-              element.progress("upload", `0%`);
               layer.msg(data);
             },
             error: (err) => {
-              uploadUi.hide();
-              element.progress("upload", `0%`);
             },
             xhr: function () {
+              uploadUi.show();
               myXhr = $.ajaxSettings.xhr();
               if (myXhr.upload) {
                 myXhr.upload.addEventListener(
@@ -460,6 +468,11 @@
                   },
                   false
                 );
+
+                myXhr.upload.addEventListener("load", () => {
+                  uploadUi.hide();
+                  element.progress("upload", `0%`);
+                });
               }
               return myXhr;
             },

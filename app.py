@@ -976,6 +976,89 @@ def tougue_predict():
         # return render_template('/tongue_predict.html')
 
 
+@app.route('/tongue_pre',methods=['POST'])
+def tongue_prediction():
+    tongueImg = request.files["tongueImg"]
+    predictResult = getPre(tongueImg)
+    predictResult = json.dumps(predictResult)
+    return predictResult
+
+@app.route('/tongue_batch_pre',methods=['POST'])
+def tongue_batch_pre():
+    tongueImg = request.form.get("num")
+    "kidneyk0500.bmp"
+    a = [{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },
+        {
+            "encode": r"static\1.jpg",
+            "true_ton_color": "淡红",
+            "pre_ton_color": "淡红",
+            "true_coating_color": "淡黑",
+            "pre_coating_color": "淡黑"
+        },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },{
+        "encode": r"static\1.jpg",
+        "true_ton_color": "淡红",
+        "pre_ton_color": "淡红",
+        "true_coating_color": "淡黑",
+        "pre_coating_color": "淡黑"
+    },
+    ]
+    a = json.dumps(a)
+    return a
+
+def getPre(useLess):
+    return {
+        "tongue_color": "淡红",
+        "coated_tongue_color": "淡黑"
+    }
+
 
 if __name__ == '__main__':
     app.run(debug=True)

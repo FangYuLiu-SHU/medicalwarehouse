@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <title>病症预测页面</title>
 <style type="text/css">
-.file {
+.file,
+.imgFile {
     display: inline-block;
     height: 38px;
     line-height: 38px;
@@ -24,19 +25,72 @@
     /*text-decoration: none;*/
     /*text-indent: 0;*/
 }
-.file input {
+.file input,
+.imgFile input {
     position: absolute;
     font-size: 100px;
     right: 0;
     top: 0;
     opacity: 0;
 }
-.file:hover {
+.file:hover,
+.imgFile:hover {
     background: #78C3F3;
     border-color: #78C3F3;
     color: #004974;
     text-decoration: none;
 }
+</style>
+<style type="text/css">
+  .update_show img {
+    width: 400px;
+    height: 400px;
+    display: none;
+  }
+  .update_show .imgProgress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    display: none;
+  }
+  .update_show {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+  }
+  form[name="tongueForm"] {
+    margin-top: 15px;
+  }
+  .tonBatchSearch,
+  .pre_auc {
+    width: 30%;
+  }
+  .batch_show div{
+    margin: 0;
+    padding: 0;
+  }
+  .batch_show .component {
+    margin: 0 10px 20px;
+    float: left;
+    width: 18%;
+  }
+  .batch_show .component img {
+    width: 100%;
+    height: 250px;
+  }
+  .batch_show .lower {
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-top: 0 ;
+  }
+  .uploadUi {
+    width: 200px;
+  }
 </style>
     <link rel="stylesheet" href="../static/layui/css/layui.css"/>
     <script src="../static/js/jquery.js"></script>
@@ -161,8 +215,87 @@
             <div id="pulsePredictChartBar" style="width: 67%; height: 490%;float: right"></div><!--验证详情-->
             <div id="pulsePredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
           </div>                <!--脉象预测准确率展示-->
-          <div class="layui-tab-item">内容3</div>         <!--舌象预测-->
-          <div class="layui-tab-item">内容4</div>         <!--舌象预测准确率展示-->
+          <div class="layui-tab-item">
+            <div class="layui-inline local">
+              <!--					<input type="file" name="pulseFile" class="file">-->
+              <a href="javascript:;" class="imgFile"
+                >点击选择图片
+                <input
+                  type="file"
+                  name="infoFile"
+                  id="selectImgFile"
+                  title=""
+                />
+              </a>
+            </div>
+            <div class="update_show">
+              <img>
+              <div class="layui-progress imgProgress" lay-filter="imgUpload">
+                <div class="layui-progress-bar" lay-percent="0%"></div>
+              </div>
+            </div>
+            <form name="tongueForm" class="layui-form layui-form-pane"lay-filter="tonguePrediction">
+              <div class="layui-form-item">
+                <div class="layui-inline">
+                  <label class="layui-form-label">舌色预测</label>
+                  <div class="layui-input-inline">
+                    <input type="text" name="tongueColor" placeholder="预测结果" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <div class="layui-inline">
+                    <label class="layui-form-label">苔色预测</label>
+                    <div class="layui-input-inline">
+                      <input type="text" name="coatingColor" placeholder="预测结果" class="layui-input">
+                    </div>
+                  </div>
+                <div class="layui-form-item">
+                  <div class="layui-inline pre_btn">
+                    <button class="layui-btn" lay-submit lay-filter="doTonguePre">预测
+                    </button>
+                  </div>
+                  <div class="layui-inline uploadUi">
+                    <div class="layui-progress uploadProgress" lay-filter="upload">
+                      <div class="layui-progress-bar" lay-percent="0%"></div>
+                    </div>
+                    <span class="uploadZi"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63d;</i>上传中</span>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </form>
+          </div>
+          <div class="layui-tab-item">
+            <form name="tonBatchForm" class="layui-form layui-form-pane" lay-filter="tonBatchPre">
+
+            <div class="layui-form-item tonBatchSearch">
+                  <label class="layui-form-label">预测图片数</label>
+                  <div class="layui-input-block">
+                    <select name="batch" lay-verify="required" lay-filter="tonBatchSelect">
+                      <option value="">请选择</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="15">15</option>
+                    </select>
+                </div>
+              </div>
+              <div class="layui-form-item pre_auc">
+                  <label class="layui-form-label">预测准确度</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="host"
+                      placeholder="预测准确度"
+                      class="layui-input"
+                      readonly
+                    />
+                </div>
+              </div>
+              </form>
+              <div class="batch_show">
+
+              </div>
+          </div>         <!--舌象预测准确率展示-->
           <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
               <legend>输入病人的各项指标</legend>
@@ -2375,6 +2508,7 @@
           // });
         });
       </script>
+  <script src="../static/js/tongue_pre/update_pre.js"></script>
     <!--肾象预测子页面js-->
     <script>
     layui.use(['form', 'layedit', 'laydate'], function(){

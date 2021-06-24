@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="62db865c-0ead-4767-9b09-9c5c5901d1de" name="Default Changelist" comment="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_6_20_18_14__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_6_20_18_14__Default_Changelist_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_6_21_13_58__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_6_21_13_58__Default_Changelist_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/files/pulseFile.csv" beforeDir="false" afterPath="$PROJECT_DIR$/files/pulseFile.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/patient_info/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/diseasePrediction.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/diseasePrediction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/fileInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/fileInput.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +38,14 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="JupyterTrust" id="1a0023ed-3ffb-4518-babb-86fdda544d31" />
   <component name="ProjectId" id="1jGOf1xcqEsO1xyZISeyPm4Mzkm" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -48,7 +59,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive/code_prediction" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -116,5 +127,14 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
     <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of github.com:WeiMin-Li-visual/medicalwarehouse&#10;&#10;# Conflicts:&#10;#&#9;.idea/misc.xml&#10;#&#9;.idea/weiboanalysis.iml&#10;#&#9;.idea/workspace.xml" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="request.files" language="Python" />
+        <watch expression="request.form.get(&quot;a&quot;)" language="Python" />
+        <watch expression="request.files" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
