@@ -32,7 +32,7 @@ def ods_to_dwd_kidney():
     delete_data_sql="delete from dwd_kidney_info"
 
 
-    insert_data_sql="insert into medical_dw.dwd_kidney_info_test(select id,sex,age," \
+    insert_data_sql="insert into medical_dw.dwd_kidney_info(select id,sex,age," \
                     "(case when serum_creatinine='正常' and sex=1 then floor(54+rand()*53) " \
                     " when serum_creatinine='正常' and sex=2 then floor(45+rand()*52) " \
                     "else serum_creatinine end) as serum_creatinine,IF(ISNULL(eGFR) " \
@@ -81,7 +81,7 @@ def ods_to_dwd_lung():
                      ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
     delete_data_sql = "delete from dwd_lung_info"
 
-    insert_data_sql="insert into medical_dw.dwd_lung_info_test(" \
+    insert_data_sql="insert into medical_dw.dwd_lung_info(" \
                     "select id,sex,age,wm_diagnosis,lung_qi_deficiency,spleen_qi_deficiency," \
                     "kidney_qi_deficiency,`FEV1`,`FVC`,`FEV1%`,`FEV1/FVC`,`PEF`, tongueA," \
                     "pulseA from (select * from (select if(@id=a.id,@r:=@r+1,@r:=1) as rowNumber," \
@@ -120,7 +120,7 @@ def ods_to_dwd_liver():
 
     delete_data_sql = "delete from dwd_liver_info"
 
-    insert_data_sql="insert into medical_dw.dwd_liver_info_test(" \
+    insert_data_sql="insert into medical_dw.dwd_liver_info(" \
                     "select id,sex,age,ALT,symptoms_type,tongue,pulse from " \
                     "(select * from (select if(@id=a.id,@r:=@r+1,@r:=1) " \
                     "as rowNumber,a.*,@id:=a.id from (select @id:=null,@r:=0) r, " \
