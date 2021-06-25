@@ -1,30 +1,3 @@
-/*
-layui.use("upload", function () {
-  var upload = layui.upload;
-
-  //执行实例
-  var uploadInst = upload.render({
-    elem: "#tongue_img", //绑定元素
-    url: "http://127.0.0.1:5000/tongue_pre", //上传接口
-    type: "POST",
-    auto: false,
-    bindAction: ".pre_btn button",
-    choose: function (obj) {
-      //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
-      obj.preview(function (index, file, result) {
-        $(".update_show img").attr("src", result);
-      });
-    },
-    done: function (res) {
-      console.log(res);
-    },
-    error: function () {
-      //请求异常回调
-    },
-  });
-});
-*/
-
 function showProgress(percent, filter, element) {
     element.progress(filter, `${percent}%`);
 }
@@ -53,6 +26,7 @@ layui.use("element", function () {
 
 layui.use(["form","element"], function () {
   const form = layui.form;
+  const layer = layui.form;
   const element = layui.element;
   form.on("submit(doTonguePre)", function () {
     $.ajax({
@@ -105,7 +79,7 @@ function addImg({
   return $(`
   <div class="component">
     <div class="upper">
-        <img src=${encode}>
+        <img src=data:;base64,${encode}>
     </div>
     <div class="lower">
         <p>舌色(真实):<span>${true_ton_color}</span>&nbsp;&nbsp;&nbsp;舌色(预测):<span>${pre_ton_color}</span></p>
@@ -115,11 +89,13 @@ function addImg({
     `);
 }
 
-layui.use("form", function () {
-  var form = layui.form;
+layui.use(["form", "layer"], function () {
+  const form = layui.form;
+  const layer = layui.layer;
   form.on("select(tonBatchSelect)", function (data) {
     const { value } = data;
     let predictNum = parseInt(value, 10);
+    layer.load(2);
     $.ajax({
       type: "POST", //请求的方法
       url: "http://127.0.0.1:5000/tongue_batch_pre",
@@ -129,8 +105,14 @@ layui.use("form", function () {
       success: (data) => {
         $batch_show.empty();
         data = JSON.parse(data);
-        for(let i = 0; i < data.length; ++i) {
-            $batch_show.append(addImg(data[i]))
+        layer.closeAll()
+        const { tongueData, tongue_color_accuracy, moss_color_accuracy} = data;
+        form.val("tonBatchPre", {
+          ton_acu: tongue_color_accuracy,
+          moss_acu: moss_color_accuracy
+        })
+        for(let i = 0; i < tongueData.length; ++i) {
+            $batch_show.append(addImg(tongueData[i]))
         }
       },
     });

@@ -91,6 +91,12 @@
   .uploadUi {
     width: 200px;
   }
+  form[name="tonBatchForm"] .layui-form-label {
+    width: 130px!important;
+  }
+  form[name="tonBatchForm"] .layui-input-block  {
+    margin-left: 130px!important;
+  }
 </style>
     <link rel="stylesheet" href="../static/layui/css/layui.css"/>
     <script src="../static/js/jquery.js"></script>
@@ -273,24 +279,36 @@
                   <div class="layui-input-block">
                     <select name="batch" lay-verify="required" lay-filter="tonBatchSelect">
                       <option value="">请选择</option>
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="15">15</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
                     </select>
                 </div>
               </div>
               <div class="layui-form-item pre_auc">
-                  <label class="layui-form-label">预测准确度</label>
+                  <label class="layui-form-label">舌色预测准确度</label>
                   <div class="layui-input-block">
                     <input
                       type="text"
-                      name="host"
+                      name="ton_acu"
                       placeholder="预测准确度"
                       class="layui-input"
                       readonly
                     />
                 </div>
               </div>
+              <div class="layui-form-item pre_auc">
+                <label class="layui-form-label">苔色预测准确度</label>
+                <div class="layui-input-block">
+                  <input
+                    type="text"
+                    name="moss_acu"
+                    placeholder="预测准确度"
+                    class="layui-input"
+                    readonly
+                  />
+              </div>
+            </div>
               </form>
               <div class="batch_show">
 
