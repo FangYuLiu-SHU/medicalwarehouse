@@ -18,7 +18,7 @@ cursor = db.cursor()
 
 def ods_to_dwd_kidney():
     print('update dwd_kidney_info!')
-    create_table_sql="CREATE TABLE `medical_dw`.`dwd_kidney_info` (" \
+    create_table_sql="CREATE TABLE if not exists `medical_dw`.`dwd_kidney_info` (" \
         "`id` varchar(10) CHARACTER SET 'utf8' NOT NULL COMMENT '编号'," \
         "`sex` char(1) COMMENT '性别（1=男 2=女）'," \
         " `age` INT NULL COMMENT '年龄'," \
@@ -50,7 +50,7 @@ def ods_to_dwd_kidney():
                     "then power(serum_creatinine/88.41,-1.154)*186*1.233*power(age,-0.203)*0.742 " \
                     "else eGFR end"
 
-    sql_list=[delete_data_sql,insert_data_sql,update_eGFR_sql]
+    sql_list=[create_table_sql,delete_data_sql,insert_data_sql,update_eGFR_sql]
     try:
         for sql in sql_list:
             cursor.execute(sql)
@@ -63,17 +63,17 @@ def ods_to_dwd_kidney():
 
 def ods_to_dwd_lung():
     print('update dwd_lung_info!')
-    create_table_sql="CREATE TABLE `medical_dw`.`dwd_lung_info` (" \
+    create_table_sql="CREATE TABLE if not exists `medical_dw`.`dwd_lung_info` (" \
                      "`id` varchar(10) CHARACTER SET 'utf8' NOT NULL COMMENT '编号'," \
                      "`sex` char(1) COMMENT '性别（1=女 2=男）'," \
                      "`age` INT NULL COMMENT '年龄'," \
-                     "`Wesmedicine_diagnosis` varchar(20) COMMENT '西医诊断'," \
+                     "`Wesmedicine_diagnosis` varchar(40) COMMENT '西医诊断'," \
                      "`Lung_qi_deficiency` char(1) COMMENT '肺气虚'," \
                      "`spleen_qi_deficiency` char(1) COMMENT '脾气虚'," \
                      "`kidney_qi_deficiency` char(1) COMMENT '肾气虚'," \
-                     " `FEV1` DECIMAL(10,2)," \
-                     "`FVC` DECIMAL(10,2)," \
-                     " `FEV1%` DECIMAL(10,2)," \
+                     " `FEV1` DECIMAL(10,3)," \
+                     "`FVC` DECIMAL(10,3)," \
+                     " `FEV1%` DECIMAL(10,3)," \
                      "`FEV1/FVC` varchar(20) COMMENT 'EV1/FVC改'," \
                      "`PEF` varchar(10)," \
                      "`tongue` varchar(20) COMMENT '舌'," \
@@ -94,7 +94,7 @@ def ods_to_dwd_lung():
                     "and (`FVC` REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1 " \
                     "and (`FEV1%` REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1)"
 
-    sql_list=[delete_data_sql,insert_data_sql]
+    sql_list=[create_table_sql,delete_data_sql,insert_data_sql]
     try:
         for sql in sql_list:
             cursor.execute(sql)
@@ -108,7 +108,7 @@ def ods_to_dwd_lung():
 
 def ods_to_dwd_liver():
     print('update dwd_liver_info!')
-    create_table_sql="CREATE TABLE `medical_dw`.`dwd_liver_info` (" \
+    create_table_sql="CREATE TABLE if not exists `medical_dw`.`dwd_liver_info` (" \
                      "`id` varchar(20) CHARACTER SET 'utf8' NOT NULL COMMENT '编号'," \
                      " `sex` char(1) COMMENT '性别（1=女 2=男）'," \
                      " `age` INT NULL COMMENT '年龄'," \
@@ -130,7 +130,7 @@ def ods_to_dwd_liver():
                     "and sex in(1,2) and (age between 1 and 120) " \
                     "and (ALT REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1);"
 
-    sql_list=[delete_data_sql,insert_data_sql]
+    sql_list=[create_table_sql,delete_data_sql,insert_data_sql]
     try:
         for sql in sql_list:
             cursor.execute(sql)
