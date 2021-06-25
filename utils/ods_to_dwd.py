@@ -32,17 +32,16 @@ def ods_to_dwd_kidney():
     delete_data_sql="delete from dwd_kidney_info"
 
 
-    insert_data_sql="insert into medical_dw.dwd_kidney_info(select lower(id),sex,age," \
+    insert_data_sql="insert into medical_dw.dwd_kidney_info_test(select id,sex,age," \
                     "(case when serum_creatinine='正常' and sex=1 then floor(54+rand()*53) " \
-                    "when serum_creatinine='正常' and sex=2 then floor(45+rand()*52) " \
+                    " when serum_creatinine='正常' and sex=2 then floor(45+rand()*52) " \
                     "else serum_creatinine end) as serum_creatinine,IF(ISNULL(eGFR) " \
                     "OR eGFR='',-100,round(eGFR,8)) as eGFR,symptoms_type ,tongue,pulse " \
                     "from (select * from (select if(@id=a.id,@r:=@r+1,@r:=1) as rowNumber," \
                     "a.*,@id:=a.id from (select @id:=0,@r:=0) r, (select * from medical_dw.ods_kidney_info " \
                     "order by id) a ) as t where t.rowNumber =1) tt where serum_creatinine!='' " \
                     "and serum_creatinine!='无'and symptoms_type!='' and tongue!='' and pulse!='' " \
-                    "and age!='' and sex!='')"
-
+                    "and age!='' and sex!='' and sex in(1,2) and (age between 1 and 120))"
 
     update_eGFR_sql="update medical_dw.dwd_kidney_info set eGFR = " \
                     "case when sex = 1 and eGFR<1 " \
@@ -82,15 +81,18 @@ def ods_to_dwd_lung():
                      ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
     delete_data_sql = "delete from dwd_lung_info"
 
-    insert_data_sql="insert into medical_dw.dwd_lung_info(" \
-                    "select lower(id),sex,age,wm_diagnosis,lung_qi_deficiency,spleen_qi_deficiency," \
+    insert_data_sql="insert into medical_dw.dwd_lung_info_test(" \
+                    "select id,sex,age,wm_diagnosis,lung_qi_deficiency,spleen_qi_deficiency," \
                     "kidney_qi_deficiency,`FEV1`,`FVC`,`FEV1%`,`FEV1/FVC`,`PEF`, tongueA," \
                     "pulseA from (select * from (select if(@id=a.id,@r:=@r+1,@r:=1) as rowNumber," \
                     "a.*,@id:=a.id from (select @id:=0,@r:=0) r, (select * from medical_dw.ods_lung_info " \
                     "order by id) a ) as t where t.rowNumber =1) tt " \
-                    "where `FEV1` is not null " \
-                    "and `FVC`is not null and `FEV1%` is not null and `FEV1/FVC` " \
-                    "is not null and tongueA is not null and pulseA is not null)"
+                    "where `FEV1/FVC` " \
+                    "is not null and tongueA is not null and pulseA is not null " \
+                    "and sex in(1,2) and (age between 1 and 120) " \
+                    "and (`FEV1` REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1 " \
+                    "and (`FVC` REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1 " \
+                    "and (`FEV1%` REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1)"
 
     sql_list=[delete_data_sql,insert_data_sql]
     try:
@@ -118,14 +120,15 @@ def ods_to_dwd_liver():
 
     delete_data_sql = "delete from dwd_liver_info"
 
-    insert_data_sql="insert into medical_dw.dwd_liver_info(" \
+    insert_data_sql="insert into medical_dw.dwd_liver_info_test(" \
                     "select id,sex,age,ALT,symptoms_type,tongue,pulse from " \
                     "(select * from (select if(@id=a.id,@r:=@r+1,@r:=1) " \
                     "as rowNumber,a.*,@id:=a.id from (select @id:=null,@r:=0) r, " \
                     "(select * from medical_dw.ods_liver_info order by id) a ) " \
                     "as t where t.rowNumber =1) tt " \
                     "where age!='' and symptoms_type is not null " \
-                    "and tongue!='' and pulse is not null and sex!='' and ALT is not null);"
+                    "and sex in(1,2) and (age between 1 and 120) " \
+                    "and (ALT REGEXP '^(0|([1-9][0-9]*))(\\.[0-9]+)?$') = 1);"
 
     sql_list=[delete_data_sql,insert_data_sql]
     try:
