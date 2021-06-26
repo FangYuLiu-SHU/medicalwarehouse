@@ -449,7 +449,7 @@ def disease_prediction():
         #print(pulseFile)
 
         filename_in = './files/pulseFile.csv'
-        # filename_out = './files/pulseFileUTF.csv'
+        filename_out = './files/pulseFileUTF.csv'
 
         # 输入文件的编码类型
         encode_in = 'utf-16 le'
@@ -459,24 +459,48 @@ def disease_prediction():
         formData['fileRead'] = 'success'
         try:
             data = pd.read_csv(filename_in, encoding=encode_in, header=None, nrows=rows,usecols=[i for i in range(cols)])
+            data.to_csv(filename_out,encoding='utf-8',index=False, header=None)
+            #转为numpy类型
+            data_np=data.values
             # 调用模型计算脉搏类型预测结果
-            result = predict.pulsePrediction(data.values)
+            result = predict.pulsePrediction(data_np)
             formData['pulseType'] = result
             formData['fileName'] = ''
+            formData['channel0'] = data_np[:, 0].tolist()
+            formData['channel1'] = data_np[:, 1].tolist()
+            formData['channel2'] = data_np[:, 2].tolist()
+            formData['channel3'] = data_np[:, 3].tolist()
+            formData['channel4'] = data_np[:, 4].tolist()
             return json.dumps(formData)  # json.dumps封装
         except UnicodeDecodeError as e:
             data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows,usecols=[i for i in range(cols)])
+            data.to_csv(filename_out, encoding='utf-8', index=False, header=None)
+            # 转为numpy类型
+            data_np = data.values
             # 调用模型计算脉搏类型预测结果
-            result = predict.pulsePrediction(data.values)
+            result = predict.pulsePrediction(data_np)
             formData['pulseType'] = result
             formData['fileName'] = ''
+            formData['channel0'] = data_np[:, 0].tolist()
+            formData['channel1'] = data_np[:, 1].tolist()
+            formData['channel2'] = data_np[:, 2].tolist()
+            formData['channel3'] = data_np[:, 3].tolist()
+            formData['channel4'] = data_np[:, 4].tolist()
             return json.dumps(formData)  # json.dumps封装
         except ValueError as e:
             data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows,usecols=[i for i in range(cols)])
+            data.to_csv(filename_out, encoding='utf-8', index=False, header=None)
+            # 转为numpy类型
+            data_np = data.values
             # 调用模型计算脉搏类型预测结果
-            result = predict.pulsePrediction(data.values)
+            result = predict.pulsePrediction(data_np)
             formData['pulseType'] = result
             formData['fileName'] = ''
+            formData['channel0'] = data_np[:, 0].tolist()
+            formData['channel1'] = data_np[:, 1].tolist()
+            formData['channel2'] = data_np[:, 2].tolist()
+            formData['channel3'] = data_np[:, 3].tolist()
+            formData['channel4'] = data_np[:, 4].tolist()
             return json.dumps(formData)  # json.dumps封装
         except Exception as e:
             formData['fileRead'] = 'fail'
@@ -484,6 +508,37 @@ def disease_prediction():
             formData['fileRead'] = 'fail'
         newData = json.dumps(formData)  # json.dumps封装
         return newData
+
+#脉波展示，通道选择服务
+@app.route('/post_ChannelNum', methods=["POST"])
+def post_ChannelNum():
+    formData={}
+    # 获取前端请求的数据
+    selectTestNum = request.form.get('selectChannelNum')
+    testNum=int(selectTestNum)
+
+    filename_in = './files/pulseFileUTF.csv'
+    # 输入表维度大小
+    rows = 2560
+    cols = 57
+    if(testNum==0):
+        data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows, usecols=[i for i in range(cols)])
+        # 转为numpy类型
+        data_np = data.values
+        #填入前5个通道的序列数据，用于脉波展示
+        formData['channel0'] = data_np[:, 0].tolist()
+        formData['channel1'] = data_np[:, 1].tolist()
+        formData['channel2'] = data_np[:, 2].tolist()
+        formData['channel3'] = data_np[:, 3].tolist()
+        formData['channel4'] = data_np[:, 4].tolist()
+        return json.dumps(formData)  # json.dumps封装
+    else:
+        data = pd.read_csv(filename_in, encoding='utf-8', header=None, nrows=rows, usecols=[i for i in range(cols)])
+        # 转为numpy类型
+        data_np = data.values
+        # 填入第testNum个通道的序列数据，用于脉波展示
+        formData['channel'] = data_np[:, testNum-1].tolist()
+        return json.dumps(formData)  # json.dumps封装
 
 #脉象准确率验证服务
 @app.route('/pulsePrediction_accuracy', methods=["POST"])
