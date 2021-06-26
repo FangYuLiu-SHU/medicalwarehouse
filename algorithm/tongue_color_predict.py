@@ -146,36 +146,45 @@ def test(model, test_loader, epoch):
             print('true_label:',batch_labels, '---> pred_label:',pred_labels)
 
         # print(batch_id, pred_labels, len(pred_labels))
-    print('Test epoch:{}| Accuracy:{:.6f}'.format(epoch, float(total_correct) / test_num))
+    accuracy = float(total_correct) / test_num
+    print('Test epoch:{}| Accuracy:{:.6f}'.format(epoch, accuracy))
+    return accuracy
 
 
 if __name__ == '__main__':
     num_epoch = 100
-    batch_size = 8
+    batch_size = 16
     input_size = 128
     lr = 2e-3
 
-    image_folder_path = '../static/data/tongueimage'
-    label_path = '../files/tongue_all_features.csv'
-    dataloader = Dataloader(image_folder_path, label_path)
-
     # 舌色预测
-    tongue_color_train_loader, tongue_color_test_loader, moss_color_train_loader, moss_color_test_loader = dataloader.get_train_test_dataloader(batch_size)
+    # image_folder_path = '../static/data/tongueimage_aug'
+    # label_path = '../files/tongue_all_features_aug.csv'
+    # dataloader = Dataloader(image_folder_path, label_path)
+
+    # tongue_color_train_loader, tongue_color_test_loader, moss_color_train_loader, moss_color_test_loader = dataloader.get_train_test_dataloader(batch_size)
     # model = LeNet5(num_types=4)
+    # best_acc = 0
     # for epoch in range(num_epoch):
     #     train(model=model, train_loader=tongue_color_train_loader, lr=lr, epoch=epoch)
-    #     test(model=model, test_loader=tongue_color_test_loader, epoch=epoch)
+    #     acc = test(model=model, test_loader=tongue_color_test_loader, epoch=epoch)
+    #     # if acc > best_acc:
+    #     #     torch.save(model.state_dict(), '../files/LeNet_togue_color_predict.pt')
     # torch.save(model.state_dict(), '../files/LeNet_togue_color_predict.pt')
-
     # print(prediction(image_folder_path + '/k0500.bmp'))
 
 
     # 苔色预测
-    # model = LeNet5(num_types=2)
-    # for epoch in range(num_epoch):
-    #     train(model=model, train_loader=moss_color_train_loader, lr=lr, epoch=epoch)
-    #     test(model=model, test_loader=moss_color_test_loader, epoch=epoch)
-    # torch.save(model.state_dict(), '../files/LeNet_moss_color_predict.pt')
+    image_folder_path = '../static/data/moss_aug'
+    label_path = '../files/moss_all_features_aug.csv'
+    dataloader = Dataloader(image_folder_path, label_path)
 
-    batch_prediction(10)
+    tongue_color_train_loader, tongue_color_test_loader, moss_color_train_loader, moss_color_test_loader = dataloader.get_train_test_dataloader(batch_size)
+    model = LeNet5(num_types=2)
+    for epoch in range(num_epoch):
+        train(model=model, train_loader=moss_color_train_loader, lr=lr, epoch=epoch)
+        test(model=model, test_loader=moss_color_test_loader, epoch=epoch)
+    torch.save(model.state_dict(), '../files/LeNet_moss_color_predict.pt')
+
+    # batch_prediction(10)
 

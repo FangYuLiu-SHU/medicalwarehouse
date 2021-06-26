@@ -109,13 +109,13 @@ class Dataloader():
 
 
 if __name__ == '__main__':
-    image_folder_path = '../static/data/tongueimage'
-    label_path = '../files/tongue_all_features.csv'
+    image_folder_path = '../static/data/tongueimage_aug'
+    label_path = '../files/tongue_all_features_aug.csv'
     dataloader = Dataloader(image_folder_path, label_path)
 
     print(dataloader.pd_labels)
 
-    tongue_color_train_loader, tongue_color_test_loader = dataloader.get_train_test_dataloader(batch_size=8)
+    tongue_color_train_loader, tongue_color_test_loader, mtr, mte = dataloader.get_train_test_dataloader(batch_size=8)
     # for batch_id, (batch_imgs, batch_labels) in enumerate(tongue_color_train_loader):
     #     print(batch_id, batch_imgs.size, batch_labels)
 
