@@ -50,7 +50,7 @@ def ods_to_dwd_kidney():
                     "then power(serum_creatinine/88.41,-1.154)*186*1.233*power(age,-0.203)*0.742 " \
                     "else eGFR end"
 
-    sql_list=[create_table_sql,delete_data_sql,insert_data_sql,update_eGFR_sql]
+    sql_list=[create_table_sql, delete_data_sql,insert_data_sql,update_eGFR_sql]
     try:
         for sql in sql_list:
             cursor.execute(sql)

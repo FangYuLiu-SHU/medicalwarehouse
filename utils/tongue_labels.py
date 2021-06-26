@@ -19,7 +19,7 @@ except:
 cursor = db.cursor()
 
 
-def produce_tongue_labels(cursor):
+def produce_tongue_labels():
     # 从数据库获取病人信息表
     try:
         cursor.execute("SELECT id,tongue FROM ods_kidney_info;")
@@ -57,7 +57,7 @@ def produce_tongue_labels(cursor):
     result_raw.columns=['id','tongue']
     result=tongue_code(result_raw)
     # result.to_excel('files/tongue_all_features.xls', index=False)
-    result.to_csv('files/tongue_all_features.csv', index=False)
+    result.to_csv('../files/tongue_all_features.csv', index=False)
     print(result)
 
 

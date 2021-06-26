@@ -157,24 +157,24 @@ def clear_folder(path):
 
 if __name__ == '__main__':
     base_path = 'C:/Users/Lenovo/Desktop/医疗数据/医疗数据-整理'
-    print('载入肾病数据...')
-    path_kidney_info = base_path + '/kidney_info.csv'
-    load_kidney_info_to_mysql(path_kidney_info)
-
-    path_kidney_pulse = base_path + '/肾病脉诊仪'
-    load_kidney_pulse_to_mysql(path_kidney_pulse)
-
-    print('\n载入肝病数据...')
-    path_liver_info = base_path + '/liver_info.csv'
-    load_liver_info_to_mysql(path_liver_info)
-
-    path_liver_pulse = base_path + '/肝病脉诊仪'
-    load_liver_pulse_to_mysql(path_liver_pulse)
-
-    print('\n载入肺病数据...')
-    path_lung_info = base_path + '/lung_info.csv'
-    load_lung_info_to_mysql(path_lung_info)
-
+    # print('载入肾病数据...')
+    # path_kidney_info = base_path + '/kidney_info.csv'
+    # load_kidney_info_to_mysql(path_kidney_info)
+    #
+    # path_kidney_pulse = base_path + '/肾病脉诊仪'
+    # load_kidney_pulse_to_mysql(path_kidney_pulse)
+    #
+    # print('\n载入肝病数据...')
+    # path_liver_info = base_path + '/liver_info.csv'
+    # load_liver_info_to_mysql(path_liver_info)
+    #
+    # path_liver_pulse = base_path + '/肝病脉诊仪'
+    # load_liver_pulse_to_mysql(path_liver_pulse)
+    #
+    # print('\n载入肺病数据...')
+    # path_lung_info = base_path + '/lung_info.csv'
+    # load_lung_info_to_mysql(path_lung_info)
+    #
     path_lung_pulse = base_path + '/肺病脉诊仪'
     load_lung_pulse_to_mysql(path_lung_pulse)
 
