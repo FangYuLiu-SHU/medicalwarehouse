@@ -617,7 +617,7 @@ def liverPrediction_accuracy():
     newData = json.dumps(formData)  # json.dumps封装
     return newData
 
-#肝象预测服务
+#肺象预测服务
 @app.route('/lung_prediction', methods=["POST"])
 def lung_prediction():
     # 获取前端请求的表单数据
@@ -631,6 +631,7 @@ def lung_prediction():
     elif(formData['sex']=='女'):
         parm['sex']=2
     parm['userage']=formData['userage']
+    parm['wm_diagnosis']=formData['wm_diagnosis']
     parm['FEV1']=formData['FEV1']
     parm['FVC'] = formData['FVC']
     parm['FEV1%'] = formData['FEV1%']
