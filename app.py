@@ -895,7 +895,7 @@ def tongue_data():
         return img_stream
     id=request.form.get('id')
     patient= request.form.get('patient')
-    cur_path_raw='static/data/tongueimage/' + patient + '/' + id + '.bmp'
+    cur_path_raw='static/data/tongueimage/' + id + '.bmp'
     json_data = {}
     if(os.path.exists(cur_path_raw)):
         img_stream=return_img_stream(cur_path_raw)
