@@ -7,14 +7,18 @@ from torch import cuda
 # from modelLSTM import FCLSTM
 from algorithm.modelLSTM import FCLSTM
 
-K = 90  # history 35
+N = 64 #每个表分成64份每份 40个
+K = 400  # history 35
 L = 6  # 分类数
 in_dim = 57
 HIDDEN_SIZE = K
 BATCH_SIZE = 64
 EPOCH = 1000  # iteration times
-row=2560
-col=57
+row = 2560
+col = 57
+# data_num = 1009#数据量
+data_num = 800#数据量
+
 # 定义数据集
 class Dataset(data.Dataset):
 
@@ -24,14 +28,14 @@ class Dataset(data.Dataset):
         # list = [i for i in range(57)]
         lable_df = pd.read_csv('./files/df_info_merge.csv')
 
-        #读取n个数据
+        #读取start到end个病人数据
         for i in range(start,end):
-            self.data_y.append(lable_df['pulse2'][i])
-            self.data_id.append(lable_df['id'][i])
+
             if(lable_df['id'][i][0]=='k'):
                 pulse_df = pd.read_csv('./files/data/ods_kidney_pulse_' +
                                        lable_df['id'][i] + '.csv',
                                        nrows=row,usecols=[i for i in range(col)])
+
             elif(lable_df['id'][i][0]=='l'):
                 pulse_df = pd.read_csv('./files/data/ods_lung_pulse_' +
                                        lable_df['id'][i] + '.csv',
@@ -43,7 +47,12 @@ class Dataset(data.Dataset):
             print('读第'+str(i)+'个data表')
             # 删除NaN列
             pulse_df = pulse_df.dropna(axis=1)
-            self.data_x.append(pulse_df.values)
+            #每2560*57个数据分成n个数据并配上标签
+            for j in range(N):
+                self.data_y.append(lable_df['pulse2'][i])
+                self.data_id.append(lable_df['id'][i])
+                self.data_x.append(pulse_df.loc[j * (row / N):(j + 1) * (row / N) - 1, :].values)
+
 
         # 转换数据
         self.data_x = torch.tensor(self.data_x, dtype=torch.float32)
@@ -111,7 +120,7 @@ class Dataset(data.Dataset):
 if __name__ == '__main__':
     # 1加载数据集
     # DATASET_PATH = sys.argv[1] + '/dmGrid3x3/'
-    sst_dataset = Dataset(0, 857)
+    sst_dataset = Dataset(0, data_num)#数据量0~data_num个数据读取
     sst_dataloader = data.DataLoader(sst_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # 2模型输入参数加载模型
@@ -129,7 +138,7 @@ if __name__ == '__main__':
     tempLoss = 0
     for epoch in range(EPOCH):
         logging.warning(epoch)
-        for x, y in sst_dataloader:
+        for x, y, id in sst_dataloader:
             # 加载数据
             if cuda.is_available():
                 x = x.cuda()

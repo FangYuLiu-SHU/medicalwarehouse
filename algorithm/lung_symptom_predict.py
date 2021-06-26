@@ -40,7 +40,7 @@ def lung_tongue_pulse_code(df_lung):
     df_lung['tongue_moss_nature'] = 0  # 苔质 薄（正常）-0  少-1  腻-2 厚（4个样本不用了）薄少和润滑（不用）燥糙和腐腻
     # 舌色编码
     patt0 = r'.*淡(?!红).*'
-    df_lung.loc[~df_lung['tongue'].apply(lambda x: re.match(patt0, x)).isna(), 'tongue_proper_color'] = 1
+    df_lung.loc[~df_lung['tongue'].apply(lambda x: re.match(patt0, str(x))).isna(), 'tongue_proper_color'] = 1
     patt1 = r'.*[^淡]红.*'
     df_lung.loc[~df_lung['tongue'].apply(lambda x: re.match(patt1, x)).isna(), 'tongue_proper_color'] = 2
     df_lung.loc[df_lung['tongue'].str.contains('暗'), 'tongue_proper_color'] = 3
@@ -54,11 +54,19 @@ def lung_tongue_pulse_code(df_lung):
     # 苔质编码
     df_lung.loc[df_lung['tongue'].str.contains('少'), 'tongue_moss_nature'] = 1
     df_lung.loc[df_lung['tongue'].str.contains('腻'), 'tongue_moss_nature'] = 2
+
+    # 对西医诊断进行编码
+    df_lung['wm_diagnosis_code'] = 0
+    pat0 = '.*咳嗽.*'
+    df_lung.loc[~df_lung['wm_diagnosis'].apply(lambda x: re.match(pat0, x)).isna(), 'wm_diagnosis_code'] = 1
+    pat1 = '.*支气管.*'
+    df_lung.loc[~df_lung['wm_diagnosis'].apply(lambda x: re.match(pat1, x)).isna(), 'wm_diagnosis_code'] = 2
+
     return df_lung
 
 def process_data():
     # 读取数据
-    df_lung = pd.read_csv('./files/dwd_lung_info.csv')
+    df_lung = pd.read_csv('../files/dwd_lung_info.csv')
     # 清洗下
     df_lung['PEF'] = df_lung['PEF'].str.replace(',','.')
     df_lung['PEF'] = df_lung['PEF'].astype(float)
@@ -84,14 +92,15 @@ def process_data():
     df_lung.pulse = df_lung.pulse.astype('category')
     df_lung.tongue_proper_color = df_lung.tongue_proper_color.astype('category')
     df_lung.tongue_moss_nature = df_lung.tongue_moss_nature.astype('category')
+    df_lung.wm_diagnosis_code = df_lung.wm_diagnosis_code.astype('category')
 
     df_lung.tongue_proper_shape_pang = df_lung.tongue_proper_shape_pang.astype('category')
     df_lung.tongue_proper_shape_chiyin = df_lung.tongue_proper_shape_chiyin.astype('category')
     df_lung.tongue_moss_color = df_lung.tongue_moss_color.astype('category')
 
     # 哑变量处理
-    dummy = pd.get_dummies(df_lung[['sex', 'pulse', 'tongue_proper_color','tongue_moss_nature']])
-    df_lung.drop(['sex', 'pulse','tongue_proper_color' ,'tongue_moss_nature'], inplace=True, axis=1)
+    dummy = pd.get_dummies(df_lung[['sex', 'pulse', 'tongue_proper_color','tongue_moss_nature','wm_diagnosis_code']])
+    df_lung.drop(['sex', 'pulse','tongue_proper_color' ,'tongue_moss_nature','wm_diagnosis_code'], inplace=True, axis=1)
 
     df_lung = pd.concat([df_lung, dummy], axis=1)
     # df_lung.to_csv('df_lung.csv')
@@ -114,8 +123,8 @@ def train_model_lung(df_lung):
     X_train, X_test, y_train, y_test = model_selection.train_test_split(df_lung.iloc[:, 1:], df_lung.Lung_qi_deficiency,
                                                                         test_size=0.25, random_state=1234)
 
-    print(df_lung.Lung_qi_deficiency)
-    print(df_lung.iloc[:, 1:])
+    # print(df_lung.Lung_qi_deficiency)
+    # print(df_lung.iloc[:, 1:])
     # 选择线性可分SVM模型
     linear_svc = svm.LinearSVC(max_iter=100000000)
     # 模型在训练数据集上的拟合
@@ -128,7 +137,7 @@ def train_model_lung(df_lung):
     f1_socre = metrics.f1_score(y_test, y_pred)
     print('accuracy:{},precision:{},f1_socre:{}'.format(accuracy, precision, f1_socre))
     # 保存模型
-    joblib.dump(linear_svc, './files/SVM_lung_lung_predict.pkl')
+    joblib.dump(linear_svc, '../files/SVM_lung_lung_predict.pkl')
 
 
 def train_model_spleen(df_lung):
@@ -159,7 +168,7 @@ def train_model_spleen(df_lung):
     print('accuracy:{},precision:{},f1_socre:{}'.format(accuracy, precision, f1_socre))
 
     # 保存模型
-    joblib.dump(linear_svc, './files/SVM_lung_spleen_predict.pkl')
+    joblib.dump(linear_svc, '../files/SVM_lung_spleen_predict.pkl')
 
 def train_model_kidney(df_lung):
     # 模型3 肾气虚
@@ -189,7 +198,7 @@ def train_model_kidney(df_lung):
     f1_socre = metrics.f1_score(y_test, y_pred)
     print('accuracy:{},precision:{},f1_socre:{}'.format(accuracy, precision, f1_socre))
     # 保存模型
-    joblib.dump(linear_svc, './files/SVM_lung_kidney_predict.pkl')
+    joblib.dump(linear_svc, '../files/SVM_lung_kidney_predict.pkl')
 
 def sigle_predict(dict):
     # 加载模型
@@ -197,11 +206,11 @@ def sigle_predict(dict):
     model_spleen = joblib.load('./files/SVM_lung_spleen_predict.pkl')
     model_kidney = joblib.load('./files/SVM_lung_kidney_predict.pkl')
 
-    # 输入示例dict1 = {'sex': '1', 'userage': '45', 'FEV1': 1.07,'FVC':1.83,'FEV1%':42.29,'FEV1/FVC':0.584699454,'PEF':1.22,'Tou': '舌红苔少',
+    # 输入示例dict1 = {'sex': '1', 'userage': '45','wd':'咳嗽', 'FEV1': 1.07,'FVC':1.83,'FEV1%':42.29,'FEV1/FVC':0.584699454,'PEF':1.22,'Tou': '舌红苔少',
     #          'pulseType': '脉滑'}
     df_sig_lung = pd.DataFrame(dict, index=[0])
     # 重命名
-    df_sig_lung.columns = ['sex', 'age', 'FEV1', 'FVC', 'FEV1%','FEV1/FVC','PEF','tongue','pulse']
+    df_sig_lung.columns = ['sex', 'age','wm_diagnosis', 'FEV1', 'FVC', 'FEV1%','FEV1/FVC','PEF','tongue','pulse']
     # 脉清洗
     df_sig_lung['pulse0'] = df_sig_lung['pulse'].str.replace("偏", "").str.replace("右", "").str.replace("左", "").str.replace("脉", "").str.replace("\r", "").str.strip()
     # 脉编码
@@ -222,9 +231,9 @@ def sigle_predict(dict):
     df_sig_lung['tongue_moss_nature'] = 0  # 苔质 薄（正常）-0  少-1  腻-2 厚（4个样本不用了）薄少和润滑（不用）燥糙和腐腻
     # 舌色编码
     patt0 = r'.*淡(?!红).*'
-    df_sig_lung.loc[~df_sig_lung['tongue'].apply(lambda x: re.match(patt0, x)).isna(), 'tongue_proper_color'] = 1
+    df_sig_lung.loc[~df_sig_lung['tongue'].apply(lambda x: re.match(patt0, str(x))).isna(), 'tongue_proper_color'] = 1
     patt1 = r'.*[^淡]红.*'
-    df_sig_lung.loc[~df_sig_lung['tongue'].apply(lambda x: re.match(patt1, x)).isna(), 'tongue_proper_color'] = 2
+    df_sig_lung.loc[~df_sig_lung['tongue'].apply(lambda x: re.match(patt1, str(x))).isna(), 'tongue_proper_color'] = 2
     df_sig_lung.loc[df_sig_lung['tongue'].str.contains('暗'), 'tongue_proper_color'] = 3
     df_sig_lung.loc[df_sig_lung['tongue'].str.contains('紫'), 'tongue_proper_color'] = 3
     # 舌形编码
@@ -237,53 +246,38 @@ def sigle_predict(dict):
     df_sig_lung.loc[df_sig_lung['tongue'].str.contains('少'), 'tongue_moss_nature'] = 1
     df_sig_lung.loc[df_sig_lung['tongue'].str.contains('腻'), 'tongue_moss_nature'] = 2
 
+    # 诊断编码
+    # 对西医诊断进行编码
+    df_sig_lung['wm_diagnosis_code'] = 0
+    pat0 = '.*咳嗽.*'
+    df_sig_lung.loc[~df_sig_lung['wm_diagnosis'].apply(lambda x: re.match(pat0, x)).isna(), 'wm_diagnosis_code'] = 1
+    pat1 = '.*支气管.*'
+    df_sig_lung.loc[~df_sig_lung['wm_diagnosis'].apply(lambda x: re.match(pat1, x)).isna(), 'wm_diagnosis_code'] = 2
+
     # 删除源列
-    df_sig_lung.drop(['tongue', 'pulse', 'pulse0'], inplace = True, axis=1)
+    df_sig_lung.drop(['tongue', 'pulse', 'pulse0','wm_diagnosis'], inplace = True, axis=1)
     df_sig_lung.rename(columns={'pulse2':'pulse'}, inplace = True)
 
     # 转化成one-hot
-    df_sig_lung['sex_1'],df_sig_lung['sex_2'],df_sig_lung['pulse_0'],df_sig_lung['pulse_1'],df_sig_lung['pulse_2'],df_sig_lung['pulse_3'],df_sig_lung['tongue_proper_color_0'],df_sig_lung['tongue_proper_color_1'],df_sig_lung['tongue_proper_color_2'],df_sig_lung['tongue_proper_color_3'],df_sig_lung['tongue_moss_nature_0'],df_sig_lung['tongue_moss_nature_1'],df_sig_lung['tongue_moss_nature_2']=[0,0,0,0,0,0,0,0,0,0,0,0,0]
-    # 性别
-    if df_sig_lung.sex[0] == '1':
-        df_sig_lung['sex_1'] = 1
-    elif df_sig_lung.sex[0] == '2':
-        df_sig_lung['sex_2'] = 1
-    # 脉象
-    if df_sig_lung.pulse[0] == 0:
-        df_sig_lung['pulse_0'] = 1
-    elif df_sig_lung.pulse[0] == 1:
-        df_sig_lung['pulse_1'] = 1
-    elif df_sig_lung.pulse[0] == 2:
-        df_sig_lung['pulse_2'] = 1
-    elif df_sig_lung.pulse[0] == 3:
-        df_sig_lung['pulse_3'] = 1
-    # 舌色
-    if df_sig_lung.tongue_proper_color[0] == 0:
-        df_sig_lung['tongue_proper_color_0'] = 1
-    elif df_sig_lung.tongue_proper_color[0] == 1:
-        df_sig_lung['tongue_proper_color_1'] = 1
-    elif df_sig_lung.tongue_proper_color[0] == 2:
-        df_sig_lung['tongue_proper_color_2'] = 1
-    elif df_sig_lung.tongue_proper_color[0] == 3:
-        df_sig_lung['tongue_proper_color_3'] = 1
-
-    # 苔质
-    if df_sig_lung.tongue_moss_nature[0] == 0:
-        df_sig_lung['tongue_moss_nature_0'] = 1
-    elif df_sig_lung.tongue_moss_nature[0] == 1:
-        df_sig_lung['tongue_moss_nature_1'] = 1
-    elif df_sig_lung.tongue_moss_nature[0] == 2:
-        df_sig_lung['tongue_moss_nature_2'] = 1
-
-    df_sig_lung.drop(['sex', 'pulse', 'tongue_proper_color','tongue_moss_nature'], inplace=True, axis=1)
-
-    df_sig_lung.to_csv('./files/df_sig_lung.csv',index=False)
+    from pandas.api.types import CategoricalDtype
+    df_sig_lung.sex = df_sig_lung.sex.astype(CategoricalDtype(categories=["1", "2"], ordered=True))
+    df_sig_lung['pulse'] = df_sig_lung['pulse'].astype(CategoricalDtype(categories=[0, 1, 2, 3], ordered=True))
+    df_sig_lung['tongue_proper_color'] = df_sig_lung['tongue_proper_color'].astype(
+        CategoricalDtype(categories=[0, 1, 2, 3], ordered=True))
+    df_sig_lung['tongue_moss_nature'] = df_sig_lung['tongue_moss_nature'].astype(
+        CategoricalDtype(categories=[0, 1, 2], ordered=True))
+    df_sig_lung['wm_diagnosis_code'] = df_sig_lung['wm_diagnosis_code'].astype(
+        CategoricalDtype(categories=[0, 1, 2], ordered=True))
+    df_sig_lung = pd.get_dummies(df_sig_lung, columns=['sex', 'pulse', 'tongue_proper_color', 'tongue_moss_nature',
+                                                       'wm_diagnosis_code'], prefix_sep='_', dummy_na=False,
+                                 drop_first=False)
+    # df_sig_lung.to_csv('../files/df_sig_lung.csv',index=False)
     # 测试的单数据格式如下array([[1,2,3,4]])
 
     classification_lung = model_lung.predict(df_sig_lung.values)
     classification_spleen = model_spleen.predict(df_sig_lung.values)
     classification_kidney = model_kidney.predict(df_sig_lung.values)
-    # print(classification_lung,classification_spleen,classification_kidney)
+    #print(classification_lung,classification_spleen,classification_kidney)
     # 分别对应是/否(1/0)有肺气虚，脾气虚，肾气虚
     result = np.append(classification_lung,classification_spleen)
     result = np.append(result, classification_kidney)
@@ -296,6 +290,11 @@ def multi_predict(num):
     Type3 = ['无肾气虚', '有肾气虚']
     # 读取数据，随机选择num个样本进行验证
     df_data = pd.read_csv('./files/dwd_lung_info.csv')
+    #清理表中逗号空数据行
+    df_data['PEF'] = df_data['PEF'].str.replace(',', '.')
+    df_data['PEF'] = df_data['PEF'].astype(float)
+    df_data.dropna(inplace=True)
+
     set = df_data.values
     indexs=random.sample(range(0,df_data.shape[0]),num)
     idSet=[]
@@ -309,18 +308,20 @@ def multi_predict(num):
     correct2 = 0
     correct3 = 0
     total = num
-    tempParms={'sex': '1', 'userage': '75', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄', 'pulseType': '脉弦滑'}
+    tempParms={'sex': '1', 'userage': '75','wm_diagnosis':'咳嗽', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄', 'pulseType': '脉弦滑'}
     # tempParms = {'sex': '2', 'userage': '65', 'ALTD': '30', 'Tou': '舌苔黄腻', 'pulseType': '弦数'}
     for index in indexs:
-        idSet.append(set[index, 0])
-        tempParms['sex']=set[index,2]
-        tempParms['userage']=set[index,3]
-        tempParms['FEV1']=set[index,8]
-        tempParms['FEV1%'] = set[index, 9]
-        tempParms['FEV1/FVC'] = set[index, 10]
-        tempParms['PEF'] = set[index, 11]
-        tempParms['Tou']=set[index,12]
-        tempParms['pulseType']=set[index,13]
+        idSet.append(str(set[index, 0]))
+        tempParms['sex']=str(set[index,2])
+        tempParms['userage']=str(set[index,3])
+        tempParms['wm_diagnosis'] = str(set[index, 4])
+        tempParms['FEV1']=str(set[index,8])
+        tempParms['FVC'] = str(set[index, 9])
+        tempParms['FEV1%'] = str(set[index, 10])
+        tempParms['FEV1/FVC'] = str(set[index, 11])
+        tempParms['PEF'] = str(set[index, 12])
+        tempParms['Tou']=set[index,13]
+        tempParms['pulseType']=set[index,14]
         predictIndex1 = sigle_predict(tempParms)[0]
         predictIndex2 = sigle_predict(tempParms)[1]
         predictIndex3 = sigle_predict(tempParms)[2]
@@ -334,34 +335,38 @@ def multi_predict(num):
         labelType1.append(Type1[labelIndex1])
         labelType2.append(Type2[labelIndex2])
         labelType3.append(Type3[labelIndex3])
-        if(predictIndex1==labelIndex1):
-            correct1+=1
+        if(predictIndex1 == labelIndex1):
+            correct1 += 1
         if (predictIndex2 == labelIndex2):
             correct2 += 1
         if (predictIndex3 == labelIndex3):
             correct3 += 1
+        x=[]
+        x.append(labelIndex1)
+        x.append(labelIndex2)
+        x.append(labelIndex3)
     accuracy1 = round(correct1 / total, 3)
     accuracy2 = round(correct2 / total, 3)
     accuracy3 = round(correct3 / total, 3)
     return idSet,predictType1,predictType2,predictType3,labelType1,labelType2,labelType3,correct1,correct2,correct3,total,accuracy1,accuracy2,accuracy3
 
 # if __name__ == '__main__':
-    # df_lung = process_data()
-    # print(df_lung.shape)
-    # train_model_lung(df_lung)
-    # print(df_lung.shape)
-    # train_model_kidney(df_lung)
-    # print(df_lung.shape)
-    # train_model_spleen(df_lung)
-    # print(df_lung.shape)
-    # 111
-    # dict1 = {'sex': '2', 'userage': '51', 'FEV1': 2.49,'FVC':3.15,'FEV1%':74.55,'FEV1/FVC':0.79047619,'PEF':5.97,'Tou': '舌淡苔白',
-    #          'pulseType': '脉细'}
-    #011
-    # dict1 = {'sex': '2', 'userage': '50', 'FEV1': 1.65,'FVC':1.76,'FEV1%':91.67,'FEV1/FVC':0.9375,'PEF':2.38,'Tou': '舌淡苔白',
-    #          'pulseType': '脉细'}
-    #000
-    # dict1 = {'sex': '1', 'userage': '75', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄',
-    #          'pulseType': '脉弦滑'}
-    # x=sigle_predict(dict1)[0]
-    # print(x)
+#     df_lung = process_data()
+#     print(df_lung.shape)
+#     train_model_lung(df_lung)
+#     print(df_lung.shape)
+#     train_model_kidney(df_lung)
+#     print(df_lung.shape)
+#     train_model_spleen(df_lung)
+#     print(df_lung.shape)
+#     # 111
+#     dict1 = {'sex': '2', 'userage': '51','wm_diagnosis':'咳嗽' , 'FEV1': 2.49,'FVC':3.15,'FEV1%':74.55,'FEV1/FVC':0.79047619,'PEF':5.97,'Tou': '舌淡苔白',
+#              'pulseType': '脉细'}
+#     # 011
+#     # dict1 = {'sex': '2', 'userage': '50', 'FEV1': 1.65,'FVC':1.76,'FEV1%':91.67,'FEV1/FVC':0.9375,'PEF':2.38,'Tou': '舌淡苔白',
+#     #          'pulseType': '脉细'}
+#     # 000
+#     # dict1 = {'sex': '1', 'userage': '75', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄',
+#     #          'pulseType': '脉弦滑'}
+#     x=sigle_predict(dict1)[0]
+#     print(x)
