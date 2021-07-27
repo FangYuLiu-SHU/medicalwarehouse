@@ -115,6 +115,9 @@
                   },
                   series: [
                       {
+                          {#color:[#}
+                          {#  "#5470c6","#ec5151"#}
+                          {#],#}
                           type: 'pie',
                           radius: '60%',
                           tooltip:{
@@ -262,23 +265,26 @@
                             name:'ALT正常范围',
                             type: 'bar',
                             itemStyle: {
-                                color: new echarts.graphic.LinearGradient(
-                                    0, 0, 0, 1,
-                                    [
-                                        {offset: 0, color: '#828787'},
-                                        {offset: 0.5, color: '#474a4a'},
-                                        {offset: 1, color: '#191a1a'}
-                                    ]
-                                )
+                                  color:function(params) {
+                                        let colorList = [
+                                            "#c80101",
+                                            "#4d4f4f",
+                                        ];
+                                        if(Number(params.value[0]) <= 40){
+                                          return colorList[1]
+                                        }else{
+                                          return colorList[0]
+                                        }
+		                }
                             },
                             emphasis: {
                                 itemStyle: {
                                     color: new echarts.graphic.LinearGradient(
                                         0, 0, 0, 1,
                                         [
-                                            {offset: 0, color: '#f53959'},
-                                            {offset: 0.7, color: '#cd0a2d'},
-                                            {offset: 1, color: '#a5011c'}
+                                {offset: 0, color: '#5889f1'},
+                                    {offset: 0.7, color: '#2153e6'},
+                                    {offset: 1, color: '#052ee3'}
                                         ]
                                     )
                                 }
@@ -295,7 +301,7 @@
                                         type:'dotted'  //'dotted'虚线 'solid'实线
                                     },
                                     show: true,
-                                    color: '#e20808',
+                                    color: '#0f0000',
                                     }
                                 },
                                 label:{

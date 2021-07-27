@@ -81,17 +81,20 @@ function addImg({
 }) {
   const isTonCorrect = true_ton_color === pre_ton_color;
   const isCoaCorrect = true_coating_color === pre_coating_color;
-  return $(`
+  // <img src=data:;base64,${encode}>
+  // <img src=${"C:/Users/Lenovo/Desktop/前端/京东商城/img/1.jpg"}>
+  return [$(`
   <div class="component">
     <div class="upper">
-        <img src=data:;base64,${encode}>
+    <img src=${"C:/Users/Lenovo/Desktop/前端/京东商城/img/1.jpg"}>
+        
     </div>
     <div class="lower">
         <p class=${isTonCorrect?"green":"red"}>舌色(真实):<span>${true_ton_color}</span>&nbsp;&nbsp;&nbsp;舌色(预测):<span>${pre_ton_color}</span></p>
         <p class=${isCoaCorrect?"green":"red"}>苔色(真实):<span>${true_coating_color}</span>&nbsp;&nbsp;&nbsp;苔色(预测):<span>${pre_coating_color}</span></p>
     </div>
   </div> 
-    `);
+    `), isTonCorrect, isCoaCorrect];
 }
 
 layui.use(["form", "layer"], function () {
@@ -108,6 +111,7 @@ layui.use(["form", "layer"], function () {
         num: predictNum,
       },
       success: (data) => {
+        predictData = [];
         $batch_show.empty();
         data = JSON.parse(data);
         layer.closeAll();
@@ -117,16 +121,44 @@ layui.use(["form", "layer"], function () {
           moss_acu: moss_color_accuracy,
         });
         for (let i = 0; i < tongueData.length; ++i) {
-          $batch_show.append(addImg(tongueData[i]));
+          const [el, isTon, isCoa] = addImg(tongueData[i]);
+          predictData.push([el, isTon, isCoa]);
+          $batch_show.append(el);
         }
       },
     });
   });
 });
 
+function classify(idx) {
+  $batch_show.empty();
+  const $correct = $(`<div class="correct"></div>`);
+  const $error = $(`<div class="error"></div>`);
+  for(let i = 0; i < predictData.length; ++i) {
+    const [el, isTon, isCoa] = predictData[i];
+    if(idx === 0 ? isTon : isCoa) {
+      $correct.append(el);
+    } else {
+      $error.append(el);
+    }
+  }
+  $batch_show.append($correct).append($error);
+}
+
+$(".accordTonColor").on("click", () => {
+  classify(0);
+})
+
+$(".accordCoaColor").on("click", () => {
+  classify(1);
+})
+
+
+
 const $showImg = $(".update_show img");
 const $batch_show = $(".batch_show");
 const $uploadUi = $(".uploadUi");
 const $imgProgress = $(".update_show .imgProgress");
+let predictData = [];
 $uploadUi.hide();
 let imgData = new FormData();

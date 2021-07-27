@@ -69,13 +69,22 @@ layui.use(["element", "layer"], function () {
 });
 
 function rowToolEvent(obj, cols, data, form, table, type) {
-  //行工具栏事件，点击详细的相关处理
+  /**
+   * 行工具栏事件，点击详细的相关处理
+   * obj: 表格中对应行的相关数据
+   * cols：表头的设置
+   * data：所有病人的相关数据
+   * form: layui中的form
+   * table: layui中的table
+   * type：查看的病人的类型(肾、肝...)
+   */
   layui.use(["element", "layer"], function() {
     element = layui.element
     switch (obj.event) {
       case "detail": {
         let id = obj.data.id;
         $.ajax({
+          //像后端请求通道数量
           type: "POST",
           url: `/find_channelNumber`,
           data: {
@@ -87,6 +96,7 @@ function rowToolEvent(obj, cols, data, form, table, type) {
             channelNumber = parseInt(channelNumber);
             setTimeout(() => {
               //使用计时器，防止表格渲染出现格式问题
+              //根据data渲染病人的数据
               table.render({
                 elem: ".patient_info", // 定位表格ID
                 title: "病人信息",
@@ -123,6 +133,7 @@ function rowToolEvent(obj, cols, data, form, table, type) {
           },
         });
         $.ajax({
+          //像后端请求舌图片数据
           type: "POST",
           url: `/tongue_data`,
           data: {

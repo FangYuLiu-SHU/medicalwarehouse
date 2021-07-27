@@ -437,6 +437,7 @@
             uploadData.delete("file");
             uploadData.delete("fileDir");
           }
+          
           $.ajax({
             url: "/dataimport",
             type: "POST",
@@ -450,9 +451,11 @@
               switchUi(formStatu);
               clearInput("file");
               clearInput("fileDir");
+              layer.closeAll();
               layer.msg(data);
             },
             error: (err) => {
+              layer.closeAll();
             },
             xhr: function () {
               uploadUi.show();
@@ -471,6 +474,7 @@
 
                 myXhr.upload.addEventListener("load", () => {
                   uploadUi.hide();
+                  layer.load(2);
                   element.progress("upload", `0%`);
                 });
               }

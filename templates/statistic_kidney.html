@@ -181,23 +181,26 @@
                         type: 'bar',
                         barWidth:28,
                         itemStyle: {
-                            color: new echarts.graphic.LinearGradient(
-                                0, 0, 0, 1,
-                                [
-                                    {offset: 0, color: '#828787'},
-                                    {offset: 0.5, color: '#474a4a'},
-                                    {offset: 1, color: '#191a1a'}
-                                ]
-                            )
+                               color:function(params) {
+		                    let colorList = [
+		                        "#c80101",
+		                        "#4d4f4f",
+		                    ];
+		                    if(Number(params.value[0]) >= 80 && Number(params.value[0]) <= 120){
+		                      return colorList[1]
+		                    }else{
+		                      return colorList[0]
+		                    }
+		                }
                         },
                         emphasis: {
                             itemStyle: {
                                 color: new echarts.graphic.LinearGradient(
                                     0, 0, 0, 1,
                                     [
-                                        {offset: 0, color: '#f53959'},
-                                        {offset: 0.7, color: '#cd0a2d'},
-                                        {offset: 1, color: '#a5011c'}
+                                          {offset: 0, color: '#5889f1'},
+                                    {offset: 0.7, color: '#2153e6'},
+                                    {offset: 1, color: '#052ee3'}
                                     ]
                                 )
                             }
@@ -213,14 +216,14 @@
                                         type: 'dotted'  //'dotted'虚线 'solid'实线
                                     },
                                     show: true,
-                                    color: '#f00404',
+                                    color: '#1a0000',
                                 }
                             },
                             label: {
                                 show: false,
 
                             },
-                            data: [{name: "最低阈值(mL/min)", xAxis: 90}, {name: "最高阈值(mL/min)", xAxis: 120}]
+                            data: [{name: "最低阈值(mL/min)", xAxis: 80}, {name: "最高阈值(mL/min)", xAxis: 120}]
                         },
                     }
                 ]
@@ -294,23 +297,26 @@
                         barWidth:28,
                         type: 'bar',
                         itemStyle: {
-                            color: new echarts.graphic.LinearGradient(
-                                0, 0, 0, 1,
-                                [
-                                    {offset: 0, color: '#828787'},
-                                    {offset: 0.5, color: '#474a4a'},
-                                    {offset: 1, color: '#191a1a'}
-                                ]
-                            )
+                       color:function(params) {
+		                    let colorList = [
+		                        "#c80101",
+		                        "#4d4f4f",
+		                    ];
+		                    if(Number(params.value[0]) >= 33 && Number(params.value[0]) <= 100){
+		                      return colorList[1]
+		                    }else{
+		                      return colorList[0]
+		                    }
+		                }
                         },
                         emphasis: {
                             itemStyle: {
                                 color: new echarts.graphic.LinearGradient(
                                     0, 0, 0, 1,
                                     [
-                                        {offset: 0, color: '#f53959'},
-                                        {offset: 0.7, color: '#cd0a2d'},
-                                        {offset: 1, color: '#a5011c'}
+                                        {offset: 0, color: '#5889f1'},
+                                    {offset: 0.7, color: '#2153e6'},
+                                    {offset: 1, color: '#052ee3'}
                                     ]
                                 )
                             }
@@ -326,14 +332,14 @@
                                         type: 'dotted'  //'dotted'虚线 'solid'实线
                                     },
                                     show: true,
-                                    color: '#f00404',
+                                    color: '#150000',
                                 }
                             },
                             label: {
                                 show: false,
 
                             },
-                            data: [{name: "最低阈值(μmol/L)", xAxis: 44}, {name: "最高阈值(μmol/L)", xAxis: 133}]
+                            data: [{name: "最低阈值(μmol/L)", xAxis: 33}, {name: "最高阈值(μmol/L)", xAxis: 103}]
                         },
                     }
                 ]
@@ -360,6 +366,9 @@
                           trigger:'item',
                       formatter:'{b}:{c}人,，占比{d}%'
                       },
+                        {#color:[#}
+                        {#    "#5470c6","#ec5151"#}
+                        {#  ],#}
                         type: 'pie',
                         radius: '60%',
                         label: {
@@ -403,6 +412,9 @@
                           trigger:'item',
                       formatter:'{b}:{c}人,，占比{d}%'
                       },
+                        {#color:[#}
+                        {#    "#5470c6","#ec5151"#}
+                        {#  ],#}
                         type: 'pie',
                         radius: '60%',
                         label: {
