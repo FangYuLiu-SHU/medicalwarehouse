@@ -71,6 +71,11 @@
             width: 30%;
         }
 
+        .batch_show {
+            margin: auto;
+            width: 90%;
+        }
+
         .batch_show div {
             margin: 0;
             padding: 0;
@@ -79,7 +84,7 @@
         .batch_show .component {
             margin: 0 10px 20px;
             float: left;
-            width: 18%;
+            width: 200px;
         }
 
         .batch_show .component img {
@@ -111,6 +116,16 @@
         .red {
             color: red;
         }
+        .correct,
+        .error {
+            float: left;
+        }
+        .correct {
+            width: 50%;
+        }
+        .error {
+            width: 50%;
+        }
     </style>
     <link rel="stylesheet" href="../static/layui/css/layui.css"/>
     <script src="../static/js/jquery.js"></script>
@@ -130,7 +145,7 @@
         <li>肺象预测准确率展示</li>
     </ul>
     <div class="layui-tab-content" style="height: 100px;">
-        <div class="layui-tab-item layui-show">
+        <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
                 <legend>输入病人的各项指标</legend>
             </fieldset>
@@ -362,7 +377,7 @@
                 </div>
             </form>
         </div>                <!--舌象预测-->
-        <div class="layui-tab-item">
+        <div class="layui-tab-item layui-show">
             <form name="tonBatchForm" class="layui-form layui-form-pane" lay-filter="tonBatchPre">
                 <div class="layui-form-item tonBatchSearch">
                     <label class="layui-form-label">预测图片数</label>
@@ -400,8 +415,9 @@
                     </div>
                 </div>
             </form>
+            <button	class="layui-btn accordTonColor">按舌色分类</button>
+            <button	class="layui-btn accordCoaColor">按苔色分类</button>
             <div class="batch_show">
-
             </div>
         </div>                <!--舌象预测准确率展示-->
         <div class="layui-tab-item">
