@@ -110,6 +110,7 @@ layui.use(["form", "layer"], function () {
       success: (data) => {
         $batch_show.empty();
         data = JSON.parse(data);
+        console.log(data);
         layer.closeAll();
         const { tongueData, tongue_color_accuracy, moss_color_accuracy } = data;
         form.val("tonBatchPre", {
