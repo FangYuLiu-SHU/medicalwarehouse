@@ -1397,20 +1397,24 @@
                             text: '脉搏预测验证',
                             subtext: '验证详情',
                         },
+                        //改，更改坐标指示器类型
                         tooltip: {
                             trigger: 'axis',
                             axisPointer: {
-                                type: 'cross',
+                                type: 'shadow',
                                 label: {
                                     backgroundColor: '#283b56'
                                 }
                             },
+                            //改动，添加一个横坐标贴士展示
                             formatter: function (params) {
                                 var a = params[0];
                                 var b = params[1];
-                                var str = '编号：' + a.axisValue;
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
                                 str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
                                 str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
                                 return str;
                             }
                         },
@@ -1428,7 +1432,8 @@
                                 start: 0, //伸缩条开始位置（1-100），可以随时更改
                                 end: 100, //伸缩条结束位置（1-100），可以随时更改
                             }],
-                        xAxis:
+                        //改动，添加一个横坐标
+                        xAxis:[
                             {
                                 name: '脉搏表格编号',
                                 nameLocation: 'end',
@@ -1436,25 +1441,66 @@
                                 boundaryGap: true,
                                 data: newData.idSet
                             },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
                         yAxis:
                             {
                                 name: '脉搏类型',
                                 nameLocation: 'end',
                                 type: 'category',
                                 boundaryGap: false,
-                                data: ['', '沉细', '细', '弦', '弦细', '滑', '濡']
+                                data: ['', '沉细', '细', '弦', '弦细', '滑', '濡', '']
                             },
+                        //进行了更改
                         series: [
                             {
                                 name: '标签类别',
                                 type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#0080FF',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:3,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.labelType
                             },
                             {
                                 name: '预测类别',
                                 type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        //color:'#ff0000',
+                                        color:'#2edfa3',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            //color:'#ff0000',
+                                            color:'#2edfa3',
+                                            width:2.5,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.predictType
                             }
                         ]
@@ -1663,7 +1709,7 @@
                         tooltip: {
                             trigger: 'axis',
                             axisPointer: {
-                                type: 'cross',
+                                type: 'shadow',
                                 label: {
                                     backgroundColor: '#283b56'
                                 }
@@ -1671,9 +1717,11 @@
                             formatter: function (params) {
                                 var a = params[0];
                                 var b = params[1];
-                                var str = '编号：' + a.axisValue;
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
                                 str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
                                 str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
                                 return str;
                             }
                         },
@@ -1691,7 +1739,7 @@
                                 start: 0, //伸缩条开始位置（1-100），可以随时更改
                                 end: 100, //伸缩条结束位置（1-100），可以随时更改
                             }],
-                        xAxis:
+                        xAxis:[
                             {
                                 name: '被验证者编号',
                                 nameLocation: 'end',
@@ -1699,6 +1747,14 @@
                                 boundaryGap: true,
                                 data: newData.idSet
                             },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
                         yAxis:
                             {
                                 name: '肾象类型',
@@ -1711,13 +1767,43 @@
                             {
                                 name: '标签类别',
                                 type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#0080FF',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:3,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.labelType
                             },
                             {
                                 name: '预测类别',
                                 type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        color:'#2edfa3',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            color:'#2edfa3',
+                                            width:2.5,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.predictType
                             }
                         ]
@@ -1897,7 +1983,7 @@
                         tooltip: {
                             trigger: 'axis',
                             axisPointer: {
-                                type: 'cross',
+                                type: 'shadow',
                                 label: {
                                     backgroundColor: '#283b56'
                                 }
@@ -1905,9 +1991,11 @@
                             formatter: function (params) {
                                 var a = params[0];
                                 var b = params[1];
-                                var str = '编号：' + a.axisValue;
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
                                 str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
                                 str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
                                 return str;
                             }
                         },
@@ -1925,7 +2013,7 @@
                                 start: 0, //伸缩条开始位置（1-100），可以随时更改
                                 end: 100, //伸缩条结束位置（1-100），可以随时更改
                             }],
-                        xAxis:
+                        xAxis:[
                             {
                                 name: '被验证者编号',
                                 nameLocation: 'end',
@@ -1933,6 +2021,14 @@
                                 boundaryGap: true,
                                 data: newData.idSet
                             },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
                         yAxis:
                             {
                                 name: '肝象类型',
@@ -1945,13 +2041,43 @@
                             {
                                 name: '标签类别',
                                 type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#0080FF',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:3,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.labelType
                             },
                             {
                                 name: '预测类别',
                                 type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        color:'#2edfa3',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            color:'#2edfa3',
+                                            width:2.5,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.predictType
                             }
                         ]
@@ -2094,7 +2220,7 @@
                         tooltip: {
                             trigger: 'axis',
                             axisPointer: {
-                                type: 'cross',
+                                type: 'shadow',
                                 label: {
                                     backgroundColor: '#283b56'
                                 }
@@ -2102,9 +2228,11 @@
                             formatter: function (params) {
                                 var a = params[0];
                                 var b = params[1];
-                                var str = '编号：' + a.axisValue;
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
                                 str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
                                 str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
                                 return str;
                             }
                         },
@@ -2122,7 +2250,7 @@
                                 start: 0, //伸缩条开始位置（1-100），可以随时更改
                                 end: 100, //伸缩条结束位置（1-100），可以随时更改
                             }],
-                        xAxis:
+                        xAxis:[
                             {
                                 name: '被验证者编号',
                                 nameLocation: 'end',
@@ -2130,6 +2258,14 @@
                                 boundaryGap: true,
                                 data: newData.idSet
                             },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
                         yAxis:
                             {
                                 name: '肺气虚类型',
@@ -2142,13 +2278,43 @@
                             {
                                 name: '标签类别',
                                 type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#0080FF',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:3,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.labelType1
                             },
                             {
                                 name: '预测类别',
                                 type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        color:'#2edfa3',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            color:'#2edfa3',
+                                            width:2.5,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.predictType1
                             }
                         ]
@@ -2210,7 +2376,7 @@
                         tooltip: {
                             trigger: 'axis',
                             axisPointer: {
-                                type: 'cross',
+                                type: 'shadow',
                                 label: {
                                     backgroundColor: '#283b56'
                                 }
@@ -2218,9 +2384,11 @@
                             formatter: function (params) {
                                 var a = params[0];
                                 var b = params[1];
-                                var str = '编号：' + a.axisValue;
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
                                 str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
                                 str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
                                 return str;
                             }
                         },
@@ -2238,7 +2406,7 @@
                                 start: 0, //伸缩条开始位置（1-100），可以随时更改
                                 end: 100, //伸缩条结束位置（1-100），可以随时更改
                             }],
-                        xAxis:
+                        xAxis:[
                             {
                                 name: '被验证者编号',
                                 nameLocation: 'end',
@@ -2246,6 +2414,14 @@
                                 boundaryGap: true,
                                 data: newData.idSet
                             },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
                         yAxis:
                             {
                                 name: '肺气虚类型',
@@ -2258,13 +2434,43 @@
                             {
                                 name: '标签类别',
                                 type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#0080FF',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:3,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.labelType2
                             },
                             {
                                 name: '预测类别',
                                 type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        color:'#2edfa3',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            color:'#2edfa3',
+                                            width:2.5,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.predictType2
                             }
                         ]
@@ -2326,7 +2532,7 @@
                         tooltip: {
                             trigger: 'axis',
                             axisPointer: {
-                                type: 'cross',
+                                type: 'shadow',
                                 label: {
                                     backgroundColor: '#283b56'
                                 }
@@ -2334,9 +2540,11 @@
                             formatter: function (params) {
                                 var a = params[0];
                                 var b = params[1];
-                                var str = '编号：' + a.axisValue;
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
                                 str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
                                 str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
                                 return str;
                             }
                         },
@@ -2354,7 +2562,7 @@
                                 start: 0, //伸缩条开始位置（1-100），可以随时更改
                                 end: 100, //伸缩条结束位置（1-100），可以随时更改
                             }],
-                        xAxis:
+                        xAxis:[
                             {
                                 name: '被验证者编号',
                                 nameLocation: 'end',
@@ -2362,6 +2570,14 @@
                                 boundaryGap: true,
                                 data: newData.idSet
                             },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
                         yAxis:
                             {
                                 name: '肾气虚类型',
@@ -2374,13 +2590,43 @@
                             {
                                 name: '标签类别',
                                 type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#0080FF',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:3,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.labelType3
                             },
                             {
                                 name: '预测类别',
                                 type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        color:'#2edfa3',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            color:'#2edfa3',
+                                            width:2.5,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
                                 data: newData.predictType3
                             }
                         ]
