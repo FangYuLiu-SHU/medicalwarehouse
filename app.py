@@ -548,7 +548,7 @@ def pulsePrediction_accuracy():
     testNum=int(selectTestNum)
     totalNum=1009
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
-    idSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction(testNum,totalNum)
+    idSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction(testNum,totalNum,cursor)
     # 方案一：沉细-0 细-1 弦-2 弦细-3 滑-4 濡-5
     pulseType = ['沉细', '细', '弦', '弦细', '滑', '濡']
     predictType=[]
