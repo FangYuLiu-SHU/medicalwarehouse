@@ -88,7 +88,7 @@ function addImg({
     $(`
   <div class="component">
     <div class="upper">
-    <img src=${"C:/Users/Lenovo/Desktop/前端/京东商城/img/1.jpg"}>
+    <img src=data:;base64,${encode}>
         
     </div>
     <div class="lower">

@@ -1009,7 +1009,7 @@ def tongue_batch_pre():
             "patient_info": patient_info
         }
         tongueData.append(pred)
-        
+
     returnData = {"tongueData": tongueData, "tongue_color_accuracy": results['tongue_color_accuracy'],
                   "moss_color_accuracy": results['moss_color_accuracy']}
 
