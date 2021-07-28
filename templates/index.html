@@ -8,16 +8,44 @@
     />
     <title>test</title>
     <link rel="stylesheet" href="../static/layui/css/layui.css" />
+       <style type="text/css">
+         *{
+            margin: 0px;
+            padding: 0px;
+        }
+        video{
+            position: fixed;
+            right: 0px;
+            bottom: 0px;
+            min-width: 100%;
+            min-height: 100%;
+            height: auto;
+            width: auto;
+            /*加滤镜*/
+            /*filter: blur(15px); //背景模糊设置 */
+            /*-webkit-filter: grayscale(100%);*/
+            /*filter:grayscale(100%); //背景灰度设置*/
+            z-index:-11
+        }
+        source{
+            min-width: 100%;
+            min-height: 100%;
+            height: auto;
+            width: auto;
+        }
+     </style>
   </head>
-  <body class="layui-layout-body" >
-    <div class="layui-layout layui-layout-admin">
-      <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">医疗系统</div>
+
+<!--  <body class="layui-layout-body" background="../static/image/mainpage.jpg"  style=" background-repeat:no-repeat ; background-size:100% 100%;background-attachment: fixed;" >-->
+  <body clas="layui-layout-body">
+  <div class="layui-layout layui-layout-admin">
+      <div class="layui-header" >
+        <div class="layui-logo layui-hide-xs layui-bg-black" >医疗系统</div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
           <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="skipto('fileInput')" style="cursor:pointer">数据导入</a></li>
           <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="skipto('datastatistic')" style="cursor:pointer">数据统计</a></li>
-          <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="skipto('patient_info_show')" style="cursor:pointer">信息展示</a></li>
+          <li class="layui-nav-item layui-hide-xs "><a href="javascript:" onclick="s\ipto('patient_info_show')" style="cursor:pointer">信息展示</a></li>
           <li class="layui-nav-item layui-hide-xs"><a href="javascript:" onclick="skipto('disease_prediction')" style="cursor:pointer">病症预测</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
@@ -38,14 +66,21 @@
           </li>
         </ul>
       </div>
+                     <video id="v1" autoplay loop muted  style="width:100%;border:0px;">
+                    <source src="../static/image/mainpage1.mp4" type="video/mp4"  />
+                 </video>
       <div class="layui-body" style="left: 0px ">
 		    <!-- 内容主体区域 -->
 		    	<div id="init_title" style="position:absolute;left:25%;top:30%;font-size: 100px;"></div>
-		    	<iframe id="iframe_id" src="" style=" width: 100%; height:100%;"></iframe>
+		    	<iframe id="iframe_id" src="" style=" width: 100%; height:100%;">
+                </iframe>
       </div>
     </div>
     <script src="../static/layui/layui.js"></script>
   	<script>
+
+      var video= document.getElementById('v1');
+            video.playbackRate = 1.5;
 		//JavaScript代码区域
 		layui.use(['element'], function(){
 		  var element = layui.element;
@@ -56,6 +91,7 @@
 			if(document.getElementById('init_title')){
 				var inf = document.getElementById('init_title');
 				inf.remove();
+				video.remove();
 			}
 			ifr.src = '/' + target;
 		}
