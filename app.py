@@ -1009,9 +1009,18 @@ def tongue_batch_pre():
             "patient_info": patient_info
         }
         tongueData.append(pred)
+        test = {
+            "true_ton_color": results['true_tongue_colors'][i],
+            "pre_ton_color": results['pred_tongue_colors'][i],
+            "true_coating_color": results['true_moss_colors'][i],
+            "pre_coating_color": results['pred_moss_colors'][i],
+            "patient_info": patient_info
+        }
+        print(test)
     returnData = {"tongueData": tongueData, "tongue_color_accuracy": results['tongue_color_accuracy'],
                   "moss_color_accuracy": results['moss_color_accuracy']}
-
+    print(results['tongue_color_accuracy'])
+    print(results['moss_color_accuracy'])
     returnData = json.dumps(returnData)
     return returnData
 

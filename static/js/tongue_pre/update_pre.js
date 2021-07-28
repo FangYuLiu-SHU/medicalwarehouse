@@ -73,6 +73,7 @@ layui.use(["form", "element"], function () {
 });
 
 function addImg({
+  patient_info,
   encode,
   true_ton_color,
   pre_ton_color,
@@ -83,18 +84,99 @@ function addImg({
   const isCoaCorrect = true_coating_color === pre_coating_color;
   // <img src=data:;base64,${encode}>
   // <img src=${"C:/Users/Lenovo/Desktop/前端/京东商城/img/1.jpg"}>
-  return [$(`
+  return [
+    $(`
   <div class="component">
     <div class="upper">
     <img src=${"C:/Users/Lenovo/Desktop/前端/京东商城/img/1.jpg"}>
         
     </div>
     <div class="lower">
-        <p class=${isTonCorrect?"green":"red"}>舌色(真实):<span>${true_ton_color}</span>&nbsp;&nbsp;&nbsp;舌色(预测):<span>${pre_ton_color}</span></p>
-        <p class=${isCoaCorrect?"green":"red"}>苔色(真实):<span>${true_coating_color}</span>&nbsp;&nbsp;&nbsp;苔色(预测):<span>${pre_coating_color}</span></p>
+        <p class=${
+          isTonCorrect ? "green" : "red"
+        }>舌色(真实):<span>${true_ton_color}</span>&nbsp;&nbsp;&nbsp;舌色(预测):<span>${pre_ton_color}</span></p>
+        <p class=${
+          isCoaCorrect ? "green" : "red"
+        }>苔色(真实):<span>${true_coating_color}</span>&nbsp;&nbsp;&nbsp;苔色(预测):<span>${pre_coating_color}</span></p>
     </div>
   </div> 
-    `), isTonCorrect, isCoaCorrect];
+    `),
+    isTonCorrect,
+    isCoaCorrect,
+    patient_info,
+  ];
+}
+
+function bindShowPatientInfo(el, info) {
+  layui.use(["table", "layer"], function () {
+    const table = layui.table;
+    const layer = layui.layer;
+    el.on("click", () => {
+      $(".patient_detail").empty();
+      let cols = [];
+      let dealedInfo = info;
+      if (Object.keys(dealedInfo).length !== 0) {
+        $patient_detail.append($(`<table class="patient_info"></table>`));
+        switch (info.id?.[0]) {
+          case "l": {
+            dealLungData(dealedInfo);
+            cols = lungCols;
+            break;
+          }
+          case "k": {
+            dealKindeyData(dealedInfo);
+            cols = kidneyCols;
+            break;
+          }
+          default: {
+            dealLiverData(dealedInfo);
+            cols = liverCols;
+            break;
+          }
+        }
+        setTimeout(() => {
+          //使用计时器，防止表格渲染出现格式问题
+          //根据data渲染病人的数据
+          dealedInfo &&
+            table.render({
+              elem: ".patient_info", // 定位表格ID
+              title: "详细信息",
+              cols,
+              data: [dealedInfo],
+            });
+        }, 0);
+      } else {
+        $(".patient_detail").empty();
+        $patient_detail.append($(`<div class="no_data">数据暂无</div>`));
+      }
+      layer.open({
+        type: 1,
+        shadeClose: true,
+        resize: false,
+        area: "1000px",
+        title: "详细信息",
+        content: $(".patient_detail"),
+      });
+    });
+  });
+}
+
+function dealLungData(e) {
+  e.sex = e.sex === "2" ? "女" : "男";
+  e.Lung_qi_deficiency = e.Lung_qi_deficiency === "1" ? "是" : "否";
+  e.spleen_qi_deficiency = e.spleen_qi_deficiency === "1" ? "是" : "否";
+  e.kidney_qi_deficiency = e.kidney_qi_deficiency === "1" ? "是" : "否";
+  e.PEF = e.PEF === "None" ? "无数据" : e.PEF;
+}
+
+function dealLiverData(e) {
+  e.sex = e.sex === "1" ? "女" : "男";
+  e.symptoms_type = e.symptoms_type === "1" ? "肝胆湿热症" : "肝郁脾虚症";
+}
+
+function dealKindeyData(e) {
+  e.sex = e.sex === "2" ? "女" : "男";
+  e.symptoms_type = e.symptoms_type === "1" ? "肾阳虚" : "肾阴虚";
 }
 
 layui.use(["form", "layer"], function () {
@@ -121,9 +203,10 @@ layui.use(["form", "layer"], function () {
           moss_acu: moss_color_accuracy,
         });
         for (let i = 0; i < tongueData.length; ++i) {
-          const [el, isTon, isCoa] = addImg(tongueData[i]);
-          predictData.push([el, isTon, isCoa]);
+          const [el, isTon, isCoa, patient_info] = addImg(tongueData[i]);
           $batch_show.append(el);
+          bindShowPatientInfo(el, patient_info);
+          predictData.push([el, isTon, isCoa, patient_info]);
         }
       },
     });
@@ -131,34 +214,41 @@ layui.use(["form", "layer"], function () {
 });
 
 function classify(idx) {
-  $batch_show.empty();
+  $(".component").detach();
   const $correct = $(`<div class="correct"></div>`);
   const $error = $(`<div class="error"></div>`);
-  for(let i = 0; i < predictData.length; ++i) {
+  for (let i = 0; i < predictData.length; ++i) {
     const [el, isTon, isCoa] = predictData[i];
-    if(idx === 0 ? isTon : isCoa) {
+    if(idx === 2) $batch_show.append(el);
+    else if (idx === 0 ? isTon : isCoa) {
       $correct.append(el);
     } else {
       $error.append(el);
     }
   }
-  $batch_show.append($correct).append($error);
+  if(idx !== 2) {
+    $batch_show.append($correct).append($error);
+  }
 }
 
 $(".accordTonColor").on("click", () => {
   classify(0);
-})
+});
+
+$(".recovery").on("click", () => {
+  classify(2);
+});
 
 $(".accordCoaColor").on("click", () => {
   classify(1);
-})
-
-
+});
 
 const $showImg = $(".update_show img");
 const $batch_show = $(".batch_show");
 const $uploadUi = $(".uploadUi");
 const $imgProgress = $(".update_show .imgProgress");
+const $patient_detail = $(".patient_detail");
+const $recovery = $(".recovery");
 let predictData = [];
 $uploadUi.hide();
 let imgData = new FormData();
