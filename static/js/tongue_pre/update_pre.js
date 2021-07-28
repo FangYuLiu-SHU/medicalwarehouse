@@ -82,8 +82,6 @@ function addImg({
 }) {
   const isTonCorrect = true_ton_color === pre_ton_color;
   const isCoaCorrect = true_coating_color === pre_coating_color;
-  // <img src=data:;base64,${encode}>
-  // <img src=${"C:/Users/Lenovo/Desktop/前端/京东商城/img/1.jpg"}>
   return [
     $(`
   <div class="component">
