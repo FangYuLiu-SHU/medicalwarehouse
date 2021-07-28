@@ -72,7 +72,7 @@
         }
 
         .batch_show {
-            margin: auto;
+            margin: 20px auto;
             width: 90%;
         }
 
@@ -126,6 +126,9 @@
         .error {
             width: 50%;
         }
+        .no_data {
+            padding: 20px;
+        }
     </style>
     <link rel="stylesheet" href="../static/layui/css/layui.css"/>
     <script src="../static/js/jquery.js"></script>
@@ -145,7 +148,7 @@
         <li>肺象预测准确率展示</li>
     </ul>
     <div class="layui-tab-content" style="height: 100px;">
-        <div class="layui-tab-item">
+        <div class="layui-tab-item layui-show">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
                 <legend>输入病人的各项指标</legend>
             </fieldset>
@@ -377,7 +380,7 @@
                 </div>
             </form>
         </div>                <!--舌象预测-->
-        <div class="layui-tab-item layui-show">
+        <div class="layui-tab-item">
             <form name="tonBatchForm" class="layui-form layui-form-pane" lay-filter="tonBatchPre">
                 <div class="layui-form-item tonBatchSearch">
                     <label class="layui-form-label">预测图片数</label>
@@ -417,9 +420,11 @@
             </form>
             <button	class="layui-btn accordTonColor">按舌色分类</button>
             <button	class="layui-btn accordCoaColor">按苔色分类</button>
+            <button	class="layui-btn recovery">还原</button>
             <div class="batch_show">
             </div>
-        </div>                <!--舌象预测准确率展示-->
+        </div>        
+                <!--舌象预测准确率展示-->
         <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
                 <legend>输入病人的各项指标</legend>
@@ -764,6 +769,10 @@
         </div>                <!--肺象预测准确率展示-->
     </div>
 </div>
+<div style="margin-top: -5000px">
+    <!-- 让后面的盒子根据这个盒子定位 -->
+</div>
+<div class="patient_detail"></div>
 <script src="../static/layui/layui.js"></script>
 <script src="../static/js/jquery.js"></script>
 <script type="text/javascript" src="../static/js/echarts.js"></script>
@@ -1593,6 +1602,7 @@
     });
 </script>
 <!--舌象预测子页面js-->
+<script src="../static/js/tongue_pre/table_type.js"></script>
 <script src="../static/js/tongue_pre/update_pre.js"></script>
 <!--肾象预测子页面js-->
 <script>

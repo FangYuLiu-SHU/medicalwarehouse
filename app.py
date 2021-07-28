@@ -994,8 +994,8 @@ def tongue_batch_pre():
             query_result = cursor.fetchall()
             col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
             if len(query_result) != 0:
-                for i in range(len(col_names)):
-                    patient_info[col_names[i]] = str(query_result[0][i])
+                for j in range(len(col_names)):
+                    patient_info[col_names[j]] = str(query_result[0][j])
         except:
             print(patient_id + '病人信息获取失败！')
 
@@ -1009,6 +1009,7 @@ def tongue_batch_pre():
             "patient_info": patient_info
         }
         tongueData.append(pred)
+
     returnData = {"tongueData": tongueData, "tongue_color_accuracy": results['tongue_color_accuracy'],
                   "moss_color_accuracy": results['moss_color_accuracy']}
 
