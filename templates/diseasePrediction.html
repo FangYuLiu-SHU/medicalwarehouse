@@ -793,6 +793,11 @@
                 <div id="lungPredictDisplay3"
                      style="width: 27%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
             </div>
+            <div style="text-align: center;"><!--比对表格显示-->
+                <div id="myTable5" class="layui-inline" style="display:inline-block;width: 98%;margin: 0 auto;">
+                    <table class="layui-hide" id="predictionTable5" border="3px" style="margin: 0 auto;"></table>
+                </div>
+            </div>
         </div>                <!--肺象预测准确率展示-->
     </div>
 </div>
@@ -2529,11 +2534,12 @@
 </script>
 <!--肺象预测子页面js-->
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         var form = layui.form
             , layer = layui.layer
             , layedit = layui.layedit
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , table=layui.table;
         //自定义验证规则
         form.verify({
             verify_number: function (value) {
@@ -3201,6 +3207,114 @@
 
                     var pulsePredictDisplay3 = document.getElementById('lungPredictDisplay3');
                     pulsePredictDisplay3.innerHTML = '<h2 class="layui-timeline-title"><b>预测准确率：' + (newData.accuracy3 * 100.0).toFixed(2) + '%</b></h2>';
+                    //设置layui datatable的某一行的颜色
+                    //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
+                    function Layui_SetDataTableRowColor5(DivId, Color1, Color2, Color3, Color4, Color5, Color6, Color7){
+                        try{
+                            var div = document.getElementById(DivId);
+                            if(div != null){ //找到对象了
+                                var table_main = div.getElementsByClassName('layui-table-main');   //通过class获取table_main
+                                if (table_main != null && table_main.length > 0) {
+                                    var table = table_main[0].getElementsByClassName('layui-table');   //通过class获取table
+                                    if (table != null && table.length > 0) {
+                                        var trs = table[0].querySelectorAll("tr");
+                                        if (trs != null && trs.length > 0) {
+                                            for(var i=0;i<trs.length;i++){
+                                                var tds = trs[i].querySelectorAll("td");
+                                                var labelType1=tds[12].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType1=tds[13].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType2=tds[14].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType2=tds[15].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType3=tds[16].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType3=tds[17].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var colorSet=0;
+                                                if(labelType1==predictType1){}
+                                                else{
+                                                    tds[13].style.color = Color5;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(labelType2==predictType2){}
+                                                else{
+                                                    tds[15].style.color = Color6;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(labelType3==predictType3){}
+                                                else{
+                                                    tds[17].style.color = Color7;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(colorSet==0){
+                                                    trs[i].style.color = Color1;//字体颜色
+                                                    trs[i].style.backgroundColor= Color3;//背景颜色
+                                                }
+                                                else if(colorSet==1){
+                                                    trs[i].style.color = Color2;//字体颜色
+                                                    trs[i].style.backgroundColor= Color4;//背景颜色
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e)
+                        {
+                            console.log(e.message);
+                        }
+                    }
+                    //增加数据表格
+                    table.render({
+                        elem: '#predictionTable5'
+                        ,url:'patient_info_of_lung_by_id'
+                        ,method:'post'
+                        ,where:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,lungPredictType:JSON.stringify(newData.labelType1)
+                            ,spleenPredictType:JSON.stringify(newData.labelType2)
+                            ,kidneyPredictType:JSON.stringify(newData.labelType3)
+                        }
+                        ,request:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,lungPredictType:JSON.stringify(newData.labelType1)
+                            ,spleenPredictType:JSON.stringify(newData.labelType2)
+                            ,kidneyPredictType:JSON.stringify(newData.labelType3)
+                        }
+                        ,cellMinWidth: 5 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cols: [[
+                            {field:'index', title: '序号', align: 'center'}
+                            ,{field:'id', title: '编号', align: 'center'}
+                            ,{field:'sex', title: '性别', align: 'center'}
+                            ,{field:'age', title: '年龄', align: 'center'}
+                            ,{field:'FEV1', title: 'FEV1', align: 'center'}
+                            ,{field:'FVC', title: 'FVC', align: 'center'}
+                            ,{field:'FEV1%', title: 'FEV1%', align: 'center'}
+                            ,{field:'FEV1/FVC', title: 'EV1/FVC改', align: 'center'}
+                            ,{field:'PEF', title: 'PEF', align: 'center'}
+                            ,{field:'tongue', title: '舌象', align: 'center'}
+                            ,{field:'pulse', title: '脉象', align: 'center'}
+                            ,{field:'wd_diagnosis', title: '西医诊断', align: 'center'}
+                            ,{field:'Lung_qi_deficiency', title: '肺气虚', align: 'center'}
+                            ,{field:'lungPredictType', title: '肺气虚预测', align: 'center'}
+                            ,{field:'spleen_qi_deficiency', title: '脾气虚', align: 'center'}
+                            ,{field:'spleenPredictType', title: '脾气虚预测', align: 'center'}
+                            ,{field:'kidney_qi_deficiency', title: '肾气虚', align: 'center'}
+                            ,{field:'kidneyPredictType', title: '肾气虚预测', align: 'center'}
+                        ]]
+                        ,parseData:function (res){
+                            console.log("成功"+res.status+";"+res.message+";"+res.total);
+                            return{
+                                "code":res.code,
+                                "msg":res.message,
+                                "count":res.total,
+                                "data":res.data
+                            };
+                        }
+                        //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
+                        ,done: function (res, curr, count) {
+                            Layui_SetDataTableRowColor5('myTable5', '#000000', '#000000', '#ADADAD', '#d0d0d0', "#8600FF", "#F75000", "#AE0000");
+                        }
+                        ,page: true
+                    });
                 },
                 error: function () {
                     layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});
