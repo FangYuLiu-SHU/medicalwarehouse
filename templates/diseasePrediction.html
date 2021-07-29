@@ -1529,7 +1529,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -1551,7 +1551,7 @@
                                             //color:'#dc3023',
                                             //color:'#ff0000',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -1613,8 +1613,8 @@
                                         if (trs != null && trs.length > 0) {
                                             for(var i=0;i<trs.length;i++){
                                                 var tds = trs[i].querySelectorAll("td");
-                                                var labelType=tds[8].getElementsByClassName("layui-table-cell")[0].textContent;
-                                                var predictType=tds[9].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType=tds[9].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType=tds[10].getElementsByClassName("layui-table-cell")[0].textContent;
                                                 if(labelType==predictType){
                                                     trs[i].style.color = Color1;//字体颜色
                                                     trs[i].style.backgroundColor= Color3;//背景颜色
@@ -1622,7 +1622,7 @@
                                                 else{
                                                     trs[i].style.color = Color2;//字体颜色
                                                     trs[i].style.backgroundColor= Color4;//背景颜色
-                                                    tds[9].style.color = Color5;//醒目字体颜色
+                                                    tds[10].style.color = Color5;//醒目字体颜色
                                                 }
                                             }
                                         }
@@ -1650,17 +1650,18 @@
                             ,labelType:JSON.stringify(newData.labelType)
                             ,predictType:JSON.stringify(newData.predictType)
                         }
-                        ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cellMinWidth: 10 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                         ,cols: [[
-                            {field:'id', title: '编号', sort: true, align: 'center'}
+                            {field:'index', title: '序号', align: 'center'}
+                            ,{field:'id', title: '编号', align: 'center'}
                             ,{field:'sex', title: '性别', align: 'center'}
-                            ,{field:'age', title: '年龄', sort: true, align: 'center'}
-                            ,{field:'serum_creatinine', title: '血肌酐', sort: true, align: 'center'}
-                            ,{field:'eGFR', title: 'eGFR', sort: true, align: 'center'}
+                            ,{field:'age', title: '年龄', align: 'center'}
+                            ,{field:'serum_creatinine', title: '血肌酐', align: 'center'}
+                            ,{field:'eGFR', title: 'eGFR', align: 'center'}
                             ,{field:'symptoms_type', title: '肾气虚症型', align: 'center'}
                             ,{field:'tongue', title: '舌象症型', align: 'center'}
                             ,{field:'pulse', title: '原始脉象症型', align: 'center'}
-                            ,{field:'labelType', title: '标签类别症型', align: 'center'}
+                            ,{field:'labelType', title: '标签症型', align: 'center'}
                             ,{field:'predictType', title: '预测症型', align: 'center'}
                         ]]
                         ,parseData:function (res){
@@ -1951,7 +1952,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -1971,7 +1972,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2290,7 +2291,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2310,7 +2311,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2556,7 +2557,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2576,7 +2577,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2756,7 +2757,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2776,7 +2777,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2957,7 +2958,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2977,7 +2978,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
