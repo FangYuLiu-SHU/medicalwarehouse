@@ -48,7 +48,7 @@ def batch_prediction(num):
         rd = np.random.randint(0, len(patient_ids))
         while rd in rds:
             rd = np.random.randint(0, len(patient_ids))
-        sample_ids.append(patient_ids[rd])
+        sample_ids.append(patient_ids[rd].lower())
         sample_imgs.append(images[rd])
         sample_tongue_colors.append(tongue_colors[rd])
         sample_moss_colors.append(moss_colors[rd])

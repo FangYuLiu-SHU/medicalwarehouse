@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="df9393c3-68df-43b4-856c-e1a4f8883845" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/tongue_pre/update_pre.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/tongue_pre/update_pre.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/diseasePrediction.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/diseasePrediction.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/patient_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/patient_info.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,5 +67,12 @@
       <updated>1627361804628</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="returnData" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>
