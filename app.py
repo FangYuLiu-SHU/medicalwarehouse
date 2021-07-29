@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+import decimal
+
 from flask import Flask, render_template, request
 import pymysql
 import pandas as pd
@@ -1016,6 +1018,29 @@ def tongue_batch_pre():
     returnData = json.dumps(returnData)
     return returnData
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self,o):
+        if isinstance(o,decimal.Decimal):
+            return float(o)
+        super(DecimalEncoder,self).default(o)
+
+@app.route('/sigle_patient_info',methods=['POST'])
+def sigle_patient_info():
+    result_data = []
+    id = request.form.get('id')  # 用户id
+    print(id)
+    type = request.form.get('type')
+    sql = "SELECT * FROM dwd_"+str(type)+"_info WHERE id='"+str(id)+"'"
+    print(sql)
+    cursor.execute(sql)
+    column_name = cursor.fetchone()   # 获取数据
+    print(column_name)
+    newData={}
+    newData['data'] = column_name
+    newData['type'] = type
+    newData = json.dumps(newData, ensure_ascii=False,cls=DecimalEncoder)
+    print(newData)
+    return newData
 
 if __name__ == '__main__':
     app.run(debug=True)
