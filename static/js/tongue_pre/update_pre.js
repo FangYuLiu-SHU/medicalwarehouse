@@ -110,11 +110,11 @@ function bindShowPatientInfo(el, info) {
     const table = layui.table;
     const layer = layui.layer;
     el.on("click", () => {
-      $(".patient_detail").empty();
+      $(".ton_patient_detail").empty();
       let cols = [];
       let dealedInfo = info;
       if (Object.keys(dealedInfo).length !== 0) {
-        $patient_detail.append($(`<table class="patient_info"></table>`));
+        $ton_patient_detail.append($(`<table class="patient_info"></table>`));
         switch (info.id?.[0]) {
           case "l": {
             dealLungData(dealedInfo);
@@ -144,8 +144,8 @@ function bindShowPatientInfo(el, info) {
             });
         }, 0);
       } else {
-        $(".patient_detail").empty();
-        $patient_detail.append($(`<div class="no_data">数据暂无</div>`));
+        $(".ton_patient_detail").empty();
+        $ton_patient_detail.append($(`<div class="no_data">数据暂无</div>`));
       }
       layer.open({
         type: 1,
@@ -153,7 +153,7 @@ function bindShowPatientInfo(el, info) {
         resize: false,
         area: "1000px",
         title: "详细信息",
-        content: $(".patient_detail"),
+        content: $(".ton_patient_detail"),
       });
     });
   });
@@ -245,7 +245,7 @@ const $showImg = $(".update_show img");
 const $batch_show = $(".batch_show");
 const $uploadUi = $(".uploadUi");
 const $imgProgress = $(".update_show .imgProgress");
-const $patient_detail = $(".patient_detail");
+const $ton_patient_detail = $(".ton_patient_detail");
 const $recovery = $(".recovery");
 let predictData = [];
 $uploadUi.hide();
