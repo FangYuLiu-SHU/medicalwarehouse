@@ -482,6 +482,54 @@ def patient_info_of_kindney_by_id():
     json_data = json.dumps(json_data)
     return json_data
 
+#获取预测序列的用户信息（查肝科病表）
+@app.route('/patient_info_of_liver_by_id', methods=['POST'])
+def patient_info_of_liver_by_id():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None:
+        page = 1
+    if limit is None:
+        limit = 1
+    # 获取前端请求的数据
+    idSet = json.loads(request.form.get('idSet'))
+    predictType = json.loads(request.form.get('predictType'))
+    json_data = {}
+    result_data = []
+    # 填充返回前端table的json数据
+    idStr="'"+",".join(idSet)+"'"
+    sql = "select id,sex,age,ALT,tongue,pulse,symptoms_type from dwd_liver_info where FIND_IN_SET(id,"+idStr+")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+    i=0
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        temp_data = {}
+        temp_data['index'] = str(i)
+        temp_data['id'] = data[0]
+        temp_data['sex'] = data[1]
+        temp_data['age'] = data[2]
+        temp_data['ALT'] = str(data[3])
+        temp_data['tongue'] = data[4]
+        temp_data['pulse'] = data[5]
+        if data[6] == '1':
+            temp_data['symptoms_type'] = '肝胆湿热症'
+        elif data[6] == '2':
+            temp_data['symptoms_type'] = '肝郁脾虚症'
+        temp_data['predictType'] = predictType[i]
+        result_data.append(temp_data)
+        i += 1
+    json_data['code'] = str(0)
+    json_data['msg'] = ''
+    json_data['total'] = len(result_data)
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    endset = offset + int(limit)
+    if endset > len(result_data):
+        endset = len(result_data)
+    json_data['data'] = result_data[offset:endset]
+    json_data = json.dumps(json_data)
+    return json_data
+
 #脉象预测服务
 @app.route('/disease_prediction', methods=["GET", "POST"])
 def disease_prediction():
