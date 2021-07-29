@@ -455,6 +455,7 @@ def patient_info_of_kindney_by_id():
     # 填充返回前端table的json数据
     for data in totalQueryData:
         temp_data = {}
+        temp_data['index'] = str(i)
         temp_data['id'] = data[0]
         temp_data['sex'] = data[1]
         temp_data['age'] = data[2]
