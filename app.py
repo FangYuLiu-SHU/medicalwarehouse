@@ -457,7 +457,10 @@ def patient_info_of_kindney_by_id():
         temp_data = {}
         temp_data['index'] = str(i)
         temp_data['id'] = data[0]
-        temp_data['sex'] = data[1]
+        if data[1] == '1':
+            temp_data['sex'] = '男'
+        elif data[1] == '2':
+            temp_data['sex'] = '女'
         temp_data['age'] = data[2]
         temp_data['serum_creatinine'] = str(data[3])
         temp_data['eGFR'] = str(data[4])
@@ -507,7 +510,10 @@ def patient_info_of_liver_by_id():
         temp_data = {}
         temp_data['index'] = str(i)
         temp_data['id'] = data[0]
-        temp_data['sex'] = data[1]
+        if data[1] == '1':
+            temp_data['sex'] = '男'
+        elif data[1] == '2':
+            temp_data['sex'] = '女'
         temp_data['age'] = data[2]
         temp_data['ALT'] = str(data[3])
         temp_data['tongue'] = data[4]
@@ -517,6 +523,75 @@ def patient_info_of_liver_by_id():
         elif data[6] == '2':
             temp_data['symptoms_type'] = '肝郁脾虚症'
         temp_data['predictType'] = predictType[i]
+        result_data.append(temp_data)
+        i += 1
+    json_data['code'] = str(0)
+    json_data['msg'] = ''
+    json_data['total'] = len(result_data)
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    endset = offset + int(limit)
+    if endset > len(result_data):
+        endset = len(result_data)
+    json_data['data'] = result_data[offset:endset]
+    json_data = json.dumps(json_data)
+    return json_data
+
+#获取预测序列的用户信息（查肺科病表）
+@app.route('/patient_info_of_lung_by_id', methods=['POST'])
+def patient_info_of_lung_by_id():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None:
+        page = 1
+    if limit is None:
+        limit = 1
+    # 获取前端请求的数据
+    idSet = json.loads(request.form.get('idSet'))
+    lungPredictType = json.loads(request.form.get('lungPredictType'))
+    spleenPredictType = json.loads(request.form.get('spleenPredictType'))
+    kidneyPredictType = json.loads(request.form.get('kidneyPredictType'))
+    json_data = {}
+    result_data = []
+    # 填充返回前端table的json数据
+    idStr="'"+",".join(idSet)+"'"
+    # idStr="'K0001,K0002,K0003,K0004,K0005,K0006,K0007,K0008,K0009,K0010,K0011'"
+    sql = "select id,sex,age,FEV1,FVC,`FEV1%`,FEV1/FVC,PEF,tongue,pulse,Wesmedicine_diagnosis,Lung_qi_deficiency,spleen_qi_deficiency,kidney_qi_deficiency from dwd_lung_info where FIND_IN_SET(id,"+idStr+")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+    i=0
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        temp_data = {}
+        temp_data['index'] = str(i)
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '男'
+        elif data[1] == '2':
+            temp_data['sex'] = '女'
+        temp_data['age'] = data[2]
+        temp_data['FEV1'] = str(data[3])
+        temp_data['FVC'] = str(data[4])
+        temp_data['FEV1%'] = str(data[5])
+        temp_data['FEV1/FVC'] = str(data[6])
+        temp_data['PEF'] = data[7]
+        temp_data['tongue'] = data[8]
+        temp_data['pulse'] = data[9]
+        temp_data['wd_diagnosis'] = data[10]
+        if data[11] == '1':
+            temp_data['Lung_qi_deficiency'] = '有肺气虚'
+        elif data[11] == '0':
+            temp_data['Lung_qi_deficiency'] = '无肺气虚'
+        temp_data['lungPredictType'] = lungPredictType[i]
+        if data[12] == '1':
+            temp_data['spleen_qi_deficiency'] = '有脾气虚'
+        elif data[12] == '0':
+            temp_data['spleen_qi_deficiency'] = '无脾气虚'
+        temp_data['spleenPredictType'] = spleenPredictType[i]
+        if data[13] == '1':
+            temp_data['kidney_qi_deficiency'] = '有肾气虚'
+        elif data[13] == '0':
+            temp_data['kidney_qi_deficiency'] = '无肾气虚'
+        temp_data['kidneyPredictType'] = kidneyPredictType[i]
         result_data.append(temp_data)
         i += 1
     json_data['code'] = str(0)
