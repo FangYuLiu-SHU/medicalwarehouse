@@ -44,7 +44,23 @@
             height: 400px;
             display: none;
         }
-
+        .patient_detail {
+        width: 1000px;
+            overflow: hidden;
+      }
+      .show_div {
+        width: 80%;
+        height: 350px;
+        margin-bottom: 50px;
+      }
+      .patient_detail form[lay-filter="channel_form"] {
+        width: 15%;
+        margin: 20px 10px 0;
+      }
+      .patient_detail form[lay-filter="channel_form"],
+      .patient_detail .show_div {
+        float: left;
+      }
         .update_show .imgProgress {
             position: absolute;
             top: 50%;
@@ -764,10 +780,38 @@
         </div>                <!--肺象预测准确率展示-->
     </div>
 </div>
+<div style="margin-top: -5000px"></div>
+<div class="patient_detail">
+      <table class="patient_info"></table>
+      <div class="layui-tab layui-tab-brief" lay-filter="patientDetail">
+        <ul class="layui-tab-title">
+          <li class="layui-this" lay-id="pulse">脉搏通道</li>
+          <li lay-id="tongue">舌苔图片</li>
+        </ul>
+        <div class="layui-tab-content">
+          <div class="layui-tab-item layui-show">
+            <form class="layui-form" lay-filter="channel_form">
+              <select
+                name="channel"
+                class="channel"
+                lay-filter="channel_select"
+              ></select>
+            </form>
+            <div class="show_div"></div>
+          </div>
+          <div class="layui-tab-item">
+            <div class="touge_img">
+              <img src="" alt="舌苔图片获取失败">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 <script src="../static/layui/layui.js"></script>
 <script src="../static/js/jquery.js"></script>
 <script type="text/javascript" src="../static/js/echarts.js"></script>
 <script type="text/javascript" src="../static/js/echarts.min.js"></script>
+<script src="../static/js/disease_pre/common.js"></script>
 <!--脉搏预测子页面js-->
 <script>
     layui.use('element', function () {
@@ -1388,6 +1432,7 @@
                             }
                         ]
                     };
+                    pulsePredict_chart.on()
                     pulsePredict_chart.setOption(pulsePredict_option);
 
                     var pulsePredict_bar = document.getElementById('pulsePredictChartBar');
@@ -1460,6 +1505,43 @@
                         ]
                     };
                     pulsePredict_chartBar.setOption(pulsePredictBar_option);
+                    pulsePredict_chartBar.on('click',function(params){
+                        id = params.name;
+                        type = 'kidney';
+                        const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "serum_creatinine",
+      title: "血肌酐",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "eGFR",
+      title: "eGFR",
+      width: 177,
+      align: "center",
+    },
+    { field: "symptoms", title: "症型", align: "center" },
+    { field: "tongue", title: "舌", align: "center" },
+    { field: "pulse", title: "脉", align: "center" }
+  ],
+];
+                        rowToolEvent1(id,type,cols);
+                    });
                     pulsePredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>预测准确率：' + (newData.accuracy * 100).toFixed(2) + '%</b></h2>';
                 },
                 error: function () {
@@ -1722,6 +1804,44 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar.on('click',function(params) {
+                        // console.log(params);
+                        id = params.name;
+                        type = 'kidney';
+                        const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "serum_creatinine",
+      title: "血肌酐",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "eGFR",
+      title: "eGFR",
+      width: 177,
+      align: "center",
+    },
+    { field: "symptoms", title: "症型", align: "center" },
+    { field: "tongue", title: "舌", align: "center" },
+    { field: "pulse", title: "脉", align: "center" }
+  ],
+];
+                        rowToolEvent1(id,type,cols);
+                    })
                     pulsePredict_chartBar.setOption(pulsePredictBar_option);
 
                     var pulsePredictDisplay = document.getElementById('kindneyPredictDisplay');
@@ -1885,6 +2005,33 @@
                             }
                         ]
                     };
+                    pulsePredict_chart.on('click',function(params) {
+                        console.log(params);
+                        id = params.name;
+                        type = 'liver';
+                        const cols = [
+    [
+      {
+        field: "id",
+        title: "编号",
+        width: 155,
+        align: "center",
+      },
+      { field: "sex", title: "性别", width: 80, align: "center" },
+      {
+        field: "age",
+        title: "年龄",
+        width: 80,
+        align: "center",
+      },
+      { field: "ALT", title: "ALT", width: 80, align: "center" },
+      { field: "symptoms_type", title: "症型", align: "center" },
+      { field: "tongue", title: "舌", align: "center" },
+      { field: "pulse", title: "脉", align: "center" },
+    ],
+  ];
+                        rowToolEvent1(id,type,cols);
+                    })
                     pulsePredict_chart.setOption(pulsePredict_option);
 
                     var pulsePredict_bar = document.getElementById('liverPredictChartBar');
@@ -1956,6 +2103,34 @@
                             }
                         ]
                     };
+
+                    pulsePredict_chartBar.on('click',function(params) {
+                        console.log(params);
+                        id = params.name;
+                        type = 'liver';
+                        const cols = [
+    [
+      {
+        field: "id",
+        title: "编号",
+        width: 155,
+        align: "center",
+      },
+      { field: "sex", title: "性别", width: 80, align: "center" },
+      {
+        field: "age",
+        title: "年龄",
+        width: 80,
+        align: "center",
+      },
+      { field: "ALT", title: "ALT", width: 80, align: "center" },
+      { field: "symptoms_type", title: "症型", align: "center" },
+      { field: "tongue", title: "舌", align: "center" },
+      { field: "pulse", title: "脉", align: "center" },
+    ],
+  ];
+                        rowToolEvent1(id,type,cols);
+                    })
                     pulsePredict_chartBar.setOption(pulsePredictBar_option);
 
                     var pulsePredictDisplay = document.getElementById('liverPredictDisplay');
@@ -2082,6 +2257,7 @@
                             }
                         ]
                     };
+
                     pulsePredict_chart1.setOption(pulsePredict_option1);
 
                     var pulsePredict_bar1 = document.getElementById('lungPredictChartBar1');
@@ -2153,6 +2329,50 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar1.on('click',function(params) {
+                        console.log(params);
+                        id = params.name;
+                        type = 'lung';
+                        const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "wm_diagnosis",
+      title: "西医诊断",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "Lung_qi_deficiency",
+      title: "肺气虚",
+      width: 80,
+      align: "center",
+    },
+    { field: "spleen_qi_deficiency", title: "脾气虚", width: 80, align: "center" },
+    { field: "kidney_qi_deficiency", title: "肾气虚", width: 80, align: "center" },
+    { field: "FEV1", title: "FEV1", width: 100, align: "center" },
+    { field: "FVC", title: "FVC", width: 100, align: "center" },
+    { field: "FEV1%", title: "FEV1%", width: 100, align: "center" },
+    { field: "FEV1/FVC", title: "FEV1/FVC", width: 100, align: "center" },
+    { field: "PEF", title: "PEF", width: 100, align: "center" },
+    { field: "tongue", title: "舌", width: 180, align: "center" },
+    { field: "pulse", title: "脉",width: 80, align: "center" },
+  ],
+];
+                        rowToolEvent1(id,type,cols);
+                    })
                     pulsePredict_chartBar1.setOption(pulsePredictBar_option1);
 
                     var pulsePredictDisplay1 = document.getElementById('lungPredictDisplay1');
@@ -2269,6 +2489,50 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar2.on('click',function(params) {
+                        console.log(params);
+                        id = params.name;
+                        type = 'lung';
+                        const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "wm_diagnosis",
+      title: "西医诊断",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "Lung_qi_deficiency",
+      title: "肺气虚",
+      width: 80,
+      align: "center",
+    },
+    { field: "spleen_qi_deficiency", title: "脾气虚", width: 80, align: "center" },
+    { field: "kidney_qi_deficiency", title: "肾气虚", width: 80, align: "center" },
+    { field: "FEV1", title: "FEV1", width: 100, align: "center" },
+    { field: "FVC", title: "FVC", width: 100, align: "center" },
+    { field: "FEV1%", title: "FEV1%", width: 100, align: "center" },
+    { field: "FEV1/FVC", title: "FEV1/FVC", width: 100, align: "center" },
+    { field: "PEF", title: "PEF", width: 100, align: "center" },
+    { field: "tongue", title: "舌", width: 180, align: "center" },
+    { field: "pulse", title: "脉",width: 80, align: "center" },
+  ],
+];
+                        rowToolEvent1(id,type,cols);
+                    })
                     pulsePredict_chartBar2.setOption(pulsePredictBar_option2);
 
                     var pulsePredictDisplay2 = document.getElementById('lungPredictDisplay2');
@@ -2314,6 +2578,7 @@
                             }
                         ]
                     };
+
                     pulsePredict_chart3.setOption(pulsePredict_option3);
 
                     var pulsePredict_bar3 = document.getElementById('lungPredictChartBar3');
@@ -2385,6 +2650,50 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar3.on('click',function(params) {
+                        console.log(params);
+                        id = params.name;
+                        type = 'lung';
+                        const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "wm_diagnosis",
+      title: "西医诊断",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "Lung_qi_deficiency",
+      title: "肺气虚",
+      width: 80,
+      align: "center",
+    },
+    { field: "spleen_qi_deficiency", title: "脾气虚", width: 80, align: "center" },
+    { field: "kidney_qi_deficiency", title: "肾气虚", width: 80, align: "center" },
+    { field: "FEV1", title: "FEV1", width: 100, align: "center" },
+    { field: "FVC", title: "FVC", width: 100, align: "center" },
+    { field: "FEV1%", title: "FEV1%", width: 100, align: "center" },
+    { field: "FEV1/FVC", title: "FEV1/FVC", width: 100, align: "center" },
+    { field: "PEF", title: "PEF", width: 100, align: "center" },
+    { field: "tongue", title: "舌", width: 180, align: "center" },
+    { field: "pulse", title: "脉",width: 80, align: "center" },
+  ],
+];
+                        rowToolEvent1(id,type,cols);
+                    })
                     pulsePredict_chartBar3.setOption(pulsePredictBar_option3);
 
                     var pulsePredictDisplay3 = document.getElementById('lungPredictDisplay3');
@@ -2398,5 +2707,6 @@
         });
     });
 </script>
+
 </body>
-</html>
+</html>[

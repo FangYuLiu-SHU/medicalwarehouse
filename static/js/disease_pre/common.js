@@ -68,7 +68,7 @@ layui.use(["element", "layer"], function () {
   });
 });
 
-function rowToolEvent(obj, cols, data, form, table, type) {
+function rowToolEvent1(id, type,cols) {
   /**
    * 行工具栏事件，点击详细的相关处理
    * obj: 表格中对应行的相关数据
@@ -78,13 +78,14 @@ function rowToolEvent(obj, cols, data, form, table, type) {
    * table: layui中的table
    * type：查看的病人的类型(肾、肝...)
    */
-  layui.use(["element", "layer"], function() {
+  layui.use(["element", "layer","form","table"], function() {
     element = layui.element
-    switch (obj.event) {
-      case "detail": {
-        let id = obj.data.id;
-        console.log(data)
-        $.ajax({
+    form = layui.form
+    table = layui.table
+    form.on("select(channel_select)", (data) => {
+      channel_select(data, id, type);
+    });
+    $.ajax({
           //像后端请求通道数量
           type: "POST",
           url: `/find_channelNumber`,
@@ -95,17 +96,36 @@ function rowToolEvent(obj, cols, data, form, table, type) {
           success: function (returnData) {
             let { channelNumber } = JSON.parse(returnData);
             channelNumber = parseInt(channelNumber);
-            setTimeout(() => {
+            //后端请求个人具体数据
+            $.ajax({
+              type:'POST',
+              url:'sigle_patient_info',
+              data:{
+                type,
+                id,
+              },
+              success:function (returnData){
+                setTimeout(() => {
               //使用计时器，防止表格渲染出现格式问题
               //根据data渲染病人的数据
+              returnData=JSON.parse(returnData)
+              if(returnData.type=='kidney'){
+                data = [{'id':returnData.data[0],'sex':(returnData.data[1]=='2')?'女':'男','age':returnData.data[2],'serum_creatinine':returnData.data[3],'eGFR':returnData.data[4],'symptoms':(returnData.data[5]=="1") ? "肾阳虚" : "肾阴虚",'tongue':returnData.data[6],'pulse':returnData.data[7]}]
+              }else if (returnData.type=='liver'){
+                data = [{'id':returnData.data[0],'sex':(returnData.data[1]=='1')?'女':'男','age':returnData.data[2],'ALT':returnData.data[3],'symptoms_type':returnData.data[4]=="1" ? "肝胆湿热症" : "肝郁脾虚症",'tongue':returnData.data[5],'pulse':returnData.data[6]}]
+              }else if(returnData.type=='lung'){
+                data = [{'id':returnData.data[0],'sex':(returnData.data[1]=='2')?'女':'男','age':returnData.data[2],'wm_diagnosis':returnData.data[3],'Lung_qi_deficiency':returnData.data[4]=="1" ? "是" : "否",'spleen_qi_deficiency':returnData.data[5]=="1" ? "是" : "否",'kidney_qi_deficiency':returnData.data[6]=="1" ? "是" : "否",'FEV1':returnData.data[7],
+                "FVC":returnData.data[8],"FEV1%":returnData.data[9],"FEV1/FVC":returnData.data[10],"PEF":returnData.data[11]== "None" ? "无数据" : returnData.data[11],"tongue":returnData.data[12],"pulse":returnData.data[13]}]
+              }
               table.render({
                 elem: ".patient_info", // 定位表格ID
                 title: "病人信息",
-                cols,
-                data: [data.find((e) => e.id === id)],
-                limit: query_kidney_Obj.limit, // 每一页数据条数
+                cols:cols,
+                data: data,
               });
             }, 0);
+              }
+            });
             layer.open({
               type: 1,
               shadeClose: true,
@@ -153,12 +173,8 @@ function rowToolEvent(obj, cols, data, form, table, type) {
             }
           },
         });
-      }
-    }
   })
 }
-
-
 
 function channel_select(data, id, type) {
   const { value } = data;
