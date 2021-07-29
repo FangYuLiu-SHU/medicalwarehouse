@@ -330,9 +330,9 @@
                     <div class="layui-input-inline">
                         <select name="selectNumber" id="id_selectPulseNumber" lay-verify="required"
                                 lay-filter="selectNum" class="select">
-                            <option value="50" selected="selected">50</option>
+                            <option value="20" selected="selected">20</option>
+                            <option value="50">50</option>
                             <option value="100">100</option>
-                            <option value="200">200</option>
                         </select>
                     </div>
                     <div class="layui-inline">
@@ -343,8 +343,12 @@
             </form>
             <div id="pulsePredictChartDom" style="width: 28%; height: 490%;float: left;"></div><!--症状统计-->
             <div id="pulsePredictChartBar" style="width: 67%; height: 490%;float: right;"></div><!--验证详情-->
-            <div id="pulsePredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div>
-            <!--准确率显示-->
+            <div id="pulsePredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            <div style="text-align: center;"><!--比对表格显示-->
+                <div id="myTable2" class="layui-inline" style="display:inline-block;width: 90%;margin: 0 auto;">
+                    <table class="layui-hide" id="predictionTable2" border="3px" style="margin: 0 auto;"></table>
+                </div>
+            </div>
         </div>                <!--脉象预测准确率展示-->
         <div class="layui-tab-item">
             <div class="layui-inline local">
@@ -439,8 +443,7 @@
             <button	class="layui-btn recovery">还原</button>
             <div class="batch_show">
             </div>
-        </div>        
-                <!--舌象预测准确率展示-->
+        </div>                <!--舌象预测准确率展示-->
         <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
                 <legend>输入病人的各项指标</legend>
@@ -878,11 +881,12 @@
     });
 </script>
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         var form = layui.form
             , layer = layui.layer
             , layedit = layui.layedit
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , table=layui.table;
 
         //日期
         laydate.render({
@@ -1381,14 +1385,14 @@
                 'lseNumber');
             var index = select.selectedIndex; // 选中索引
             var text = select.options[index].text; // 选中文本
-            var postData = {"selectTestNum": "50"};
+            var postData = {"selectTestNum": "20"};
             var message = text;
-            if (message == "50") {
+            if (message == "20") {
+                postData = {"selectTestNum": "20"};
+            } else if (message == "50") {
                 postData = {"selectTestNum": "50"};
             } else if (message == "100") {
                 postData = {"selectTestNum": "100"};
-            } else if (message == "200") {
-                postData = {"selectTestNum": "200"};
             }
             layer.load(2);
             $.ajax({
@@ -1521,7 +1525,7 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#ff0000',
-                                        color:'#0080FF',
+                                        color:'#005AB5',
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
@@ -1542,11 +1546,11 @@
                                     normal:{
                                         //color:'#dc3023',
                                         //color:'#ff0000',
-                                        color:'#2edfa3',
+                                        color:'#CE0000',
                                         lineStyle:{
                                             //color:'#dc3023',
                                             //color:'#ff0000',
-                                            color:'#2edfa3',
+                                            color:'#B766AD',
                                             width:2.5,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
@@ -1595,6 +1599,85 @@
                         rowToolEvent1(id,type,cols);
                     });
                     pulsePredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>预测准确率：' + (newData.accuracy * 100).toFixed(2) + '%</b></h2>';
+                    //设置layui datatable的某一行的颜色
+                    //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
+                    function Layui_SetDataTableRowColor2(DivId, Color1, Color2, Color3, Color4, Color5){
+                        try{
+                            var div = document.getElementById(DivId);
+                            if(div != null){ //找到对象了
+                                var table_main = div.getElementsByClassName('layui-table-main');   //通过class获取table_main
+                                if (table_main != null && table_main.length > 0) {
+                                    var table = table_main[0].getElementsByClassName('layui-table');   //通过class获取table
+                                    if (table != null && table.length > 0) {
+                                        var trs = table[0].querySelectorAll("tr");
+                                        if (trs != null && trs.length > 0) {
+                                            for(var i=0;i<trs.length;i++){
+                                                var tds = trs[i].querySelectorAll("td");
+                                                var labelType=tds[8].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType=tds[9].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                if(labelType==predictType){
+                                                    trs[i].style.color = Color1;//字体颜色
+                                                    trs[i].style.backgroundColor= Color3;//背景颜色
+                                                }
+                                                else{
+                                                    trs[i].style.color = Color2;//字体颜色
+                                                    trs[i].style.backgroundColor= Color4;//背景颜色
+                                                    tds[9].style.color = Color5;//醒目字体颜色
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e)
+                        {
+                            console.log(e.message);
+                        }
+                    }
+                    //增加数据表格
+                    table.render({
+                        elem: '#predictionTable2'
+                        ,url:'patient_info_of_kindney_by_id'
+                        ,method:'post'
+                        ,where:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,labelType:JSON.stringify(newData.labelType)
+                            ,predictType:JSON.stringify(newData.predictType)
+                        }
+                        ,request:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,labelType:JSON.stringify(newData.labelType)
+                            ,predictType:JSON.stringify(newData.predictType)
+                        }
+                        ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cols: [[
+                            {field:'id', title: '编号', sort: true, align: 'center'}
+                            ,{field:'sex', title: '性别', align: 'center'}
+                            ,{field:'age', title: '年龄', sort: true, align: 'center'}
+                            ,{field:'serum_creatinine', title: '血肌酐', sort: true, align: 'center'}
+                            ,{field:'eGFR', title: 'eGFR', sort: true, align: 'center'}
+                            ,{field:'symptoms_type', title: '肾气虚症型', align: 'center'}
+                            ,{field:'tongue', title: '舌象症型', align: 'center'}
+                            ,{field:'pulse', title: '原始脉象症型', align: 'center'}
+                            ,{field:'labelType', title: '标签类别症型', align: 'center'}
+                            ,{field:'predictType', title: '预测症型', align: 'center'}
+                        ]]
+                        ,parseData:function (res){
+                            console.log("成功"+res.status+";"+res.message+";"+res.total);
+                            return{
+                                "code":res.code,
+                                "msg":res.message,
+                                "count":res.total,
+                                "data":res.data
+                            };
+                        }
+                        //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
+                        ,done: function (res, curr, count) {
+                            Layui_SetDataTableRowColor2('myTable2', '#000000', '#000000', '#ADADAD', '#d0d0d0', "#AE0000");
+                        }
+                        ,page: true
+                    });
                 },
                 error: function () {
                     layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});
@@ -1864,7 +1947,7 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#ff0000',
-                                        color:'#0080FF',
+                                        color:'#005AB5',
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
@@ -1884,10 +1967,10 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#dc3023',
-                                        color:'#2edfa3',
+                                        color:'#CE0000',
                                         lineStyle:{
                                             //color:'#dc3023',
-                                            color:'#2edfa3',
+                                            color:'#B766AD',
                                             width:2.5,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
@@ -2203,7 +2286,7 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#ff0000',
-                                        color:'#0080FF',
+                                        color:'#005AB5',
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
@@ -2223,10 +2306,10 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#dc3023',
-                                        color:'#2edfa3',
+                                        color:'#CE0000',
                                         lineStyle:{
                                             //color:'#dc3023',
-                                            color:'#2edfa3',
+                                            color:'#B766AD',
                                             width:2.5,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
@@ -2469,7 +2552,7 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#ff0000',
-                                        color:'#0080FF',
+                                        color:'#005AB5',
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
@@ -2489,10 +2572,10 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#dc3023',
-                                        color:'#2edfa3',
+                                        color:'#CE0000',
                                         lineStyle:{
                                             //color:'#dc3023',
-                                            color:'#2edfa3',
+                                            color:'#B766AD',
                                             width:2.5,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
@@ -2669,7 +2752,7 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#ff0000',
-                                        color:'#0080FF',
+                                        color:'#005AB5',
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
@@ -2689,10 +2772,10 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#dc3023',
-                                        color:'#2edfa3',
+                                        color:'#CE0000',
                                         lineStyle:{
                                             //color:'#dc3023',
-                                            color:'#2edfa3',
+                                            color:'#B766AD',
                                             width:2.5,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
@@ -2870,7 +2953,7 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#ff0000',
-                                        color:'#0080FF',
+                                        color:'#005AB5',
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
@@ -2890,10 +2973,10 @@
                                 itemStyle:{
                                     normal:{
                                         //color:'#dc3023',
-                                        color:'#2edfa3',
+                                        color:'#CE0000',
                                         lineStyle:{
                                             //color:'#dc3023',
-                                            color:'#2edfa3',
+                                            color:'#B766AD',
                                             width:2.5,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
@@ -2960,6 +3043,5 @@
         });
     });
 </script>
-
 </body>
-</html>[
+</html>
