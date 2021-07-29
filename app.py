@@ -1077,20 +1077,20 @@ class DecimalEncoder(json.JSONEncoder):
 
 @app.route('/sigle_patient_info',methods=['POST'])
 def sigle_patient_info():
-    result_data = []
     id = request.form.get('id')  # 用户id
-    print(id)
-    type = request.form.get('type')
+    if id[0] == 'k':
+        type = 'kidney'
+    elif id[0] == 'l':
+        type = 'lung'
+    else:
+        type = 'liver'
     sql = "SELECT * FROM dwd_"+str(type)+"_info WHERE id='"+str(id)+"'"
-    print(sql)
     cursor.execute(sql)
     column_name = cursor.fetchone()   # 获取数据
-    print(column_name)
     newData={}
     newData['data'] = column_name
     newData['type'] = type
     newData = json.dumps(newData, ensure_ascii=False,cls=DecimalEncoder)
-    print(newData)
     return newData
 
 if __name__ == '__main__':
