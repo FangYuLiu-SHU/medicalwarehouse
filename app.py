@@ -837,7 +837,7 @@ def liverPrediction_accuracy():
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
-    idSet,predictType,labelType,correct,total,accuracy = liver_symptom_predict.multi_predict(testNum)
+    idSet,predictType,labelType,correct,total,accuracy = liver_symptom_predict.multi_predict(testNum,cursor)
     formData = {}
     formData['testNum']=str(testNum)
     formData['num_pos']=correct
