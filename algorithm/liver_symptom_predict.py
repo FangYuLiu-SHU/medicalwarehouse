@@ -8,6 +8,7 @@ from sklearn import metrics
 import pandas as pd
 import re
 import random
+import numpy as np
 
 def liver_tongue_pulse_code(df_liver):
     # 对脉的标签描述进行清洗
@@ -205,12 +206,15 @@ def sigle_predict(dict):
     #print(classification)
     return classification
 
-def multi_predict(num):
+def multi_predict(num,cursor):
     Type = ['肝胆湿热症', '肝郁脾虚症']
     # 读取数据，随机选择num个样本进行验证
-    df_data = pd.read_csv('./files/dwd_liver_info.csv')
-    set = df_data.values
-    indexs=random.sample(range(0,df_data.shape[0]),num)
+    # 改成读数据库，随机挑选的样本，应该是判断有脉象表格的
+    sql = "select * from dwd_liver_info"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    dataSet = cursor.fetchall()
+    set = np.array(dataSet)
+    indexs = random.sample(range(0, set.shape[0]), num)
     idSet=[]
     predictType=[]
     labelType=[]
@@ -225,7 +229,7 @@ def multi_predict(num):
         tempParms['Tou']=set[index,5]
         tempParms['pulseType']=set[index,6]
         predictIndex = sigle_predict(tempParms)[0]-1
-        labelIndex=set[index, 4]-1
+        labelIndex=int(set[index, 4])-1
         predictType.append(Type[predictIndex])
         labelType.append(Type[labelIndex])
         if(predictIndex==labelIndex):
