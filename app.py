@@ -901,7 +901,7 @@ def lungPrediction_accuracy():
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
-    idSet,predictType1,predictType2,predictType3,labelType1,labelType2,labelType3,correct1,correct2,correct3,total,accuracy1,accuracy2,accuracy3 = lung_symptom_predict.multi_predict(testNum)
+    idSet,predictType1,predictType2,predictType3,labelType1,labelType2,labelType3,correct1,correct2,correct3,total,accuracy1,accuracy2,accuracy3 = lung_symptom_predict.multi_predict(testNum,cursor)
     formData = {}
     formData['testNum']=str(testNum)
     formData['num_pos1']=correct1
