@@ -430,6 +430,95 @@ def patient_info_by_condition():
     json_data = json.dumps(json_data, ensure_ascii=False)
     return json_data
 
+#获取预测序列的用户信息（查三科表，脉象）
+@app.route('/patient_info_of_pulse_by_id', methods=['POST'])
+def patient_info_of_pulse_by_id():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None:
+        page = 1
+    if limit is None:
+        limit = 1
+    # 获取前端请求的数据
+    idSet = json.loads(request.form.get('idSet'))
+    predictType = json.loads(request.form.get('predictType'))
+    labelType = json.loads(request.form.get('labelType'))
+    json_data = {}
+    result_data = []
+    # 填充返回前端table的json数据（肾科）
+    idStr="'"+",".join(idSet)+"'"
+    sql = "select id,sex,age,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        temp_data = {}
+        temp_data['index'] = idSet.index(data[0])
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '男'
+        elif data[1] == '2':
+            temp_data['sex'] = '女'
+        temp_data['age'] = data[2]
+        temp_data['tongue'] = data[3]
+        temp_data['pulse'] = data[4]
+        temp_data['labelType'] = labelType[idSet.index(data[0])]
+        temp_data['predictType'] = predictType[idSet.index(data[0])]
+        result_data.append(temp_data)
+
+    # 填充返回前端table的json数据（肝科）
+    sql = "select id,sex,age,tongue,pulse from dwd_liver_info where FIND_IN_SET(id," + idStr + ") order by FIND_IN_SET(id," + idStr + ")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        temp_data = {}
+        temp_data['index'] = idSet.index(data[0])
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '女'
+        elif data[1] == '2':
+            temp_data['sex'] = '男'
+        temp_data['age'] = data[2]
+        temp_data['tongue'] = data[3]
+        temp_data['pulse'] = data[4]
+        temp_data['labelType'] = labelType[idSet.index(data[0])]
+        temp_data['predictType'] = predictType[idSet.index(data[0])]
+        result_data.append(temp_data)
+
+    # 填充返回前端table的json数据（肺科）
+    sql = "select id,sex,age,tongue,pulse from dwd_lung_info where FIND_IN_SET(id," + idStr + ") order by FIND_IN_SET(id," + idStr + ")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        temp_data = {}
+        temp_data['index'] = idSet.index(data[0])
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '女'
+        elif data[1] == '2':
+            temp_data['sex'] = '男'
+        temp_data['age'] = data[2]
+        temp_data['tongue'] = data[3]
+        temp_data['pulse'] = data[4]
+        temp_data['labelType'] = labelType[idSet.index(data[0])]
+        temp_data['predictType'] = predictType[idSet.index(data[0])]
+        result_data.append(temp_data)
+
+    result_data.sort(key=lambda s: s["index"])#要根据原来的（折线）序号index进行排序
+    json_data['code'] = str(0)
+    json_data['msg'] = ''
+    json_data['total'] = len(result_data)
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    endset = offset + int(limit)
+    if endset > len(result_data):
+        endset = len(result_data)
+    json_data['data'] = result_data[offset:endset]
+    json_data = json.dumps(json_data)
+    return json_data
+
 #获取预测序列的用户信息（查肾科病表）
 @app.route('/patient_info_of_kindney_by_id', methods=['POST'])
 def patient_info_of_kindney_by_id():
