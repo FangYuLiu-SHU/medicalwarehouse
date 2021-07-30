@@ -448,7 +448,7 @@ def patient_info_of_kindney_by_id():
     # 填充返回前端table的json数据
     idStr="'"+",".join(idSet)+"'"
     # idStr="'K0001,K0002,K0003,K0004,K0005,K0006,K0007,K0008,K0009,K0010,K0011'"
-    sql = "select id,sex,age,serum_creatinine,eGFR,symptoms_type,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+")"
+    sql = "select id,sex,age,serum_creatinine,eGFR,symptoms_type,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     i=0
@@ -501,7 +501,7 @@ def patient_info_of_liver_by_id():
     result_data = []
     # 填充返回前端table的json数据
     idStr="'"+",".join(idSet)+"'"
-    sql = "select id,sex,age,ALT,tongue,pulse,symptoms_type from dwd_liver_info where FIND_IN_SET(id,"+idStr+")"
+    sql = "select id,sex,age,ALT,tongue,pulse,symptoms_type from dwd_liver_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     i=0
@@ -511,9 +511,9 @@ def patient_info_of_liver_by_id():
         temp_data['index'] = str(i)
         temp_data['id'] = data[0]
         if data[1] == '1':
-            temp_data['sex'] = '男'
-        elif data[1] == '2':
             temp_data['sex'] = '女'
+        elif data[1] == '2':
+            temp_data['sex'] = '男'
         temp_data['age'] = data[2]
         temp_data['ALT'] = str(data[3])
         temp_data['tongue'] = data[4]
@@ -555,7 +555,7 @@ def patient_info_of_lung_by_id():
     # 填充返回前端table的json数据
     idStr="'"+",".join(idSet)+"'"
     # idStr="'K0001,K0002,K0003,K0004,K0005,K0006,K0007,K0008,K0009,K0010,K0011'"
-    sql = "select id,sex,age,FEV1,FVC,`FEV1%`,FEV1/FVC,PEF,tongue,pulse,Wesmedicine_diagnosis,Lung_qi_deficiency,spleen_qi_deficiency,kidney_qi_deficiency from dwd_lung_info where FIND_IN_SET(id,"+idStr+")"
+    sql = "select id,sex,age,FEV1,FVC,`FEV1%`,FEV1/FVC,PEF,tongue,pulse,Wesmedicine_diagnosis,Lung_qi_deficiency,spleen_qi_deficiency,kidney_qi_deficiency from dwd_lung_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     i=0
@@ -565,9 +565,9 @@ def patient_info_of_lung_by_id():
         temp_data['index'] = str(i)
         temp_data['id'] = data[0]
         if data[1] == '1':
-            temp_data['sex'] = '男'
-        elif data[1] == '2':
             temp_data['sex'] = '女'
+        elif data[1] == '2':
+            temp_data['sex'] = '男'
         temp_data['age'] = data[2]
         temp_data['FEV1'] = str(data[3])
         temp_data['FVC'] = str(data[4])
