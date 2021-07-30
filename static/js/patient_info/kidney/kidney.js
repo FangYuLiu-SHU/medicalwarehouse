@@ -66,7 +66,6 @@ layui.use(["form", "layer"], function () {
   });
   form.on("submit(*)", (data) => {
     const { field } = data;
-    console.log(data);
     const QUERY_DATA = {
       page_el: "page_kidney",
       table: "kidney",
