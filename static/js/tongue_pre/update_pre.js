@@ -102,7 +102,7 @@ function addImg(
   <div class="component">
     <p style="text-align: center">${idx + 1}</p>
     <div class="upper">
-    <img src="">
+    <img src=data:;base64,${encode}>
         
     </div>
     <div class="lower">
