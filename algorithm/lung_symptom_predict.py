@@ -289,17 +289,9 @@ def multi_predict(num,cursor):
     Type2 = ['无脾气虚', '有脾气虚']
     Type3 = ['无肾气虚', '有肾气虚']
     # 读取数据，随机选择num个样本进行验证
-    # df_data = pd.read_csv('./files/dwd_lung_info.csv')
-    # #清理表中逗号空数据行
-    # df_data['PEF'] = df_data['PEF'].str.replace(',', '.')
-    # df_data['PEF'] = df_data['PEF'].astype(float)
-    # df_data.dropna(inplace=True)
-    #
-    # set = df_data.values
-    # indexs=random.sample(range(0,df_data.shape[0]),num)
-
     # 改成读数据库，随机挑选的样本，应该是判断有脉象表格的
-    sql = "select * from dwd_lung_info"
+    # sql = "select * from dwd_lung_info"
+    sql = "select * from dwd_lung_info where trim(Lung_qi_deficiency) != '' and trim(spleen_qi_deficiency) != '' and trim(kidney_qi_deficiency) != '' and trim(FEV1) != '' and trim(FVC) != '' and trim(`FEV1%`) != '' and trim(FEV1/FVC) != '' and trim(PEF) != '' and trim(tongue) != '' and trim(pulse) != ''"
     cursor.execute(sql)  # 获得所有符合条件的数据
     dataSet = cursor.fetchall()
     set = np.array(dataSet)
@@ -327,7 +319,7 @@ def multi_predict(num,cursor):
         tempParms['FVC'] = str(set[index, 8])
         tempParms['FEV1%'] = str(set[index, 9])
         tempParms['FEV1/FVC'] = str(set[index, 10])
-        tempParms['PEF'] = str(set[index, 11])
+        tempParms['PEF'] = str(set[index, 11]).replace(',', '.')
         tempParms['Tou']=set[index,12]
         tempParms['pulseType']=set[index,13]
         temp = sigle_predict(tempParms)
