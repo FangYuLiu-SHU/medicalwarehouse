@@ -10,21 +10,21 @@ import numpy as np
 
 def get_df_info():
     # 从数据库读取三表数据
-    # df_kidney_info = pd.read_sql('select * from dwd_kidney_info', sqlop.get_conn())
-    # df_liver_info = pd.read_sql('select * from dwd_liver_info', sqlop.get_conn())
-    # df_lung_info = pd.read_sql('select * from dwd_lung_info', sqlop.get_conn())
+    df_kidney_info = pd.read_sql('select * from dwd_kidney_info', sqlop.get_conn())
+    df_liver_info = pd.read_sql('select * from dwd_liver_info', sqlop.get_conn())
+    df_lung_info = pd.read_sql('select * from dwd_lung_info', sqlop.get_conn())
 
     #读取原数据
-    df_kidney_info = pd.read_excel(r'肾.xlsx')
-    df_kidney_info.columns = ['id', 'sex', 'age', 'stage', 'serum_creatinine', 'eGFR', 'symptoms_type', 'tongue',
-                              'pulse']
-    df_kidney_info.drop(['stage'], axis=1, inplace=True)
-    df_lung_info = pd.read_excel(r'肺.xls')
-    df_lung_info.columns = ['id', 'name', 'sex', 'age', 'wm_diagnosis', 'Lung_qi_deficiency', 'spleen_qi_deficiency',
-                            'kidney_qi_deficiency', 'FEV1', 'FVC', 'FEV1%', 'FEV1/FVC', 'PEF', 'tongue', 'tongueB',
-                            'tongueC', 'pulse', 'pulseB', 'pulseC']
-    df_liver_info = pd.read_excel(r'肝.xlsx')
-    df_liver_info.columns = ['id', 'sex', 'age', 'ALT', 'symptoms_type', 'tongue', 'pulse']
+    # df_kidney_info = pd.read_excel(r'肾.xlsx')
+    # df_kidney_info.columns = ['id', 'sex', 'age', 'stage', 'serum_creatinine', 'eGFR', 'symptoms_type', 'tongue',
+    #                           'pulse']
+    # df_kidney_info.drop(['stage'], axis=1, inplace=True)
+    # df_lung_info = pd.read_excel(r'肺.xls')
+    # df_lung_info.columns = ['id', 'name', 'sex', 'age', 'wm_diagnosis', 'Lung_qi_deficiency', 'spleen_qi_deficiency',
+    #                         'kidney_qi_deficiency', 'FEV1', 'FVC', 'FEV1%', 'FEV1/FVC', 'PEF', 'tongue', 'tongueB',
+    #                         'tongueC', 'pulse', 'pulseB', 'pulseC']
+    # df_liver_info = pd.read_excel(r'肝.xlsx')
+    # df_liver_info.columns = ['id', 'sex', 'age', 'ALT', 'symptoms_type', 'tongue', 'pulse']
     # 保存到本地
     # df_kidney_info.to_csv('dwd_kidney_info.csv',index=False)
     # df_liver_info.to_csv('dwd_liver_info.csv', index=False)
@@ -101,7 +101,7 @@ def clear_and_code(df_info):
     df_info_clear_code = df_info
     df_info_clear_code['id'] = df_info_clear_code['id'].str.lower()
     df_info_clear_code.drop_duplicates('id','first',inplace=True)
-    df_info_clear_code.to_csv('df_info_clear_code.csv')
+    # df_info_clear_code.to_csv('df_info_clear_code.csv')
     return df_info_clear_code
 
 def get_df_pulse_data_name_lists():
@@ -157,5 +157,5 @@ if __name__ == '__main__':
     df_info = get_df_info()
     df_info_clear_code = clear_and_code(df_info)
     df_info_merge = get_df_info_merge(df_info_clear_code)
-    download(df_info_merge)
+    # download(df_info_merge)
     # df_info.to_csv('df_info.csv')
