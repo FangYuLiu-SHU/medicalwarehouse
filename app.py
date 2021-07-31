@@ -530,15 +530,12 @@ def patient_info_of_kindney_by_id():
         limit = 1
     # 获取前端请求的数据
     idSet = json.loads(request.form.get('idSet'))
-    print(idSet)
     predictType = json.loads(request.form.get('predictType'))
-    labelType = json.loads(request.form.get('labelType'))
     json_data = {}
     result_data = []
     # 填充返回前端table的json数据
     idStr="'"+",".join(idSet)+"'"
-    # idStr="'K0001,K0002,K0003,K0004,K0005,K0006,K0007,K0008,K0009,K0010,K0011'"
-    sql = "select id,sex,age,serum_creatinine,eGFR,symptoms_type,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    sql = "select id,sex,age,serum_creatinine,eGFR,tongue,pulse,symptoms_type from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     # 填充返回前端table的json数据
@@ -553,13 +550,12 @@ def patient_info_of_kindney_by_id():
         temp_data['age'] = data[2]
         temp_data['serum_creatinine'] = str(data[3])
         temp_data['eGFR'] = str(data[4])
-        if data[5] == '1':
+        temp_data['tongue'] = data[5]
+        temp_data['pulse'] = data[6]
+        if data[7] == '1':
             temp_data['symptoms_type'] = '肾阳虚'
-        elif data[5] == '2':
+        elif data[7] == '2':
             temp_data['symptoms_type'] = '肾阴虚'
-        temp_data['tongue'] = data[6]
-        temp_data['pulse'] = data[7]
-        temp_data['labelType'] = labelType[idSet.index(data[0])]
         temp_data['predictType'] = predictType[idSet.index(data[0])]
         result_data.append(temp_data)
     json_data['code'] = str(0)
