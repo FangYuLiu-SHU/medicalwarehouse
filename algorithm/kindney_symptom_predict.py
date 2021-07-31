@@ -212,8 +212,8 @@ def sigle_predict(dict):
 def multi_predict(num,cursor):
     kindneyType = ['肾阳虚', '肾阴虚']
     # 读取数据，随机选择num个样本进行验证
-    #改成读数据库，随机挑选的样本，应该是判断有脉象表格的
-    sql = "select id,sex,age,serum_creatinine,eGFR,symptoms_type,tongue,pulse from dwd_kidney_info"
+    #改成读数据库，随机挑选的样本，应该是判断有脉象表格的,过滤空cell数据
+    sql = "select id,sex,age,serum_creatinine,eGFR,symptoms_type,tongue,pulse from dwd_kidney_info where trim(id) != '' and trim(sex) != '' and trim(age) != '' and trim(serum_creatinine) != '' and trim(eGFR) != '' and trim(symptoms_type) != '' and trim(tongue) != '' and trim(pulse) != ''"
     cursor.execute(sql)  # 获得所有符合条件的数据
     dataSet = cursor.fetchall()
     kindeySet = np.array(dataSet)
