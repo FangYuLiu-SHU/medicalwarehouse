@@ -58,18 +58,20 @@ def lung_tongue_pulse_code(df_lung):
     # 对西医诊断进行编码
     df_lung['wm_diagnosis_code'] = 0
     pat0 = '.*咳嗽.*'
-    df_lung.loc[~df_lung['wm_diagnosis'].apply(lambda x: re.match(pat0, x)).isna(), 'wm_diagnosis_code'] = 1
+    df_lung.loc[~df_lung['Wesmedicine_diagnosis'].apply(lambda x: re.match(pat0, x)).isna(), 'wm_diagnosis_code'] = 1
     pat1 = '.*支气管.*'
-    df_lung.loc[~df_lung['wm_diagnosis'].apply(lambda x: re.match(pat1, x)).isna(), 'wm_diagnosis_code'] = 2
+    df_lung.loc[~df_lung['Wesmedicine_diagnosis'].apply(lambda x: re.match(pat1, x)).isna(), 'wm_diagnosis_code'] = 2
 
     return df_lung
+
 
 def process_data():
     # 读取数据
     df_lung = pd.read_csv('../files/dwd_lung_info.csv')
     # 清洗下
-    df_lung['PEF'] = df_lung['PEF'].str.replace(',','.')
+    df_lung['PEF'] = df_lung['PEF'].astype(str).str.replace(',', '.')
     df_lung['PEF'] = df_lung['PEF'].astype(float)
+    # df_lung['FEV1/FVC'] = df_lung['FEV1/FVC'].astype(float)
     df_lung.dropna(inplace=True)
     # 获得编码
     df_lung = lung_tongue_pulse_code(df_lung)
@@ -79,7 +81,9 @@ def process_data():
     Lung_qi_deficiency = df_lung['Lung_qi_deficiency']
 
     # 删除不需要的列
-    df_lung.drop(['id','name', 'wm_diagnosis','tongue', 'pulse', 'pulse0', 'Lung_qi_deficiency','spleen_qi_deficiency','kidney_qi_deficiency'], inplace=True, axis=1)
+    df_lung.drop(
+        ['id', 'Wesmedicine_diagnosis', 'tongue', 'pulse', 'pulse0', 'Lung_qi_deficiency', 'spleen_qi_deficiency',
+         'kidney_qi_deficiency'], inplace=True, axis=1)
     # 把标签3个Y移到第一列方便操作
     df_lung.insert(0, 'kidney_qi_deficiency', kidney_qi_deficiency)
     df_lung.insert(0, 'spleen_qi_deficiency', spleen_qi_deficiency)
@@ -99,15 +103,17 @@ def process_data():
     df_lung.tongue_moss_color = df_lung.tongue_moss_color.astype('category')
 
     # 哑变量处理
-    dummy = pd.get_dummies(df_lung[['sex', 'pulse', 'tongue_proper_color','tongue_moss_nature','wm_diagnosis_code']])
-    df_lung.drop(['sex', 'pulse','tongue_proper_color' ,'tongue_moss_nature','wm_diagnosis_code'], inplace=True, axis=1)
+    dummy = pd.get_dummies(df_lung[['sex', 'pulse', 'tongue_proper_color', 'tongue_moss_nature', 'wm_diagnosis_code']])
+    df_lung.drop(['sex', 'pulse', 'tongue_proper_color', 'tongue_moss_nature', 'wm_diagnosis_code'], inplace=True,
+                 axis=1)
 
     df_lung = pd.concat([df_lung, dummy], axis=1)
     # df_lung.to_csv('df_lung.csv')
     return df_lung
 
+
 def train_model_lung(df_lung):
-    #模型1 肺气虚
+    # 模型1 肺气虚
     # 由于数据集分布不均衡使用SMOTE进行过采样 原Counter({1: 410, 0: 56})
     X = df_lung.iloc[:, 3:]
     Y = df_lung.Lung_qi_deficiency
@@ -170,6 +176,7 @@ def train_model_spleen(df_lung):
     # 保存模型
     joblib.dump(linear_svc, '../files/SVM_lung_spleen_predict.pkl')
 
+
 def train_model_kidney(df_lung):
     # 模型3 肾气虚
 
@@ -200,6 +207,7 @@ def train_model_kidney(df_lung):
     # 保存模型
     joblib.dump(linear_svc, '../files/SVM_lung_kidney_predict.pkl')
 
+
 def sigle_predict(dict):
     # 加载模型
     model_lung = joblib.load('./files/SVM_lung_lung_predict.pkl')
@@ -210,9 +218,11 @@ def sigle_predict(dict):
     #          'pulseType': '脉滑'}
     df_sig_lung = pd.DataFrame(dict, index=[0])
     # 重命名
-    df_sig_lung.columns = ['sex', 'age','wm_diagnosis', 'FEV1', 'FVC', 'FEV1%','FEV1/FVC','PEF','tongue','pulse']
+    df_sig_lung.columns = ['sex', 'age', 'Wesmedicine_diagnosis', 'FEV1', 'FVC', 'FEV1%', 'FEV1/FVC', 'PEF', 'tongue', 'pulse']
     # 脉清洗
-    df_sig_lung['pulse0'] = df_sig_lung['pulse'].str.replace("偏", "").str.replace("右", "").str.replace("左", "").str.replace("脉", "").str.replace("\r", "").str.strip()
+    df_sig_lung['pulse0'] = df_sig_lung['pulse'].str.replace("偏", "").str.replace("右", "").str.replace("左",
+                                                                                                       "").str.replace(
+        "脉", "").str.replace("\r", "").str.strip()
     # 脉编码
     df_sig_lung['pulse2'] = 0
     pat0 = '滑.*'
@@ -250,13 +260,13 @@ def sigle_predict(dict):
     # 对西医诊断进行编码
     df_sig_lung['wm_diagnosis_code'] = 0
     pat0 = '.*咳嗽.*'
-    df_sig_lung.loc[~df_sig_lung['wm_diagnosis'].apply(lambda x: re.match(pat0, x)).isna(), 'wm_diagnosis_code'] = 1
+    df_sig_lung.loc[~df_sig_lung['Wesmedicine_diagnosis'].apply(lambda x: re.match(pat0, x)).isna(), 'wm_diagnosis_code'] = 1
     pat1 = '.*支气管.*'
-    df_sig_lung.loc[~df_sig_lung['wm_diagnosis'].apply(lambda x: re.match(pat1, x)).isna(), 'wm_diagnosis_code'] = 2
+    df_sig_lung.loc[~df_sig_lung['Wesmedicine_diagnosis'].apply(lambda x: re.match(pat1, x)).isna(), 'wm_diagnosis_code'] = 2
 
     # 删除源列
-    df_sig_lung.drop(['tongue', 'pulse', 'pulse0','wm_diagnosis'], inplace = True, axis=1)
-    df_sig_lung.rename(columns={'pulse2':'pulse'}, inplace = True)
+    df_sig_lung.drop(['tongue', 'pulse', 'pulse0', 'Wesmedicine_diagnosis'], inplace=True, axis=1)
+    df_sig_lung.rename(columns={'pulse2': 'pulse'}, inplace=True)
 
     # 转化成one-hot
     from pandas.api.types import CategoricalDtype
@@ -277,11 +287,11 @@ def sigle_predict(dict):
     classification_lung = model_lung.predict(df_sig_lung.values)
     classification_spleen = model_spleen.predict(df_sig_lung.values)
     classification_kidney = model_kidney.predict(df_sig_lung.values)
-    #print(classification_lung,classification_spleen,classification_kidney)
+    # print(classification_lung,classification_spleen,classification_kidney)
     # 分别对应是/否(1/0)有肺气虚，脾气虚，肾气虚
-    result = np.append(classification_lung,classification_spleen)
+    result = np.append(classification_lung, classification_spleen)
     result = np.append(result, classification_kidney)
-    #print(result)
+    # print(result)
     return result
 
 def multi_predict(num,cursor):
@@ -308,13 +318,13 @@ def multi_predict(num,cursor):
     correct2 = 0
     correct3 = 0
     total = num
-    tempParms={'sex': '1', 'userage': '75','wm_diagnosis':'咳嗽', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄', 'pulseType': '脉弦滑'}
+    tempParms={'sex': '1', 'userage': '75','Wesmedicine_diagnosis':'咳嗽', 'FEV1': '2.2','FVC':'2.71','FEV1%':'83.33','FEV1/FVC':'0.811808118','PEF':'4.02','Tou': '苔黄', 'pulseType': '脉弦滑'}
     # tempParms = {'sex': '2', 'userage': '65', 'ALTD': '30', 'Tou': '舌苔黄腻', 'pulseType': '弦数'}
     for index in indexs:
         idSet.append(str(set[index, 0]))
         tempParms['sex']=str(set[index,1])
         tempParms['userage']=str(set[index,2])
-        tempParms['wm_diagnosis'] = str(set[index, 3])
+        tempParms['Wesmedicine_diagnosis'] = str(set[index, 3])
         tempParms['FEV1']=str(set[index,7])
         tempParms['FVC'] = str(set[index, 8])
         tempParms['FEV1%'] = str(set[index, 9])
@@ -323,9 +333,9 @@ def multi_predict(num,cursor):
         tempParms['Tou']=set[index,12]
         tempParms['pulseType']=set[index,13]
         temp = sigle_predict(tempParms)
-        predictIndex1 = temp[0]
-        predictIndex2 = temp[1]
-        predictIndex3 = temp[2]
+        predictIndex1 = int(temp[0])
+        predictIndex2 = int(temp[1])
+        predictIndex3 = int(temp[2])
         #第4列数据没用上
         labelIndex1 = int(set[index, 4])
         labelIndex2 = int(set[index, 5])
