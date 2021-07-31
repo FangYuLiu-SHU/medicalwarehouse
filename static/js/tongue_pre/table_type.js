@@ -71,7 +71,7 @@ const lungCols = [
     {
       field: "Wesmedicine_diagnosis",
       title: "西医诊断",
-      width: 110,
+      width: 160,
       align: "center",
     },
     {
@@ -91,3 +91,28 @@ const lungCols = [
     { field: "pulse", title: "脉",width: 80, align: "center" }
   ],
 ]
+
+const increseItem = [{
+  field: "true_ton_color",
+  title: "舌色真实标签",
+  width: 120,
+  align: "center",
+}, {
+  field: "pre_ton_color",
+  title: "舌色预测标签",
+  width: 120,
+  align: "center",
+}, {
+  field: "true_coating_color",
+  title: "苔色真实标签",
+  width: 120,
+  align: "center",
+}, {
+  field: "true_coating_color",
+  title: "苔色预测标签",
+  width: 120,
+  align: "center",
+}]
+const kidneyColsDetail = [[...kidneyCols[0].concat(increseItem)]]
+const liverColsDetail = [[...liverCols[0].concat(increseItem)]]
+const lungColsDetail = [[...lungCols[0].concat(increseItem)]]

@@ -38,115 +38,8 @@
             text-decoration: none;
         }
     </style>
-    <style type="text/css">
-        .update_show img {
-            width: 400px;
-            height: 400px;
-            display: none;
-        }
-        .patient_detail {
-        width: 1000px;
-            overflow: hidden;
-      }
-      .show_div {
-        width: 80%;
-        height: 350px;
-        margin-bottom: 50px;
-      }
-      .patient_detail form[lay-filter="channel_form"] {
-        width: 15%;
-        margin: 20px 10px 0;
-      }
-      .patient_detail form[lay-filter="channel_form"],
-      .patient_detail .show_div {
-        float: left;
-      }
-        .update_show .imgProgress {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            display: none;
-        }
-
-        .update_show {
-            position: relative;
-            width: 400px;
-            height: 400px;
-            border: 1px solid #ccc;
-            margin-top: 15px;
-        }
-
-        form[name="tongueForm"] {
-            margin-top: 15px;
-        }
-
-        .tonBatchSearch,
-        .pre_auc {
-            width: 30%;
-        }
-
-        .batch_show {
-            margin: 20px auto;
-            width: 90%;
-        }
-
-        .batch_show div {
-            margin: 0;
-            padding: 0;
-        }
-
-        .batch_show .component {
-            margin: 0 10px 20px;
-            float: left;
-            width: 200px;
-        }
-
-        .batch_show .component img {
-            width: 100%;
-            height: 250px;
-        }
-
-        .batch_show .lower {
-            text-align: center;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-top: 0;
-        }
-
-        .uploadUi {
-            width: 200px;
-        }
-
-        form[name="tonBatchForm"] .layui-form-label {
-            width: 130px !important;
-        }
-
-        form[name="tonBatchForm"] .layui-input-block {
-            margin-left: 130px !important;
-        }
-        .green {
-            color: green;
-        }
-        .red {
-            color: red;
-        }
-        .correct,
-        .error {
-            float: left;
-        }
-        .correct {
-            width: 50%;
-        }
-        .error {
-            width: 50%;
-        }
-        .no_data {
-            padding: 20px;
-        }
-    </style>
     <link rel="stylesheet" href="../static/layui/css/layui.css"/>
+    <link rel="stylesheet" href="../static/css/ton_prediction/index.css">
     <script src="../static/js/jquery.js"></script>
 </head>
 <body>
@@ -349,6 +242,16 @@
                     <table class="layui-hide" id="predictionTable2" border="3px" style="margin: 0 auto;"></table>
                 </div>
             </div>
+            <blockquote class="layui-elem-quote" id="note2" style="visibility: hidden;">
+                <b>页面说明</b><br>
+                饼状图：展示该批量数据预测正确与不正确的数量占比，红色为预测正确的占比，灰色为预测错误占比，鼠标移动到饼状图上会显示详细数据；<br>
+                折线图：逐个展示该批数据的预测情况，双横坐标，上方横坐标表示数据序号，下方横坐标表示患者id编号，纵坐标表示既定的各种类别，
+                    实线为标签类别的折线图（以蓝线圆形结点表示），虚线为预测类别的折线图（以粉红线菱形结点表示），当圆圈结点与菱形结点重叠时，
+                    代表预测准确，当圆圈结点与菱形结点分离时，代表预测错误，另外当鼠标移动到具体某一位置时，浮动便签会显示一些标签信息，
+                    点击某一列的数据结点时，会显示该结点代表的id（患者）的详细信息，滚动鼠标滑轮可以沿横轴方向缩放折线图；<br>
+                对照表：展示了批量预测数据的标签类别与预测结果，深色背景行代表预测准确，浅色背景行代表预测错误，并且预测错误的结果字段用红色显著标记；<br>
+                使用模型：长短期记忆网络（Long-Short Term Memory,LSTM）；
+            </blockquote>
         </div>                <!--脉象预测准确率展示-->
         <div class="layui-tab-item">
             <div class="layui-inline local">
@@ -438,10 +341,27 @@
                     </div>
                 </div>
             </form>
-            <button	class="layui-btn accordTonColor">按舌色分类</button>
-            <button	class="layui-btn accordCoaColor">按苔色分类</button>
-            <button	class="layui-btn recovery">还原</button>
+            <button	class="layui-btn accordTonColor classify" disabled>按舌色分类</button>
+            <button	class="layui-btn accordCoaColor classify" disabled>按苔色分类</button>
+            <button	class="layui-btn recovery classify" disabled>还原</button>
             <div class="batch_show">
+            </div>
+            <div class="info">
+                <div class="kidney_ton">
+                    <p>肾病人信息</p>
+                    <table class="kidney_info_table" lay-filter="kidney"></table>
+                    <div id="page_kidney"></div>
+                </div>
+                <div class="liver_ton">
+                    <p>肝病人信息</p>
+                    <table class="liver_info_table" lay-filter="liver"></table>
+                    <div id="page_liver"></div>
+                </div>
+                <div class="lung_ton">
+                    <p>肺病人信息</p>
+                    <table class="lung_info_table" lay-filter="lung"></table>
+                    <div id="page_lung"></div>
+                </div>
             </div>
         </div>                <!--舌象预测准确率展示-->
         <div class="layui-tab-item">
@@ -552,8 +472,23 @@
             </form>
             <div id="kindneyPredictChartDom" style="width: 28%; height: 490%;float: left"></div><!--症状统计-->
             <div id="kindneyPredictChartBar" style="width: 67%; height: 490%;float: right"></div><!--验证详情-->
-            <div id="kindneyPredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div>
-            <!--准确率显示-->
+            <div id="kindneyPredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            <div style="text-align: center;"><!--比对表格显示-->
+                <div id="myTable3" class="layui-inline" style="display:inline-block;width: 90%;margin: 0 auto;">
+                    <table class="layui-hide" id="predictionTable3" border="3px" style="margin: 0 auto;"></table>
+                </div>
+            </div>
+            <blockquote class="layui-elem-quote" id="note3" style="visibility: hidden;">
+                <b>页面说明</b><br>
+                饼状图：展示该批量数据预测正确与不正确的数量占比，红色为预测正确的占比，灰色为预测错误占比，鼠标移动到饼状图上会显示详细数据；<br>
+                折线图：逐个展示该批数据的预测情况，双横坐标，上方横坐标表示数据序号，下方横坐标表示患者id编号，纵坐标表示既定的各种类别，
+                    实线为标签类别的折线图（以蓝线圆形结点表示），虚线为预测类别的折线图（以粉红线菱形结点表示），当圆圈结点与菱形结点重叠时，
+                    代表预测准确，当圆圈结点与菱形结点分离时，代表预测错误，另外当鼠标移动到具体某一位置时，浮动便签会显示一些标签信息，
+                    点击某一列的数据结点时，会显示该结点代表的id（患者）的详细信息，滚动鼠标滑轮可以沿横轴方向缩放折线图；<br>
+                对照表：展示了批量预测数据的详细信息，以及标签类别列与预测结果列，深色背景行代表预测准确，浅色背景行代表预测错误，
+                    并且预测错误的结果字段用红色显著标记；<br>
+                使用模型：支持向量机（Support Vector Machine, SVM）；
+            </blockquote>
         </div>                <!--肾象预测准确率展示-->
         <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
@@ -641,8 +576,23 @@
             </form>
             <div id="liverPredictChartDom" style="width: 28%; height: 490%;float: left"></div><!--症状统计-->
             <div id="liverPredictChartBar" style="width: 67%; height: 490%;float: right"></div><!--验证详情-->
-            <div id="liverPredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div>
-            <!--准确率显示-->
+            <div id="liverPredictDisplay" style="width: 28%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            <div style="text-align: center;"><!--比对表格显示-->
+                <div id="myTable4" class="layui-inline" style="display:inline-block;width: 90%;margin: 0 auto;">
+                    <table class="layui-hide" id="predictionTable4" border="3px" style="margin: 0 auto;"></table>
+                </div>
+            </div>
+            <blockquote class="layui-elem-quote" id="note4" style="visibility: hidden;">
+                <b>页面说明</b><br>
+                饼状图：展示该批量数据预测正确与不正确的数量占比，红色为预测正确的占比，灰色为预测错误占比，鼠标移动到饼状图上会显示详细数据；<br>
+                折线图：逐个展示该批数据的预测情况，双横坐标，上方横坐标表示数据序号，下方横坐标表示患者id编号，纵坐标表示既定的各种类别，
+                    实线为标签类别的折线图（以蓝线圆形结点表示），虚线为预测类别的折线图（以粉红线菱形结点表示），当圆圈结点与菱形结点重叠时，
+                    代表预测准确，当圆圈结点与菱形结点分离时，代表预测错误，另外当鼠标移动到具体某一位置时，浮动便签会显示一些标签信息，
+                    点击某一列的数据结点时，会显示该结点代表的id（患者）的详细信息，滚动鼠标滑轮可以沿横轴方向缩放折线图；<br>
+                对照表：展示了批量预测数据的详细信息，以及标签类别列与预测结果列，深色背景行代表预测准确，浅色背景行代表预测错误，
+                    并且预测错误的结果字段用红色显著标记；<br>
+                使用模型：支持向量机（Support Vector Machine, SVM）；
+            </blockquote>
         </div>                <!--肝象预测准确率展示-->
         <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
@@ -785,6 +735,22 @@
                 <div id="lungPredictDisplay3"
                      style="width: 27%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
             </div>
+            <div style="text-align: center;"><!--比对表格显示-->
+                <div id="myTable5" class="layui-inline" style="display:inline-block;width: 90%;margin: 0 auto;">
+                    <table class="layui-hide" id="predictionTable5" border="3px" style="margin: 0 auto;"></table>
+                </div>
+            </div>
+            <blockquote class="layui-elem-quote" id="note5" style="visibility: hidden;">
+                <b>页面说明</b><br>
+                饼状图：展示该批量数据预测正确与不正确的数量占比，红色为预测正确的占比，灰色为预测错误占比，鼠标移动到饼状图上会显示详细数据；<br>
+                折线图：逐个展示该批数据的预测情况，双横坐标，上方横坐标表示数据序号，下方横坐标表示患者id编号，纵坐标表示既定的各种类别，
+                    实线为标签类别的折线图（以蓝线圆形结点表示），虚线为预测类别的折线图（以粉红线菱形结点表示），当圆圈结点与菱形结点重叠时，
+                    代表预测准确，当圆圈结点与菱形结点分离时，代表预测错误，另外当鼠标移动到具体某一位置时，浮动便签会显示一些标签信息，
+                    点击某一列的数据结点时，会显示该结点代表的id（患者）的详细信息，滚动鼠标滑轮可以沿横轴方向缩放折线图；<br>
+                对照表：展示了批量预测数据的详细信息，以及标签类别列与预测结果列，深色背景行代表预测准确，浅色背景行代表预测错误，
+                    并且预测错误的结果字段用（紫、黄、红色）显著标记；<br>
+                使用模型：支持向量机（Support Vector Machine, SVM）；
+            </blockquote>
         </div>                <!--肺象预测准确率展示-->
     </div>
 </div>
@@ -1529,7 +1495,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -1551,7 +1517,7 @@
                                             //color:'#dc3023',
                                             //color:'#ff0000',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -1679,8 +1645,8 @@
                                         if (trs != null && trs.length > 0) {
                                             for(var i=0;i<trs.length;i++){
                                                 var tds = trs[i].querySelectorAll("td");
-                                                var labelType=tds[8].getElementsByClassName("layui-table-cell")[0].textContent;
-                                                var predictType=tds[9].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType=tds[6].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType=tds[7].getElementsByClassName("layui-table-cell")[0].textContent;
                                                 if(labelType==predictType){
                                                     trs[i].style.color = Color1;//字体颜色
                                                     trs[i].style.backgroundColor= Color3;//背景颜色
@@ -1688,7 +1654,7 @@
                                                 else{
                                                     trs[i].style.color = Color2;//字体颜色
                                                     trs[i].style.backgroundColor= Color4;//背景颜色
-                                                    tds[9].style.color = Color5;//醒目字体颜色
+                                                    tds[7].style.color = Color5;//醒目字体颜色
                                                 }
                                             }
                                         }
@@ -1704,7 +1670,7 @@
                     //增加数据表格
                     table.render({
                         elem: '#predictionTable2'
-                        ,url:'patient_info_of_kindney_by_id'
+                        ,url:'patient_info_of_pulse_by_id'
                         ,method:'post'
                         ,where:{
                             idSet:JSON.stringify(newData.idSet)
@@ -1718,16 +1684,14 @@
                         }
                         ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                         ,cols: [[
-                            {field:'id', title: '编号', sort: true, align: 'center'}
-                            ,{field:'sex', title: '性别', align: 'center'}
-                            ,{field:'age', title: '年龄', sort: true, align: 'center'}
-                            ,{field:'serum_creatinine', title: '血肌酐', sort: true, align: 'center'}
-                            ,{field:'eGFR', title: 'eGFR', sort: true, align: 'center'}
-                            ,{field:'symptoms_type', title: '肾气虚症型', align: 'center'}
+                            {field:'index', title: '序号', align: 'center',width:100}
+                            ,{field:'id', title: '编号', align: 'center',width: 150}
+                            ,{field:'sex', title: '性别', align: 'center',width: 80}
+                            ,{field:'age', title: '年龄', align: 'center',width: 80}
                             ,{field:'tongue', title: '舌象症型', align: 'center'}
                             ,{field:'pulse', title: '原始脉象症型', align: 'center'}
-                            ,{field:'labelType', title: '标签类别症型', align: 'center'}
-                            ,{field:'predictType', title: '预测症型', align: 'center'}
+                            ,{field:'labelType', title: '标签症型', align: 'center',width: 130}
+                            ,{field:'predictType', title: '预测症型', align: 'center',width: 130}
                         ]]
                         ,parseData:function (res){
                             console.log("成功"+res.status+";"+res.message+";"+res.total);
@@ -1740,10 +1704,12 @@
                         }
                         //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
                         ,done: function (res, curr, count) {
-                            Layui_SetDataTableRowColor2('myTable2', '#000000', '#000000', '#ADADAD', '#d0d0d0', "#AE0000");
+                            Layui_SetDataTableRowColor2('myTable2', '#000000', '#000000', '#BEBEBE', '#E0E0E0', "#AE0000");
                         }
                         ,page: true
                     });
+                    //数据加载完后，显示页面说明语句
+                    document.getElementById("note2").style.visibility="visible";
                 },
                 error: function () {
                     layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});
@@ -1834,11 +1800,12 @@
 <script src="../static/js/tongue_pre/update_pre.js"></script>
 <!--肾象预测子页面js-->
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         var form = layui.form
             , layer = layui.layer
             , layedit = layui.layedit
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , table=layui.table;
         //监听提交
         form.on('submit(forecastInformation3)', function (data) {
             var submitData = new FormData($("#form3")[0]);
@@ -2017,7 +1984,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2037,7 +2004,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2088,6 +2055,85 @@
 
                     var pulsePredictDisplay = document.getElementById('kindneyPredictDisplay');
                     pulsePredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>预测准确率：' + (newData.accuracy * 100).toFixed(2) + '%</b></h2>';
+                    //设置layui datatable的某一行的颜色
+                    //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
+                    function Layui_SetDataTableRowColor3(DivId, Color1, Color2, Color3, Color4, Color5){
+                        try{
+                            var div = document.getElementById(DivId);
+                            if(div != null){ //找到对象了
+                                var table_main = div.getElementsByClassName('layui-table-main');   //通过class获取table_main
+                                if (table_main != null && table_main.length > 0) {
+                                    var table = table_main[0].getElementsByClassName('layui-table');   //通过class获取table
+                                    if (table != null && table.length > 0) {
+                                        var trs = table[0].querySelectorAll("tr");
+                                        if (trs != null && trs.length > 0) {
+                                            for(var i=0;i<trs.length;i++){
+                                                var tds = trs[i].querySelectorAll("td");
+                                                var labelType=tds[8].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType=tds[9].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                if(labelType==predictType){
+                                                    trs[i].style.color = Color1;//字体颜色
+                                                    trs[i].style.backgroundColor= Color3;//背景颜色
+                                                }
+                                                else{
+                                                    trs[i].style.color = Color2;//字体颜色
+                                                    trs[i].style.backgroundColor= Color4;//背景颜色
+                                                    tds[9].style.color = Color5;//醒目字体颜色
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e)
+                        {
+                            console.log(e.message);
+                        }
+                    }
+                    //增加数据表格
+                    table.render({
+                        elem: '#predictionTable3'
+                        ,url:'patient_info_of_kindney_by_id'
+                        ,method:'post'
+                        ,where:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,predictType:JSON.stringify(newData.predictType)
+                        }
+                        ,request:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,predictType:JSON.stringify(newData.predictType)
+                        }
+                        ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cols: [[
+                            {field:'index', title: '序号', align: 'center',width:80}
+                            ,{field:'id', title: '编号', align: 'center',width: 130}
+                            ,{field:'sex', title: '性别', align: 'center',width: 80}
+                            ,{field:'age', title: '年龄', align: 'center',width: 80}
+                            ,{field:'serum_creatinine', title: '血肌酐', align: 'center',width: 100}
+                            ,{field:'eGFR', title: 'eGFR', align: 'center',width: 150}
+                            ,{field:'tongue', title: '舌象症型', align: 'center'}
+                            ,{field:'pulse', title: '原始脉象症型', align: 'center'}
+                            ,{field:'symptoms_type', title: '肾气虚症型', align: 'center',width: 150}
+                            ,{field:'predictType', title: '预测症型', align: 'center',width: 150}
+                        ]]
+                        ,parseData:function (res){
+                            console.log("成功"+res.status+";"+res.message+";"+res.total);
+                            return{
+                                "code":res.code,
+                                "msg":res.message,
+                                "count":res.total,
+                                "data":res.data
+                            };
+                        }
+                        //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
+                        ,done: function (res, curr, count) {
+                            Layui_SetDataTableRowColor3('myTable3', '#000000', '#000000', '#BEBEBE', '#E0E0E0', "#AE0000");
+                        }
+                        ,page: true
+                    });
+                    //数据加载完后，显示页面说明语句
+                    document.getElementById("note3").style.visibility="visible";
                 },
                 error: function () {
                     layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});
@@ -2138,11 +2184,12 @@
 </script>
 <!--肝象预测子页面js-->
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         var form = layui.form
             , layer = layui.layer
             , layedit = layui.layedit
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , table=layui.table;
         //自定义验证规则
         form.verify({
             verify_alt: function (value) {
@@ -2356,7 +2403,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2376,7 +2423,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2417,6 +2464,84 @@
 
                     var pulsePredictDisplay = document.getElementById('liverPredictDisplay');
                     pulsePredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>预测准确率：' + (newData.accuracy * 100.0).toFixed(2) + '%</b></h2>';
+                    //设置layui datatable的某一行的颜色
+                    //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
+                    function Layui_SetDataTableRowColor4(DivId, Color1, Color2, Color3, Color4, Color5){
+                        try{
+                            var div = document.getElementById(DivId);
+                            if(div != null){ //找到对象了
+                                var table_main = div.getElementsByClassName('layui-table-main');   //通过class获取table_main
+                                if (table_main != null && table_main.length > 0) {
+                                    var table = table_main[0].getElementsByClassName('layui-table');   //通过class获取table
+                                    if (table != null && table.length > 0) {
+                                        var trs = table[0].querySelectorAll("tr");
+                                        if (trs != null && trs.length > 0) {
+                                            for(var i=0;i<trs.length;i++){
+                                                var tds = trs[i].querySelectorAll("td");
+                                                var labelType=tds[7].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType=tds[8].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                if(labelType==predictType){
+                                                    trs[i].style.color = Color1;//字体颜色
+                                                    trs[i].style.backgroundColor= Color3;//背景颜色
+                                                }
+                                                else{
+                                                    trs[i].style.color = Color2;//字体颜色
+                                                    trs[i].style.backgroundColor= Color4;//背景颜色
+                                                    tds[8].style.color = Color5;//醒目字体颜色
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e)
+                        {
+                            console.log(e.message);
+                        }
+                    }
+                    //增加数据表格
+                    table.render({
+                        elem: '#predictionTable4'
+                        ,url:'patient_info_of_liver_by_id'
+                        ,method:'post'
+                        ,where:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,predictType:JSON.stringify(newData.predictType)
+                        }
+                        ,request:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,predictType:JSON.stringify(newData.predictType)
+                        }
+                        ,cellMinWidth: 60 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cols: [[
+                            {field:'index', title: '序号', align: 'center',width:100}
+                            ,{field:'id', title: '编号', align: 'center',width:150}
+                            ,{field:'sex', title: '性别', align: 'center',width:80}
+                            ,{field:'age', title: '年龄', align: 'center',width:80}
+                            ,{field:'ALT', title: 'ALT', align: 'center',width:130}
+                            ,{field:'tongue', title: '舌象症型', align: 'center'}
+                            ,{field:'pulse', title: '原始脉象症型', align: 'center'}
+                            ,{field:'symptoms_type', title: '肝症型', align: 'center',width:150}
+                            ,{field:'predictType', title: '预测症型', align: 'center',width:150}
+                        ]]
+                        ,parseData:function (res){
+                            console.log("成功"+res.status+";"+res.message+";"+res.total);
+                            return{
+                                "code":res.code,
+                                "msg":res.message,
+                                "count":res.total,
+                                "data":res.data
+                            };
+                        }
+                        //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
+                        ,done: function (res, curr, count) {
+                            Layui_SetDataTableRowColor4('myTable4', '#000000', '#000000', '#ADADAD', '#d0d0d0', "#AE0000");
+                        }
+                        ,page: true
+                    });
+                    //数据加载完后，显示页面说明语句
+                    document.getElementById("note4").style.visibility="visible";
                 },
                 error: function () {
                     layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});
@@ -2428,11 +2553,12 @@
 </script>
 <!--肺象预测子页面js-->
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         var form = layui.form
             , layer = layui.layer
             , layedit = layui.layedit
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , table=layui.table;
         //自定义验证规则
         form.verify({
             verify_number: function (value) {
@@ -2622,7 +2748,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2642,7 +2768,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2822,7 +2948,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -2842,7 +2968,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -3023,7 +3149,7 @@
                                         lineStyle:{
                                             //color:'#ff0000',
                                             color:'#0080FF',
-                                            width:3,
+                                            width:1,
                                             type:'solid'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -3043,7 +3169,7 @@
                                         lineStyle:{
                                             //color:'#dc3023',
                                             color:'#B766AD',
-                                            width:2.5,
+                                            width:1,
                                             type:'dotted'  //'dotted'虚线 'solid'实线
                                         }
                                     }
@@ -3100,6 +3226,116 @@
 
                     var pulsePredictDisplay3 = document.getElementById('lungPredictDisplay3');
                     pulsePredictDisplay3.innerHTML = '<h2 class="layui-timeline-title"><b>预测准确率：' + (newData.accuracy3 * 100.0).toFixed(2) + '%</b></h2>';
+                    //设置layui datatable的某一行的颜色
+                    //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
+                    function Layui_SetDataTableRowColor5(DivId, Color1, Color2, Color3, Color4, Color5, Color6, Color7){
+                        try{
+                            var div = document.getElementById(DivId);
+                            if(div != null){ //找到对象了
+                                var table_main = div.getElementsByClassName('layui-table-main');   //通过class获取table_main
+                                if (table_main != null && table_main.length > 0) {
+                                    var table = table_main[0].getElementsByClassName('layui-table');   //通过class获取table
+                                    if (table != null && table.length > 0) {
+                                        var trs = table[0].querySelectorAll("tr");
+                                        if (trs != null && trs.length > 0) {
+                                            for(var i=0;i<trs.length;i++){
+                                                var tds = trs[i].querySelectorAll("td");
+                                                var labelType1=tds[12].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType1=tds[13].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType2=tds[14].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType2=tds[15].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType3=tds[16].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType3=tds[17].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var colorSet=0;
+                                                if(labelType1==predictType1){}
+                                                else{
+                                                    tds[13].style.color = Color5;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(labelType2==predictType2){}
+                                                else{
+                                                    tds[15].style.color = Color6;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(labelType3==predictType3){}
+                                                else{
+                                                    tds[17].style.color = Color7;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(colorSet==0){
+                                                    trs[i].style.color = Color1;//字体颜色
+                                                    trs[i].style.backgroundColor= Color3;//背景颜色
+                                                }
+                                                else if(colorSet==1){
+                                                    trs[i].style.color = Color2;//字体颜色
+                                                    trs[i].style.backgroundColor= Color4;//背景颜色
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e)
+                        {
+                            console.log(e.message);
+                        }
+                    }
+                    //增加数据表格
+                    table.render({
+                        elem: '#predictionTable5'
+                        ,url:'patient_info_of_lung_by_id'
+                        ,method:'post'
+                        ,where:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,lungPredictType:JSON.stringify(newData.predictType1)
+                            ,spleenPredictType:JSON.stringify(newData.predictType2)
+                            ,kidneyPredictType:JSON.stringify(newData.predictType3)
+                        }
+                        ,request:{
+                            idSet:JSON.stringify(newData.idSet)
+                            ,lungPredictType:JSON.stringify(newData.predictType1)
+                            ,spleenPredictType:JSON.stringify(newData.predictType2)
+                            ,kidneyPredictType:JSON.stringify(newData.predictType3)
+                        }
+                        ,cellMinWidth: 60 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cols: [[
+                            {field:'index', title: '序号',width:60, align: 'center'}
+                            ,{field:'id', title: '编号',width:100, align: 'center'}
+                            ,{field:'sex', title: '性别',width:60, align: 'center'}
+                            ,{field:'age', title: '年龄',width:60, align: 'center'}
+                            ,{field:'FEV1', title: 'FEV1',width:80, align: 'center'}
+                            ,{field:'FVC', title: 'FVC',width:80, align: 'center'}
+                            ,{field:'FEV1%', title: 'FEV1%',width:80, align: 'center'}
+                            ,{field:'FEV1/FVC', title: 'EV1/FVC改',width:110, align: 'center'}
+                            ,{field:'PEF', title: 'PEF',width:80, align: 'center'}
+                            ,{field:'tongue', title: '舌象',width:200, align: 'center'}
+                            ,{field:'pulse', title: '脉象',width:100, align: 'center'}
+                            ,{field:'wd_diagnosis', title: '西医诊断',width:230, align: 'center'}
+                            ,{field:'Lung_qi_deficiency', title: '肺气虚',width:100, align: 'center'}
+                            ,{field:'lungPredictType', title: '肺气虚预测',width:100, align: 'center'}
+                            ,{field:'spleen_qi_deficiency', title: '脾气虚',width:100, align: 'center'}
+                            ,{field:'spleenPredictType', title: '脾气虚预测',width:100, align: 'center'}
+                            ,{field:'kidney_qi_deficiency', title: '肾气虚',width:100, align: 'center'}
+                            ,{field:'kidneyPredictType', title: '肾气虚预测',width:100, align: 'center'}
+                        ]]
+                        ,parseData:function (res){
+                            console.log("成功"+res.status+";"+res.message+";"+res.total);
+                            return{
+                                "code":res.code,
+                                "msg":res.message,
+                                "count":res.total,
+                                "data":res.data
+                            };
+                        }
+                        //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
+                        ,done: function (res, curr, count) {
+                            Layui_SetDataTableRowColor5('myTable5', '#000000', '#000000', '#ADADAD', '#d0d0d0', "#8600FF", "#F75000", "#AE0000");
+                        }
+                        ,page: true
+                    });
+                    //数据加载完后，显示页面说明语句
+                    document.getElementById("note5").style.visibility="visible";
                 },
                 error: function () {
                     layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});

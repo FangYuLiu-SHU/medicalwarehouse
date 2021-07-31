@@ -72,19 +72,35 @@ layui.use(["form", "element"], function () {
   });
 });
 
-function addImg({
-  patient_info,
-  encode,
-  true_ton_color,
-  pre_ton_color,
-  true_coating_color,
-  pre_coating_color,
-}) {
+function addImg(
+  {
+    patient_info,
+    encode,
+    true_ton_color,
+    pre_ton_color,
+    true_coating_color,
+    pre_coating_color,
+  },
+  idx
+) {
   const isTonCorrect = true_ton_color === pre_ton_color;
   const isCoaCorrect = true_coating_color === pre_coating_color;
+  // <img src=data:;base64,${encode}>
+  patient_info = {
+    ...patient_info,
+    ...{
+      true_ton_color,
+      pre_ton_color,
+      true_coating_color,
+      pre_coating_color,
+      isTonCorrect,
+      isCoaCorrect,
+    },
+  };
   return [
     $(`
   <div class="component">
+    <p style="text-align: center">${idx + 1}</p>
     <div class="upper">
     <img src=data:;base64,${encode}>
         
@@ -201,30 +217,131 @@ layui.use(["form", "layer"], function () {
           moss_acu: moss_color_accuracy,
         });
         for (let i = 0; i < tongueData.length; ++i) {
-          const [el, isTon, isCoa, patient_info] = addImg(tongueData[i]);
+          const [el, isTon, isCoa, patient_info] = addImg(tongueData[i], i);
           $batch_show.append(el);
           bindShowPatientInfo(el, patient_info);
           predictData.push([el, isTon, isCoa, patient_info]);
+          switch (patient_info?.id?.[0]) {
+            case "k":
+              kidney_info.push(patient_info);
+              break;
+            case "l":
+              lung_info.push(patient_info);
+              break;
+            case undefined:
+              break;
+            default:
+              liver_info.push(patient_info);
+              break;
+          }
         }
+        $classifyBtn.attr("disabled", false)
+        $info.show();
+        getTable(kidney_info, "kidney", undefined, 1);
+        getTable(lung_info, "lung", undefined, 1);
+        getTable(liver_info, "liver", undefined, 1);
       },
     });
   });
 });
 
+function getTable(postData, type, qObj = { page: 1, limit: 10 }, first = 0) {
+  switch (type) {
+    case "kidney":
+      if (first) postData.forEach((e) => dealKindeyData(e));
+      renderTable(postData, kidneyColsDetail, ".kidney_info_table", type, qObj);
+      break;
+    case "lung":
+      if (first) postData.forEach((e) => dealLungData(e));
+      renderTable(postData, lungColsDetail, ".lung_info_table", type, qObj);
+      break;
+    case "liver":
+      if (first) postData.forEach((e) => dealLiverData(e));
+      renderTable(postData, liverColsDetail, ".liver_info_table", type, qObj);
+      break;
+  }
+}
+
+function renderTable(postData, cols, el, type, qObj) {
+  layui.use(["table"], function () {
+    const table = layui.table;
+    const { page, limit } = qObj;
+    const data = postData.slice((page - 1) * limit, page * limit);
+    table.render({
+      elem: el, // 定位表格ID
+      cols,
+      data,
+      limit: qObj.limit, // 每一页数据条数
+      done: function (res) {
+        // 分页组件
+        let $el = null;
+        switch (type) {
+          case "kidney":
+            $el = $(".kidney_info_table+div");
+            break;
+          case "lung":
+            $el = $(".lung_info_table+div");
+            break;
+          case "liver":
+            $el = $(".liver_info_table+div");
+            break;
+        }
+        res.data.forEach((e, idx) => {
+          const ton_color = e.isTonCorrect ? "green" : "red";
+          const coa_color = e.isCoaCorrect ? "green" : "red";
+          $el
+            .find('tr[data-index="' + idx + '"]')
+            .find('td[data-field="true_ton_color"]')
+            .css("color", ton_color)
+            .next()
+            .css("color", ton_color)
+            .next()
+            .css("color", coa_color)
+            .next()
+            .css("color", coa_color);
+        });
+        getPage(qObj, postData, type, "page_" + type, postData.length);
+      },
+    });
+  });
+}
+
+function getPage(queryObj, data, type, page_el, len) {
+  layui.use(["laypage"], function () {
+    const laypage = layui.laypage;
+    // 设置分页
+    laypage.render({
+      elem: page_el, // 根据ID定位
+      count: len, // 获取的数据总数
+      limit: queryObj.limit, // 每页默认显示的数量，同上
+      layout: ["prev", "page", "next", "limit", "skip"],
+      curr: queryObj.page, // 页码
+      jump: function (obj, first) {
+        if (!first) {
+          queryObj.page = obj.curr; // 设置当前页位置
+          queryObj.limit = obj.limit; // 设置每页的数据条数
+          getTable(data, type, queryObj);
+        }
+      },
+    });
+  });
+}
+
 function classify(idx) {
   $(".component").detach();
-  const $correct = $(`<div class="correct"></div>`);
-  const $error = $(`<div class="error"></div>`);
+  $batch_show.empty();
+  const $correct = $(`<div class="correct green"><p>预测正确</p></div>`);
+  const $error = $(`<div class="error red"><p>预测不正确</p></div>`);
   for (let i = 0; i < predictData.length; ++i) {
     const [el, isTon, isCoa] = predictData[i];
-    if(idx === 2) $batch_show.append(el);
+    if (idx === 2) $batch_show.append(el);
     else if (idx === 0 ? isTon : isCoa) {
       $correct.append(el);
     } else {
       $error.append(el);
     }
   }
-  if(idx !== 2) {
+  if (idx !== 2) {
     $batch_show.append($correct).append($error);
   }
 }
@@ -247,6 +364,12 @@ const $uploadUi = $(".uploadUi");
 const $imgProgress = $(".update_show .imgProgress");
 const $ton_patient_detail = $(".ton_patient_detail");
 const $recovery = $(".recovery");
+const $info = $(".info");
+const $classifyBtn = $(".classify")
 let predictData = [];
 $uploadUi.hide();
 let imgData = new FormData();
+
+const kidney_info = [];
+const liver_info = [];
+const lung_info = [];

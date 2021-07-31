@@ -1,0 +1,124 @@
+.update_show img {
+    width: 400px;
+    height: 400px;
+    display: none;
+}
+.patient_detail {
+width: 1000px;
+    overflow: hidden;
+}
+.show_div {
+width: 80%;
+height: 350px;
+margin-bottom: 50px;
+}
+.patient_detail form[lay-filter="channel_form"] {
+width: 15%;
+margin: 20px 10px 0;
+}
+.patient_detail form[lay-filter="channel_form"],
+.patient_detail .show_div {
+float: left;
+}
+.update_show .imgProgress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    display: none;
+}
+
+.update_show {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+}
+
+form[name="tongueForm"] {
+    margin-top: 15px;
+}
+
+.tonBatchSearch,
+.pre_auc {
+    width: 30%;
+}
+
+.batch_show {
+    margin: 20px auto;
+    width: 90%;
+    overflow: hidden;
+}
+
+.batch_show div {
+    margin: 0;
+    padding: 0;
+}
+
+.batch_show .component {
+    margin: 0 10px 20px;
+    float: left;
+    width: 200px;
+}
+
+.batch_show .component img {
+    width: 100%;
+    height: 250px;
+}
+
+.batch_show .lower {
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-top: 0;
+}
+
+.uploadUi {
+    width: 200px;
+}
+
+form[name="tonBatchForm"] .layui-form-label {
+    width: 130px !important;
+}
+
+form[name="tonBatchForm"] .layui-input-block {
+    margin-left: 130px !important;
+}
+.green {
+    color: green;
+}
+.red {
+    color: red;
+}
+.correct,
+.error {
+    float: left;
+}
+.correct {
+    width: 50%;
+}
+.error {
+    width: 50%;
+}
+.no_data {
+    padding: 20px;
+}
+.correct>p,
+.error>p {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.info {
+    display: none;
+}
+
+.info p {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}

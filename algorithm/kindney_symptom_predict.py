@@ -8,6 +8,7 @@ import pandas as pd
 import re
 from imblearn.over_sampling import SMOTE
 import random
+import numpy as np
 
 def kidney_tongue_pulse_code(df_kidney):
     # 对脉的标签描述进行清洗
@@ -208,12 +209,15 @@ def sigle_predict(dict):
     #print(classification)
     return classification
 
-def multi_predict(num):
+def multi_predict(num,cursor):
     kindneyType = ['肾阳虚', '肾阴虚']
     # 读取数据，随机选择num个样本进行验证
-    df_kindney = pd.read_csv('./files/dwd_kidney_info.csv')
-    kindeySet = df_kindney.values
-    indexs=random.sample(range(0,df_kindney.shape[0]),num)
+    #改成读数据库，随机挑选的样本，应该是判断有脉象表格的,过滤空cell数据
+    sql = "select id,sex,age,serum_creatinine,eGFR,symptoms_type,tongue,pulse from dwd_kidney_info where trim(id) != '' and trim(sex) != '' and trim(age) != '' and trim(serum_creatinine) != '' and trim(eGFR) != '' and trim(symptoms_type) != '' and trim(tongue) != '' and trim(pulse) != ''"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    dataSet = cursor.fetchall()
+    kindeySet = np.array(dataSet)
+    indexs = random.sample(range(0, kindeySet.shape[0]), num)
     idSet=[]
     predictType=[]
     labelType=[]
@@ -230,7 +234,7 @@ def multi_predict(num):
         tempParms['Tou']=kindeySet[index,6]
         tempParms['pulseType']=kindeySet[index,7]
         predictIndex = sigle_predict(tempParms)[0]-1
-        labelIndex=kindeySet[index, 5]-1
+        labelIndex=int(kindeySet[index, 5])-1
         predictType.append(kindneyType[predictIndex])
         labelType.append(kindneyType[labelIndex])
         if(predictIndex==labelIndex):
