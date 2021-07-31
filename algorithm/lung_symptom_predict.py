@@ -289,9 +289,9 @@ def multi_predict(num,cursor):
     Type2 = ['无脾气虚', '有脾气虚']
     Type3 = ['无肾气虚', '有肾气虚']
     # 读取数据，随机选择num个样本进行验证
-    # 改成读数据库，随机挑选的样本，应该是判断有脉象表格的
+    # 改成读数据库，随机挑选的样本，应该是判断有脉象表格的，过滤空cell值
     # sql = "select * from dwd_lung_info"
-    sql = "select * from dwd_lung_info where trim(Lung_qi_deficiency) != '' and trim(spleen_qi_deficiency) != '' and trim(kidney_qi_deficiency) != '' and trim(FEV1) != '' and trim(FVC) != '' and trim(`FEV1%`) != '' and trim(FEV1/FVC) != '' and trim(PEF) != '' and trim(tongue) != '' and trim(pulse) != ''"
+    sql = "select * from dwd_lung_info where trim(id) != '' and trim(sex) != '' and trim(age) != '' and trim(Wesmedicine_diagnosis) != '' and trim(Lung_qi_deficiency) != '' and trim(spleen_qi_deficiency) != '' and trim(kidney_qi_deficiency) != '' and trim(FEV1) != '' and trim(FVC) != '' and trim(`FEV1%`) != '' and trim(FEV1/FVC) != '' and trim(PEF) != '' and trim(tongue) != '' and trim(pulse) != ''"
     cursor.execute(sql)  # 获得所有符合条件的数据
     dataSet = cursor.fetchall()
     set = np.array(dataSet)
