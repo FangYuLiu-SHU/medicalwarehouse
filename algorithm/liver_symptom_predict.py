@@ -209,8 +209,8 @@ def sigle_predict(dict):
 def multi_predict(num,cursor):
     Type = ['肝胆湿热症', '肝郁脾虚症']
     # 读取数据，随机选择num个样本进行验证
-    # 改成读数据库，随机挑选的样本，应该是判断有脉象表格的
-    sql = "select * from dwd_liver_info"
+    # 改成读数据库，随机挑选的样本，应该是判断有脉象表格的,过滤空cell数据
+    sql = "select * from dwd_liver_info where trim(id) != '' and trim(sex) != '' and trim(age) != '' and trim(ALT) != '' and trim(symptoms_type) != '' and trim(tongue) != '' and trim(pulse) != ''"
     cursor.execute(sql)  # 获得所有符合条件的数据
     dataSet = cursor.fetchall()
     set = np.array(dataSet)
