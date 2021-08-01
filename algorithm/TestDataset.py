@@ -17,13 +17,15 @@ data_num = 800#数据量
 
 class TestDataset(data.Dataset):
 
-    def __init__(self,start,end,cursor):
+    # def __init__(self,start,end,cursor):
+    def __init__(self, randomList, cursor):
         # 读数据
         self.data_x, self.data_y, self.data_id = [], [], []
         lable_df = pd.read_csv('./files/df_info_merge.csv')
 
         #读取start到end个病人数据
-        for i in range(start,end):
+        # for i in range(start,end):
+        for i in randomList:
             sql = ""
             if(lable_df['id'][i][0]=='k'):
                 sql = "select * from ods_kidney_pulse_" + lable_df['id'][i]

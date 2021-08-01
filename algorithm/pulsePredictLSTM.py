@@ -16,8 +16,8 @@ BATCH_SIZE = 64
 EPOCH = 1000  # iteration times
 row = 2560
 col = 57
-# data_num = 1009#数据量
-data_num = 800#数据量
+# data_num = 1110#数据量
+data_num = 850#数据量
 
 # 定义数据集
 class Dataset(data.Dataset):
@@ -26,22 +26,22 @@ class Dataset(data.Dataset):
         # 读数据
         self.data_x, self.data_y, self.data_id = [], [], []
         # list = [i for i in range(57)]
-        lable_df = pd.read_csv('./files/df_info_merge.csv')
+        lable_df = pd.read_csv('../files/df_info_merge_random.csv')
 
         #读取start到end个病人数据
         for i in range(start,end):
 
             if(lable_df['id'][i][0]=='k'):
-                pulse_df = pd.read_csv('./files/data/ods_kidney_pulse_' +
+                pulse_df = pd.read_csv('../files/data/ods_kidney_pulse_' +
                                        lable_df['id'][i] + '.csv',
                                        nrows=row,usecols=[i for i in range(col)])
 
             elif(lable_df['id'][i][0]=='l'):
-                pulse_df = pd.read_csv('./files/data/ods_lung_pulse_' +
+                pulse_df = pd.read_csv('../files/data/ods_lung_pulse_' +
                                        lable_df['id'][i] + '.csv',
                                        nrows=row, usecols=[i for i in range(col)])
             elif (lable_df['id'][i][0] == '2'):
-                pulse_df = pd.read_csv('./files/data/ods_liver_pulse_' +
+                pulse_df = pd.read_csv('../files/data/ods_liver_pulse_' +
                                        lable_df['id'][i] + '.csv',
                                        nrows=row, usecols=[i for i in range(col)])
             print('读第'+str(i)+'个data表')
@@ -154,8 +154,15 @@ if __name__ == '__main__':
             optimizer.step()
         logging.warning(loss.data)
         epochLoss.append(loss.data.cpu().numpy())
+        # 精度不再下降就结束
+        # print(f"loss{loss.item()}")
+        if epoch > 32 and 0.0001 > loss.data.cpu().numpy() - tempLoss > -0.0001:
+            break
+        else:
+            tempLoss = loss.data.cpu().numpy()
     # 6保存模型
     # torch.save(net, "LSTM_predict.plt")
-
-    torch.save(net.state_dict(), './files/LSTM_predict.pt')
+    torch.save(net.state_dict(), '../files/LSTM_predict_mul.pt')
+    epochLoss = pd.DataFrame(epochLoss)
+    epochLoss.to_csv('../files/epochLoss.csv', header=False)
     print('模型参数保存成功！')
