@@ -12,10 +12,10 @@ from torch import cuda
 from torch import nn
 from torch import optim
 from torch.utils import data
-from modelLSTM import FCLSTM
-from pulsePredictLSTM import Dataset
-# from algorithm.modelLSTM import FCLSTM
-# from algorithm.pulsePredictLSTM import Dataset
+# from modelLSTM import FCLSTM
+# from pulsePredictLSTM import Dataset
+from algorithm.modelLSTM import FCLSTM
+from algorithm.pulsePredictLSTM import Dataset
 
 # 2模型输入参数加载模型
 N = 64    #每个表分成32份每份 80个
@@ -26,13 +26,13 @@ rows = 2560
 HIDDEN_SIZE = K
 BATCH_SIZE = 100
 EPOCH = 1000  # iteration times
-data_num = 1009#数据量
+data_num = 1110#数据量
 
 # 1 加载模型
 # rnn_model = torch.load("./LSTM_predict.plt")
 # rnn_model = rnn_model.cpu()
 rnn_model = FCLSTM()
-rnn_model.load_state_dict(torch.load('./files/LSTM_predict.pt'))
+rnn_model.load_state_dict(torch.load('../files/LSTM_predict_mul.pt'))
 rnn_model.eval()
 # 2 读取测试数据 data_num个
 test_set_size = N #设置每个批读N个

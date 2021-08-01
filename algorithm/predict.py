@@ -49,8 +49,10 @@ def mulPulsePrediction(testSize,totalSize,cursor):
     rnn_model.eval()
     # 2读取测试数据 testSize个
     batch_size = N  # 设置每个批读N个
-    index = random.randint(0,totalSize-testSize)
-    tst_dataset = TestDataset(index, index+testSize,cursor)
+    randomList=random.sample(range(0,totalSize),testSize)
+    # index = random.randint(0,totalSize-testSize)
+    # tst_dataset = TestDataset(index, index+testSize,cursor)
+    tst_dataset = TestDataset(randomList, cursor)
     tst_dataloader = data.DataLoader(tst_dataset, batch_size=batch_size)#, shuffle=True去除打乱否则数据不对
     # 3 全部测试集测试准确度
     correct = 0
