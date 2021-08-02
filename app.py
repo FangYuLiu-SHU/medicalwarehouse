@@ -803,7 +803,7 @@ def pulsePrediction_accuracy():
     # 获取前端请求的数据
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
-    totalNum=1009
+    totalNum=875
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
     idSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction(testNum,totalNum,cursor)
     # 方案一：沉细-0 细-1 弦-2 弦细-3 滑-4 濡-5
