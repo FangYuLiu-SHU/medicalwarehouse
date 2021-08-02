@@ -1527,6 +1527,7 @@
                         ]
                     };
                     pulsePredict_chartBar.setOption(pulsePredictBar_option);
+                    pulsePredict_chartBar.off("click");
                     pulsePredict_chartBar.on('click',function(params){
                         console.log(params)
                         id = params.name;
@@ -2013,6 +2014,7 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar.off("click");
                     pulsePredict_chartBar.on('click',function(params) {
                         // console.log(params);
                         id = params.name;
@@ -2050,7 +2052,7 @@
   ],
 ];
                         rowToolEvent1(id,type,cols);
-                    })
+                    });
                     pulsePredict_chartBar.setOption(pulsePredictBar_option);
 
                     var pulsePredictDisplay = document.getElementById('kindneyPredictDisplay');
@@ -2294,33 +2296,6 @@
                             }
                         ]
                     };
-                    pulsePredict_chart.on('click',function(params) {
-                        console.log(params);
-                        id = params.name;
-                        type = 'liver';
-                        const cols = [
-    [
-      {
-        field: "id",
-        title: "编号",
-        width: 155,
-        align: "center",
-      },
-      { field: "sex", title: "性别", width: 80, align: "center" },
-      {
-        field: "age",
-        title: "年龄",
-        width: 80,
-        align: "center",
-      },
-      { field: "ALT", title: "ALT", width: 80, align: "center" },
-      { field: "symptoms_type", title: "症型", align: "center" },
-      { field: "tongue", title: "舌", align: "center" },
-      { field: "pulse", title: "脉", align: "center" },
-    ],
-  ];
-                        rowToolEvent1(id,type,cols);
-                    })
                     pulsePredict_chart.setOption(pulsePredict_option);
 
                     var pulsePredict_bar = document.getElementById('liverPredictChartBar');
@@ -2432,7 +2407,7 @@
                             }
                         ]
                     };
-
+                    pulsePredict_chartBar.off("click");
                     pulsePredict_chartBar.on('click',function(params) {
                         console.log(params);
                         id = params.name;
@@ -2777,6 +2752,7 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar1.off("click");
                     pulsePredict_chartBar1.on('click',function(params) {
                         console.log(params);
                         id = params.name;
@@ -2977,6 +2953,7 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar2.off("click");
                     pulsePredict_chartBar2.on('click',function(params) {
                         console.log(params);
                         id = params.name;
@@ -3178,6 +3155,7 @@
                             }
                         ]
                     };
+                    pulsePredict_chartBar3.off("click");
                     pulsePredict_chartBar3.on('click',function(params) {
                         console.log(params);
                         id = params.name;
