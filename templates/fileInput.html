@@ -88,12 +88,16 @@
         height: 400px;
         margin: 50px 0;
       }
+      .explainContainer h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
       .explainBox {
         margin-bottom: 20px; 
       }
       .explainWord {
-        font-size: 18px;
-        font-weight: 700;
+        font-size: 16px;
         margin-bottom: 5px;
       }
     </style>
@@ -384,8 +388,8 @@
           </form>
         </div>
       </div>
-      <div class="explainWord">
-        
+      <div class="explainContainer">
+          <h3>本地数据导入文件格式</h3>
       </div>
     </div>
     <script src="../static/layui/layui.js"></script>
@@ -588,14 +592,14 @@
               <img class="explainImg" src=data:;base64,${info[i]}>
             </div>
           `)
-          $explainWord.append(img);
+          $explainContainer.append(img);
         }
       }
 
       const imgPath = {{data_json | tojson}};
       const imgInfo = Object.values(JSON.parse(imgPath));
-      const imgWord = ["肝信息表格式", "肾信息表格式", "肺信息表格式", "脉象文件格式"];
-      const $explainWord = $(".explainWord");
+      const imgWord = ["肝科信息表", "肾科信息表", "肺科信息表", "脉象文件"];
+      const $explainContainer = $(".explainContainer");
       const sourceMysql = $(".mysql");
       const sourceLocal = $(".local");
       const sourceSqlserver = $(".SqlServer");
