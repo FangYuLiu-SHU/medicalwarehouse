@@ -173,7 +173,6 @@ def fileInpute():
         'pulsefiles':pulsefiles
     }
     data_json = json.dumps(data)
-    print(data_json)
     return render_template('fileInput.html', data_json=data_json)
 
 # 肾科病人信息统计
