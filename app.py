@@ -160,7 +160,21 @@ def dataimport():
 
 @app.route('/fileInput', methods=["GET", "POST"])
 def fileInpute():
-    return render_template('fileInput.html')
+    # 本地数据导入文件格式
+    kidneyinfo = tongue_color_predict.img_stream("static/image/importexamples/kidneyinfo.jpg")   #肾科病人信息表
+    liverinfo = tongue_color_predict.img_stream("static/image/importexamples/liverinfo.jpg")   #肝科病人信息表
+    lunginfo = tongue_color_predict.img_stream("static/image/importexamples/lunginfo.jpg")   #肺科病人信息表
+    # 病人脉象文件目录
+    pulsefiles = tongue_color_predict.img_stream("static/image/importexamples/pulsefiles.jpg")   #脉象文件
+    data = {
+        'kidneyinfo':kidneyinfo,
+        'liverinfo':liverinfo,
+        'lunginfo':lunginfo,
+        'pulsefiles':pulsefiles
+    }
+    data_json = json.dumps(data)
+    print(data_json)
+    return render_template('fileInput.html', data_json=data_json)
 
 # 肾科病人信息统计
 @app.route('/datastatistic', methods=["GET", "POST"])
