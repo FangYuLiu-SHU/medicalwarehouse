@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df9393c3-68df-43b4-856c-e1a4f8883845" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_27_12_55_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_27_12_55__Default_Changelist_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/patient_info/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/common.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/patient_info/kidney/kidney.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/kidney/kidney.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/tongue_pre/table_type.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/tongue_pre/table_type.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/tongue_pre/update_pre.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/tongue_pre/update_pre.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/diseasePrediction.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/diseasePrediction.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/fileInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/fileInput.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,6 +22,9 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/app.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1vsrmmX6zTR5Ud7tikbBXhEiS3n" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -78,9 +78,19 @@
     <servers />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="returnData" language="Python" />
+        <watch expression="json_data" language="Python" />
       </configuration>
     </watches-manager>
   </component>
