@@ -837,6 +837,188 @@ def pulsePrediction_accuracy():
     newData = json.dumps(formData)  # json.dumps封装
     return newData
 
+#脉象舌象综合验证服务
+@app.route('/pulse_tongue_Prediction', methods=["POST"])
+def pulse_tongue_Prediction():
+    # 获取前端请求的数据
+    selectTestNum = request.form.get('selectTestNum')
+    testNum=int(selectTestNum)
+    totalNum=198#有舌像又有脉象的数据量
+    # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    idSet,properColorSet,mossColorSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction2(testNum,totalNum,cursor)
+    # 方案一：沉细-0 细-1 弦-2 弦细-3 滑-4 濡-5
+    pulseType = ['沉细', '细', '弦', '弦细', '滑', '濡']
+    predictType=[]
+    labelType=[]
+    for index in range(testNum):
+        predictType.append(pulseType[predicted[index]])
+        labelType.append(pulseType[labels[index]])
+    formData = {}
+    formData['testNum']=str(testNum)
+    #脉象统计正确/错误预测数目
+    formData['num_pos']=correct
+    formData['num_neg']=total-correct
+    formData['accuracy']=accuracy
+    formData['predictType']=predictType
+    formData['labelType']=labelType
+    formData['idSet']=idSet
+    #舌色、苔色列对应的标签信息
+    formData['properColorSet'] = properColorSet
+    formData['mossColorSet'] = mossColorSet
+    # 舌象统计正确/错误预测数目，以及预测准确率《《待修改》》
+    formData['tongue_num_pos'] = correct
+    formData['tongue_num_neg'] = total - correct
+    formData['tongue_accuracy'] = accuracy
+    # 舌象预测类型《《待修改》》
+    formData['properColorPredictType'] = predictType
+    formData['mossColorPredictType'] = predictType
+    newData = json.dumps(formData)  # json.dumps封装
+    return newData
+
+#获取预测序列的用户信息（查三科表，脉象舌象综合）
+@app.route('/patient_info_of_pulse_tongue_by_id', methods=['POST'])
+def patient_info_of_pulse_tongue_by_id():
+    page = request.form.get('page')  # 页数
+    limit = request.form.get('limit')  # 每页显示的数量
+    if page is None:
+        page = 1
+    if limit is None:
+        limit = 1
+    # 获取前端请求的数据
+    idSet = json.loads(request.form.get('idSet'))
+    predictType = json.loads(request.form.get('predictType'))
+    labelType = json.loads(request.form.get('labelType'))
+    properColorPredictType = json.loads(request.form.get('properColorPredictType'))
+    mossColorPredictType = json.loads(request.form.get('mossColorPredictType'))
+    properColorSet = json.loads(request.form.get('properColorSet'))
+    mossColorSet = json.loads(request.form.get('mossColorSet'))
+    json_data = {}
+    result_data = []
+    # 填充返回前端table的json数据（肾科）
+    idStr="'"+",".join(idSet)+"'"
+    sql = "select id,sex,age,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        index = idSet.index(data[0])
+        temp_data = {}
+        temp_data['index'] = index
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '男'
+        elif data[1] == '2':
+            temp_data['sex'] = '女'
+        temp_data['age'] = data[2]
+        temp_data['tongue'] = data[3]
+        # 舌质颜色 淡红（正常）0 淡白1 红2 暗/紫3
+        if properColorSet[index] == '0':
+            temp_data['properColor'] = '淡红'
+        elif properColorSet[index] == '1':
+            temp_data['properColor'] = '淡白'
+        elif properColorSet[index] == '2':
+            temp_data['properColor'] = '红'
+        elif properColorSet[index] == '3':
+            temp_data['properColor'] = '暗/紫'
+        temp_data['properColorPredictType'] = properColorPredictType[index]
+        # 苔色白（正常）0 黄1
+        if mossColorSet[index] == '0':
+            temp_data['mossColor'] = '白'
+        elif mossColorSet[index] == '1':
+            temp_data['mossColor'] = '黄'
+        temp_data['mossColorPredictType'] = mossColorPredictType[index]
+        temp_data['pulse'] = data[4]
+        temp_data['labelType'] = labelType[index]
+        temp_data['predictType'] = predictType[index]
+        result_data.append(temp_data)
+
+    # 填充返回前端table的json数据（肝科）
+    sql = "select id,sex,age,tongue,pulse from dwd_liver_info where FIND_IN_SET(id," + idStr + ") order by FIND_IN_SET(id," + idStr + ")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        index = idSet.index(data[0])
+        temp_data = {}
+        temp_data['index'] = index
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '女'
+        elif data[1] == '2':
+            temp_data['sex'] = '男'
+        temp_data['age'] = data[2]
+        temp_data['tongue'] = data[3]
+        # 舌质颜色 淡红（正常）0 淡白1 红2 暗/紫3
+        if properColorSet[index] == '0':
+            temp_data['properColor'] = '淡红'
+        elif properColorSet[index] == '1':
+            temp_data['properColor'] = '淡白'
+        elif properColorSet[index] == '2':
+            temp_data['properColor'] = '红'
+        elif properColorSet[index] == '3':
+            temp_data['properColor'] = '暗/紫'
+        temp_data['properColorPredictType'] = properColorPredictType[index]
+        # 苔色白（正常）0 黄1
+        if mossColorSet[index] == '0':
+            temp_data['mossColor'] = '白'
+        elif mossColorSet[index] == '1':
+            temp_data['mossColor'] = '黄'
+        temp_data['mossColorPredictType'] = mossColorPredictType[index]
+        temp_data['pulse'] = data[4]
+        temp_data['labelType'] = labelType[index]
+        temp_data['predictType'] = predictType[index]
+        result_data.append(temp_data)
+
+    # 填充返回前端table的json数据（肺科）
+    sql = "select id,sex,age,tongue,pulse from dwd_lung_info where FIND_IN_SET(id," + idStr + ") order by FIND_IN_SET(id," + idStr + ")"
+    cursor.execute(sql)  # 获得所有符合条件的数据
+    totalQueryData = cursor.fetchall()
+    # 填充返回前端table的json数据
+    for data in totalQueryData:
+        index = idSet.index(data[0])
+        temp_data = {}
+        temp_data['index'] = index
+        temp_data['id'] = data[0]
+        if data[1] == '1':
+            temp_data['sex'] = '女'
+        elif data[1] == '2':
+            temp_data['sex'] = '男'
+        temp_data['age'] = data[2]
+        temp_data['tongue'] = data[3]
+        # 舌质颜色 淡红（正常）0 淡白1 红2 暗/紫3
+        if properColorSet[index] == '0':
+            temp_data['properColor'] = '淡红'
+        elif properColorSet[index] == '1':
+            temp_data['properColor'] = '淡白'
+        elif properColorSet[index] == '2':
+            temp_data['properColor'] = '红'
+        elif properColorSet[index] == '3':
+            temp_data['properColor'] = '暗/紫'
+        temp_data['properColorPredictType'] = properColorPredictType[index]
+        # 苔色白（正常）0 黄1
+        if mossColorSet[index] == '0':
+            temp_data['mossColor'] = '白'
+        elif mossColorSet[index] == '1':
+            temp_data['mossColor'] = '黄'
+        temp_data['mossColorPredictType'] = mossColorPredictType[index]
+        temp_data['pulse'] = data[4]
+        temp_data['labelType'] = labelType[index]
+        temp_data['predictType'] = predictType[index]
+        result_data.append(temp_data)
+
+    result_data.sort(key=lambda s: s["index"])#要根据原来的（折线）序号index进行排序
+    json_data['code'] = str(0)
+    json_data['msg'] = ''
+    json_data['total'] = len(result_data)
+    offset = (int(page) - 1) * int(limit)  # 起始行
+    endset = offset + int(limit)
+    if endset > len(result_data):
+        endset = len(result_data)
+    json_data['data'] = result_data[offset:endset]
+    json_data = json.dumps(json_data)
+    return json_data
+
 #肾象预测服务
 @app.route('/kindney_prediction', methods=["POST"])
 def kindney_prediction():
