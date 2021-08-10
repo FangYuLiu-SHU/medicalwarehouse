@@ -99,7 +99,7 @@ function addImg(
   };
   return [
     $(`
-  <div class="component">
+  <div class="component preTongueCom">
     <p style="text-align: center">${idx + 1}</p>
     <div class="upper">
     <img src=data:;base64,${encode}>
@@ -208,7 +208,7 @@ layui.use(["form", "layer"], function () {
       },
       success: (data) => {
         predictData = [];
-        $batch_show.empty();
+        $tongueBatchShow.empty();
         data = JSON.parse(data);
         layer.closeAll();
         const { tongueData, tongue_color_accuracy, moss_color_accuracy } = data;
@@ -218,7 +218,7 @@ layui.use(["form", "layer"], function () {
         });
         for (let i = 0; i < tongueData.length; ++i) {
           const [el, isTon, isCoa, patient_info] = addImg(tongueData[i], i);
-          $batch_show.append(el);
+          $tongueBatchShow.append(el);
           bindShowPatientInfo(el, patient_info);
           predictData.push([el, isTon, isCoa, patient_info]);
           switch (patient_info?.id?.[0]) {
@@ -235,7 +235,7 @@ layui.use(["form", "layer"], function () {
               break;
           }
         }
-        $classifyBtn.attr("disabled", false)
+        $classifyBtn.attr("disabled", false);
         $info.show();
         getTable(kidney_info, "kidney", undefined, 1);
         getTable(lung_info, "lung", undefined, 1);
@@ -328,13 +328,13 @@ function getPage(queryObj, data, type, page_el, len) {
 }
 
 function classify(idx) {
-  $(".component").detach();
-  $batch_show.empty();
+  $(".preTongueCom").detach();
+  $tongueBatchShow.empty();
   const $correct = $(`<div class="correct green"><p>预测正确</p></div>`);
   const $error = $(`<div class="error red"><p>预测不正确</p></div>`);
   for (let i = 0; i < predictData.length; ++i) {
     const [el, isTon, isCoa] = predictData[i];
-    if (idx === 2) $batch_show.append(el);
+    if (idx === 2) $tongueBatchShow.append(el);
     else if (idx === 0 ? isTon : isCoa) {
       $correct.append(el);
     } else {
@@ -342,7 +342,7 @@ function classify(idx) {
     }
   }
   if (idx !== 2) {
-    $batch_show.append($correct).append($error);
+    $tongueBatchShow.append($correct).append($error);
   }
 }
 
@@ -359,7 +359,7 @@ $(".accordCoaColor").on("click", () => {
 });
 
 const $showImg = $(".update_show img");
-const $batch_show = $(".batch_show");
+const $tongueBatchShow = $(".tongueBatchShow");
 const $uploadUi = $(".uploadUi");
 const $imgProgress = $(".update_show .imgProgress");
 const $ton_patient_detail = $(".ton_patient_detail");

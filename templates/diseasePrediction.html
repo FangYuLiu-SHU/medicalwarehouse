@@ -345,7 +345,7 @@
             <button	class="layui-btn accordTonColor classify" disabled>按舌色分类</button>
             <button	class="layui-btn accordCoaColor classify" disabled>按苔色分类</button>
             <button	class="layui-btn recovery classify" disabled>还原</button>
-            <div class="batch_show">
+            <div class="batch_show tongueBatchShow">
             </div>
             <div class="info">
                 <div class="kidney_ton">
@@ -388,6 +388,11 @@
             <div id="PredictChartDom2" style="width: 19%; height: 490%;float: left;"></div><!--舌象症状统计-->
             <div id="PredictChartBar" style="width: 57%; height: 490%;float: right;"></div><!--验证详情-->
             <div id="PredictDisplay" style="width: 38%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            <button	class="layui-btn accordTonColor classify otherATC" disabled>按舌色分类</button>
+            <button	class="layui-btn accordCoaColor classify otherACC" disabled>按苔色分类</button>
+            <button	class="layui-btn recovery classify otherR" disabled>还原</button>
+            <div class="batch_show other">
+            </div>
             <div style="text-align: center;"><!--比对表格显示-->
                 <div id="myTable7" class="layui-inline" style="display:inline-block;width: 90%;margin: 0 auto;">
                     <table class="layui-hide" id="predictionTable7" border="3px" style="margin: 0 auto;"></table>
@@ -1818,13 +1823,97 @@
         });
     });
 </script>
+<!--舌象预测子页面js-->
+<script src="../static/js/tongue_pre/table_type.js"></script>
+<script src="../static/js/tongue_pre/update_pre.js"></script>
 <!--脉象舌象综合预测子页面js-->
 <script>
+    const $other = $(".other");
+    const predictData2 = [];
+    function addImg2(
+    {
+        patient_info,
+        encode,
+        true_ton_color,
+        pre_ton_color,
+        true_coating_color,
+        pre_coating_color,
+    },
+    idx
+    ) {
+    const isTonCorrect = true_ton_color === pre_ton_color;
+    const isCoaCorrect = true_coating_color === pre_coating_color;
+    // <img src=data:;base64,${encode}>
+    patient_info = {
+        ...patient_info,
+        ...{
+        true_ton_color,
+        pre_ton_color,
+        true_coating_color,
+        pre_coating_color,
+        isTonCorrect,
+        isCoaCorrect,
+        },
+    };
+    return [
+        $(`
+    <div class="component tongueOther">
+        <p style="text-align: center">${idx + 1}</p>
+        <div class="upper">
+        <img src=data:;base64,${encode}>
+            
+        </div>
+        <div class="lower">
+            <p class=${
+            isTonCorrect ? "green" : "red"
+            }>舌色(真实):<span>${true_ton_color}</span>&nbsp;&nbsp;&nbsp;舌色(预测):<span>${pre_ton_color}</span></p>
+            <p class=${
+            isCoaCorrect ? "green" : "red"
+            }>苔色(真实):<span>${true_coating_color}</span>&nbsp;&nbsp;&nbsp;苔色(预测):<span>${pre_coating_color}</span></p>
+        </div>
+    </div> 
+        `),
+        isTonCorrect,
+        isCoaCorrect,
+        patient_info,
+    ];
+    }
+
+    function classify2(idx) {
+        $(".tongueOther").detach();
+        $other.empty();
+        const $correct = $(`<div class="correct green"><p>预测正确</p></div>`);
+        const $error = $(`<div class="error red"><p>预测不正确</p></div>`);
+        for (let i = 0; i < predictData2.length; ++i) {
+            const [el, isTon, isCoa] = predictData2[i];
+            if (idx === 2) $other.append(el);
+            else if (idx === 0 ? isTon : isCoa) {
+                $correct.append(el);
+            } else {
+                $error.append(el);
+            }
+        }
+        if (idx !== 2) {
+            $other.append($correct).append($error);
+        }
+    }
+
+    $(".otherATC").on("click", () => {
+        classify2(0);
+    });
+
+    $(".otherR").on("click", () => {
+        classify2(2);
+    });
+
+    $(".otherACC").on("click", () => {
+        classify2(1);
+    });
     layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         var form = layui.form
             , layer = layui.layer
             , table=layui.table;
-
+        
         //监听提交
         form.on('submit(selectPulseTongueNumber)', function (data) {
             var select = document.getElementById('id_selectPulseTongueNumber');
@@ -1847,6 +1936,13 @@
                 data: postData,
                 success: function (newData) {
                     layer.closeAll('loading');
+                    const {tongueData} = newData;
+                    for (let i = 0; i < tongueData.length; ++i) {
+                        const [el, isTon, isCoa, patient_info] = addImg2(tongueData[i], i);
+                        predictData2.push([el, isTon, isCoa, patient_info]);
+                        $other.append(el);
+                    }
+                    $classifyBtn.attr("disabled", false);
                     var Predict_dom = document.getElementById('PredictChartDom');
                     var Predict_chart = echarts.init(Predict_dom);
                     var Predict_option = {
@@ -2290,9 +2386,6 @@
         var layer = layui.layer;
     });
 </script>
-<!--舌象预测子页面js-->
-<script src="../static/js/tongue_pre/table_type.js"></script>
-<script src="../static/js/tongue_pre/update_pre.js"></script>
 <!--肾象预测子页面js-->
 <script>
     layui.use(['form', 'layedit', 'laydate', 'table'], function () {
