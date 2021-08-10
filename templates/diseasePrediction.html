@@ -49,6 +49,7 @@
         <li>脉象预测准确率展示</li>
         <li>舌象预测</li>
         <li>舌象预测准确率展示</li>
+        <li>脉象舌象综合展示</li>
         <li>肾象预测</li>
         <li>肾象预测准确率展示</li>
         <li>肝象预测</li>
@@ -364,6 +365,45 @@
                 </div>
             </div>
         </div>                <!--舌象预测准确率展示-->
+        <div class="layui-tab-item">
+            <form name="theForm7" id="the_form7" class="layui-form layui-form-pane" action="##" onsubmit="return false"
+                  method="post" lay-filter="selectPulseTongueNumber" enctype='multipart/form-data'>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">验证表格数</label>
+                    <div class="layui-input-inline">
+                        <select name="pulseTongueSelectNumber" id="id_selectPulseTongueNumber" lay-verify="required"
+                                lay-filter="selectNum" class="select">
+                            <option value="20" selected="selected">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn" id="this_commit7" lay-submit="*" lay-filter="selectPulseTongueNumber">开始预测
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div id="PredictChartDom" style="width: 19%; height: 490%;float: left;"></div><!--脉象症状统计-->
+            <div id="PredictChartDom2" style="width: 19%; height: 490%;float: left;"></div><!--舌象症状统计-->
+            <div id="PredictChartBar" style="width: 57%; height: 490%;float: right;"></div><!--验证详情-->
+            <div id="PredictDisplay" style="width: 38%; float: left;margin-top: -80px;text-align: center;"></div><!--准确率显示-->
+            <div style="text-align: center;"><!--比对表格显示-->
+                <div id="myTable7" class="layui-inline" style="display:inline-block;width: 90%;margin: 0 auto;">
+                    <table class="layui-hide" id="predictionTable7" border="3px" style="margin: 0 auto;"></table>
+                </div>
+            </div>
+            <blockquote class="layui-elem-quote" id="note7" style="visibility: hidden;">
+                <b>页面说明</b><br>
+                饼状图：展示该批量数据预测正确与不正确的数量占比，红色为预测正确的占比，灰色为预测错误占比，鼠标移动到饼状图上会显示详细数据；<br>
+                折线图：逐个展示该批数据的预测情况，双横坐标，上方横坐标表示数据序号，下方横坐标表示患者id编号，纵坐标表示既定的各种类别，
+                    实线为标签类别的折线图（以蓝线圆形结点表示），虚线为预测类别的折线图（以粉红线菱形结点表示），当圆圈结点与菱形结点重叠时，
+                    代表预测准确，当圆圈结点与菱形结点分离时，代表预测错误，另外当鼠标移动到具体某一位置时，浮动便签会显示一些标签信息，
+                    点击某一列的数据结点时，会显示该结点代表的id（患者）的详细信息，滚动鼠标滑轮可以沿横轴方向缩放折线图；<br>
+                对照表：展示了批量预测数据的标签类别与预测结果，深色背景行代表预测准确，浅色背景行代表预测错误，并且预测错误的结果字段用红色显著标记；<br>
+                使用模型：长短期记忆网络（Long-Short Term Memory,LSTM）；
+            </blockquote>
+        </div>                <!--脉象舌象综合展示-->
         <div class="layui-tab-item">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
                 <legend>输入病人的各项指标</legend>
@@ -1347,8 +1387,7 @@
 
         //监听提交
         form.on('submit(selectPulseNumber)', function (data) {
-            var select = document.getElementById('id_selectPu' +
-                'lseNumber');
+            var select = document.getElementById('id_selectPulseNumber');
             var index = select.selectedIndex; // 选中索引
             var text = select.options[index].text; // 选中文本
             var postData = {"selectTestNum": "20"};
@@ -1776,6 +1815,461 @@
             form.val('forecastInformation', {
                 "egfr": egfr.toString()
             });
+        });
+    });
+</script>
+<!--脉象舌象综合预测子页面js-->
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , table=layui.table;
+
+        //监听提交
+        form.on('submit(selectPulseTongueNumber)', function (data) {
+            var select = document.getElementById('id_selectPulseTongueNumber');
+            var index = select.selectedIndex; // 选中索引
+            var text = select.options[index].text; // 选中文本
+            var postData = {"selectTestNum": "20"};
+            var message = text;
+            if (message == "20") {
+                postData = {"selectTestNum": "20"};
+            } else if (message == "50") {
+                postData = {"selectTestNum": "50"};
+            } else if (message == "100") {
+                postData = {"selectTestNum": "100"};
+            }
+            layer.load(2);
+            $.ajax({
+                url: "pulse_tongue_Prediction",
+                type: "POST",
+                dataType: "json",
+                data: postData,
+                success: function (newData) {
+                    layer.closeAll('loading');
+                    var Predict_dom = document.getElementById('PredictChartDom');
+                    var Predict_chart = echarts.init(Predict_dom);
+                    var Predict_option = {
+                        title: {
+                            text: '脉象验证情况',
+                            subtext: newData.testNum + '个脉搏验证表格',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                        },
+                        series: [
+                            {
+                                name: '预测准确率' + newData.accuracy * 100 + '%',
+                                type: 'pie',
+                                radius: '60%',
+                                label: {
+                                    normal: {
+                                        position: "inner",
+                                        show: false,
+                                    }
+                                },
+                                data: [
+                                    {value: newData.num_pos, name: '预测正确'},
+                                    {value: newData.num_neg, name: '预测错误'},
+                                ],
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0,0,0,0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    Predict_chart.on()
+                    Predict_chart.setOption(Predict_option);
+
+                    var Predict_dom2 = document.getElementById('PredictChartDom2');
+                    var Predict_chart2 = echarts.init(Predict_dom2);
+                    var Predict_option2 = {
+                        title: {
+                            text: '舌象验证情况',
+                            subtext: newData.testNum + '个舌象验证图片',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                        },
+                        series: [
+                            {
+                                name: '预测准确率' + newData.tongue_accuracy * 100 + '%',
+                                type: 'pie',
+                                radius: '60%',
+                                label: {
+                                    normal: {
+                                        position: "inner",
+                                        show: false,
+                                    }
+                                },
+                                data: [
+                                    {value: newData.tongue_num_pos, name: '预测正确'},
+                                    {value: newData.tongue_num_neg, name: '预测错误'},
+                                ],
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0,0,0,0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    Predict_chart2.on()
+                    Predict_chart2.setOption(Predict_option2);
+
+                    var Predict_bar = document.getElementById('PredictChartBar');
+                    var Predict_chartBar = echarts.init(Predict_bar);
+                    var PredictBar_option = {
+                        title: {
+                            text: '脉搏预测验证',
+                            subtext: '验证详情',
+                        },
+                        //改，更改坐标指示器类型
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow',
+                                label: {
+                                    backgroundColor: '#283b56'
+                                }
+                            },
+                            //改动，添加一个横坐标贴士展示
+                            formatter: function (params) {
+                                var a = params[0];
+                                var b = params[1];
+                                var str = '序号：' + a.dataIndex+"<br />";
+                                str += '编号：' + a.axisValue;
+                                str += '<br /><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + a.color + '"></span>' + a.seriesName + " : " + a.value + "<br />";
+                                str += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + b.color + '"></span>' + b.seriesName + " : " + b.value;
+                                str += "<br />"+'点击查看详情';
+                                return str;
+                            }
+                        },
+                        legend: {
+                            data: ['预测类别', '标签类别']
+                        },
+                        dataZoom: [
+                            {
+                                type: "inside"
+                            }
+                            , {
+                                type: 'slider',//图表下方的伸缩条
+                                show: true, //是否显示
+                                realtime: true, //拖动时，是否实时更新系列的视图
+                                start: 0, //伸缩条开始位置（1-100），可以随时更改
+                                end: 100, //伸缩条结束位置（1-100），可以随时更改
+                            }],
+                        //改动，添加一个横坐标
+                        xAxis:[
+                            {
+                                name: '脉搏表格编号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: newData.idSet
+                            },
+                            {
+                                name: '序号',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: true,
+                                data: Array.from({length: newData.idSet.length}, (a, i) => i)
+                            }
+                            ],
+                        yAxis:
+                            {
+                                name: '脉搏类型',
+                                nameLocation: 'end',
+                                type: 'category',
+                                boundaryGap: false,
+                                data: ['', '沉细', '细', '弦', '弦细', '滑', '濡', '']
+                            },
+                        //进行了更改
+                        series: [
+                            {
+                                name: '标签类别',
+                                type: 'line',
+                                symbol:'emptyCircle',
+                                symbolSize:10,
+                                xAxisIndex: 0,
+                                yAxisIndex: 0,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#ff0000',
+                                        color:'#005AB5',
+                                        lineStyle:{
+                                            //color:'#ff0000',
+                                            color:'#0080FF',
+                                            width:1,
+                                            type:'solid'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
+                                data: newData.labelType
+                            },
+                            {
+                                name: '预测类别',
+                                type: 'line',
+                                symbol:'diamond',
+                                symbolSize:9,
+                                smooth:false,   //关键点，为true是不支持虚线的，实线就用true
+                                itemStyle:{
+                                    normal:{
+                                        //color:'#dc3023',
+                                        //color:'#ff0000',
+                                        color:'#CE0000',
+                                        lineStyle:{
+                                            //color:'#dc3023',
+                                            //color:'#ff0000',
+                                            color:'#B766AD',
+                                            width:1,
+                                            type:'dotted'  //'dotted'虚线 'solid'实线
+                                        }
+                                    }
+                                },
+                                data: newData.predictType
+                            }
+                        ]
+                    };
+                    Predict_chartBar.setOption(PredictBar_option);
+                    Predict_chartBar.off("click");
+                    Predict_chartBar.on('click',function(params){
+                        console.log(params)
+                        id = params.name;
+                        if (id[0] == 'k'){
+                            type = 'kidney';
+                            const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "serum_creatinine",
+      title: "血肌酐",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "eGFR",
+      title: "eGFR",
+      width: 177,
+      align: "center",
+    },
+    { field: "symptoms", title: "症型", align: "center" },
+    { field: "tongue", title: "舌", align: "center" },
+    { field: "pulse", title: "脉", align: "center" }
+  ],
+];
+                        }else if (id[0] == 'l'){
+                            type = 'lung';
+                            const cols = [
+  [
+    {
+      field: "id",
+      title: "编号",
+      width: 80,
+      align: "center",
+    },
+    { field: "sex", title: "性别", width: 80, align: "center" },
+    {
+      field: "age",
+      title: "年龄",
+      width: 80,
+      align: "center",
+    },
+    {
+      field: "wm_diagnosis",
+      title: "西医诊断",
+      width: 110,
+      align: "center",
+    },
+    {
+      field: "Lung_qi_deficiency",
+      title: "肺气虚",
+      width: 80,
+      align: "center",
+    },
+    { field: "spleen_qi_deficiency", title: "脾气虚", width: 80, align: "center" },
+    { field: "kidney_qi_deficiency", title: "肾气虚", width: 80, align: "center" },
+    { field: "FEV1", title: "FEV1", width: 100, align: "center" },
+    { field: "FVC", title: "FVC", width: 100, align: "center" },
+    { field: "FEV1%", title: "FEV1%", width: 100, align: "center" },
+    { field: "FEV1/FVC", title: "FEV1/FVC", width: 100, align: "center" },
+    { field: "PEF", title: "PEF", width: 100, align: "center" },
+    { field: "tongue", title: "舌", width: 180, align: "center" },
+    { field: "pulse", title: "脉",width: 80, align: "center" },
+  ],
+];
+                        }else{
+                            type = 'liver';
+                            const cols = [
+    [
+      {
+        field: "id",
+        title: "编号",
+        width: 155,
+        align: "center",
+      },
+      { field: "sex", title: "性别", width: 80, align: "center" },
+      {
+        field: "age",
+        title: "年龄",
+        width: 80,
+        align: "center",
+      },
+      { field: "ALT", title: "ALT", width: 80, align: "center" },
+      { field: "symptoms_type", title: "症型", align: "center" },
+      { field: "tongue", title: "舌", align: "center" },
+      { field: "pulse", title: "脉", align: "center" },
+    ],
+  ];
+                        }
+                        rowToolEvent1(id,type,cols);
+                    });
+                    PredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>脉象预测准确率：' + (newData.accuracy * 100).toFixed(2) + '%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;舌象预测准确率：' + (newData.tongue_accuracy * 100).toFixed(2) + '%</b></h2>';
+                    //设置layui datatable的某一行的颜色
+                    //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
+                    function Layui_SetDataTableRowColor2(DivId, Color1, Color2, Color3, Color4, Color5, Color6, Color7){
+                        try{
+                            var div = document.getElementById(DivId);
+                            if(div != null){ //找到对象了
+                                var table_main = div.getElementsByClassName('layui-table-main');   //通过class获取table_main
+                                if (table_main != null && table_main.length > 0) {
+                                    var table = table_main[0].getElementsByClassName('layui-table');   //通过class获取table
+                                    if (table != null && table.length > 0) {
+                                        var trs = table[0].querySelectorAll("tr");
+                                        if (trs != null && trs.length > 0) {
+                                            for(var i=0;i<trs.length;i++){
+                                                var tds = trs[i].querySelectorAll("td");
+                                                var properColor=tds[5].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var properColorPredictType=tds[6].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var mossColor=tds[7].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var mossColorPredictType=tds[8].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var labelType=tds[10].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var predictType=tds[11].getElementsByClassName("layui-table-cell")[0].textContent;
+                                                var colorSet=0;
+                                                if(properColor==properColorPredictType){}
+                                                else{
+                                                    tds[6].style.color = Color5;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(mossColor==mossColorPredictType){}
+                                                else{
+                                                    tds[8].style.color = Color6;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(labelType==predictType){}
+                                                else{
+                                                    tds[11].style.color = Color7;//醒目字体颜色
+                                                    colorSet=1;
+                                                }
+                                                if(colorSet==0){
+                                                    trs[i].style.color = Color1;//字体颜色
+                                                    trs[i].style.backgroundColor= Color3;//背景颜色
+                                                }
+                                                else if(colorSet==1){
+                                                    trs[i].style.color = Color2;//字体颜色
+                                                    trs[i].style.backgroundColor= Color4;//背景颜色
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch(e)
+                        {
+                            console.log(e.message);
+                        }
+                    }
+                    //增加数据表格
+                    table.render({
+                        elem: '#predictionTable7'
+                        ,url:'patient_info_of_pulse_tongue_by_id'
+                        ,method:'post'
+                        ,where:{
+                            idSet:JSON.stringify(newData.idSet)//回传对应编号
+                            ,properColorSet:JSON.stringify(newData.properColorSet)//回传对应舌色标签
+                            ,mossColorSet:JSON.stringify(newData.mossColorSet)//回传对应苔色标签
+                            ,labelType:JSON.stringify(newData.labelType)//回传对应脉象标签
+                            ,predictType:JSON.stringify(newData.predictType)//回传对应脉象预测结果
+                            ,properColorPredictType:JSON.stringify(newData.properColorPredictType)//回传对应舌色预测结果
+                            ,mossColorPredictType:JSON.stringify(newData.mossColorPredictType)//回传对应苔色预测结果
+                        }
+                        ,request:{
+                            idSet:JSON.stringify(newData.idSet)//回传对应编号
+                            ,properColorSet:JSON.stringify(newData.properColorSet)//回传对应舌色标签
+                            ,mossColorSet:JSON.stringify(newData.mossColorSet)//回传对应苔色标签
+                            ,labelType:JSON.stringify(newData.labelType)//回传对应脉象标签
+                            ,predictType:JSON.stringify(newData.predictType)//回传对应脉象预测结果
+                            ,properColorPredictType:JSON.stringify(newData.properColorPredictType)//回传对应舌色预测结果
+                            ,mossColorPredictType:JSON.stringify(newData.mossColorPredictType)//回传对应苔色预测结果
+                        }
+                        ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        ,cols: [[
+                            {field:'index', title: '序号', align: 'center',width:80}
+                            ,{field:'id', title: '编号', align: 'center',width: 110}
+                            ,{field:'sex', title: '性别', align: 'center',width: 80}
+                            ,{field:'age', title: '年龄', align: 'center',width: 80}
+                            ,{field:'tongue', title: '舌象症型', align: 'center'}
+                            ,{field:'properColor', title: '舌色标签', align: 'center',width: 100}
+                            ,{field:'properColorPredictType', title: '舌色预测', align: 'center',width: 100}
+                            ,{field:'mossColor', title: '苔色标签', align: 'center',width: 100}
+                            ,{field:'mossColorPredictType', title: '苔色预测', align: 'center',width: 100}
+                            ,{field:'pulse', title: '脉象症型', align: 'center'}
+                            ,{field:'labelType', title: '脉象标签', align: 'center',width: 130}
+                            ,{field:'predictType', title: '脉象预测', align: 'center',width: 130}
+                        ]]
+                        ,parseData:function (res){
+                            console.log("成功"+res.status+";"+res.message+";"+res.total);
+                            return{
+                                "code":res.code,
+                                "msg":res.message,
+                                "count":res.total,
+                                "data":res.data
+                            };
+                        }
+                        //注意调用时必须要等table渲染完成后进行调用，可以放到渲染完成事件中调用。
+                        ,done: function (res, curr, count) {
+                            Layui_SetDataTableRowColor2('myTable7', '#000000', '#000000', '#ADADAD', '#d0d0d0', "#8600FF", "#F75000", "#AE0000");
+                        }
+                        ,page: true
+                    });
+                    //数据加载完后，显示页面说明语句
+                    document.getElementById("note7").style.visibility="visible";
+                },
+                error: function () {
+                    layer.msg('处理出错！', {icon: 7, time: 2000, shade: [0.6, '#000', true]});
+                }
+            });
+            return false;
         });
     });
 </script>

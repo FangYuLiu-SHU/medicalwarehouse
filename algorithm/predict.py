@@ -16,6 +16,8 @@ from torch.utils import data
 from algorithm.modelLSTM import FCLSTM
 from algorithm.pulsePredictLSTM import Dataset
 from algorithm.TestDataset import TestDataset
+from algorithm.TestDataset import TestDataset2
+from algorithm import tongue_color_predict
 # from modelLSTM import FCLSTM
 # from pulsePredictLSTM import Dataset
 
@@ -83,6 +85,53 @@ def mulPulsePrediction(testSize,totalSize,cursor):
     #print(predictedSet)
     #print(labelSet)
     return idSet,predictedSet,labelSet,correct,total/N,round(correct / (total/N), 4)#因为total数在裁剪过程中被分成了N份，乘了个N
+
+def mulPulsePrediction2(testSize,totalSize,cursor):
+    # 1 加载模型
+    rnn_model = FCLSTM()
+    rnn_model.load_state_dict(torch.load('./files/LSTM_predict_mul.pt', map_location='cpu'))
+    rnn_model.eval()
+    # 2读取测试数据 testSize个
+    batch_size = N  # 设置每个批读N个
+    randomList=random.sample(range(0,totalSize),testSize)
+    # index = random.randint(0,totalSize-testSize)
+    # tst_dataset = TestDataset(index, index+testSize,cursor)
+    tst_dataset = TestDataset2(randomList, cursor)
+    tst_dataloader = data.DataLoader(tst_dataset, batch_size=batch_size)#, shuffle=True去除打乱否则数据不对
+    # 3 全部测试集测试准确度
+    correct = 0
+    total = 0
+    predicted=0
+    labels=0
+    predictedSet=[]
+    labelSet=[]
+    id=0
+    idSet=[]
+    properColorSet = []
+    mossColorSet = []
+    # 对一个病人的N个数据进行统计 求出N个结果中最多的结果作为最后病人的诊断结果
+    with torch.no_grad():
+        for tempdata in tst_dataloader:
+            pulse_data, labels, id, proper_color, moss_color = tempdata
+            outputs = rnn_model(pulse_data)
+            # 对一个病人N行6列预测值进行按行相加
+            outputs = torch.unsqueeze(torch.sum(outputs, axis=0), dim=0)
+            # 得到最大的值的索引
+            _, predicted = torch.max(outputs.data, 1)
+            # 判断是否和原标签对应
+            total += labels.size(0)
+            correct += (predicted == labels[0]).sum().item()
+            predictedSet.append(predicted.numpy()[0])
+            labelSet.append(labels.numpy()[0])
+            idSet.append(id[0])
+            properColorSet.append(proper_color[0])
+            mossColorSet.append(moss_color[0])
+
+
+    # 舌象预测
+    tongue_results = tongue_color_predict.sample_prediction(randomList)
+
+    return idSet,properColorSet,mossColorSet,predictedSet,labelSet,correct,total/N,round(correct / (total/N), 4), tongue_results#因为total数在裁剪过程中被分成了N份，乘了个N
 
 # id,pv,lv,x,n,a=mulPulsePrediction(200,857)
 # print(id)

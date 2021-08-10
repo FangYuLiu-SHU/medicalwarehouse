@@ -74,6 +74,11 @@
         display: inline-block;
         margin-bottom: 7px;
       }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center
+      }
       .self-panel {
         border-radius: 10px;
         background-color: #fff;
@@ -81,298 +86,310 @@
         color: #666;
         width: 1000px;
         height: 400px;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
+        margin: 50px 0;
+      }
+      .explainContainer h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .explainBox {
+        margin-bottom: 20px; 
+      }
+      .explainWord {
+        font-size: 16px;
+        margin-bottom: 5px;
       }
     </style>
   </head>
   <body>
-    <div class="self-panel">
-      <div style="padding: 15px">
-        <fieldset
-          class="layui-elem-field layui-field-title"
-        >
-          <legend>数据导入</legend>
-        </fieldset>
-        <form name="myForm" class="layui-form layui-form-pane">
-          <div class="layui-form-item constrain_width" pane="">
-            <label class="layui-form-label">数据来源</label>
-            <div class="layui-input-block">
-              <input
-                type="radio"
-                name="data_source"
-                value="local"
-                title="本地"
-                lay-filter="show"
-                checked
-              />
-              <input
-                type="radio"
-                name="data_source"
-                value="MySQL"
-                title="Mysql"
-                lay-filter="show"
-              />
-              <input
-                type="radio"
-                name="data_source"
-                value="SqlServer"
-                title="SqlServer"
-                lay-filter="show"
-              />
-            </div>
-          </div>
-          <div class="layui-form-item constrain_width" pane="">
-            <label class="layui-form-label">科室</label>
-            <div class="layui-input-block">
-              <input
-                type="radio"
-                name="dept"
-                value="kidney"
-                title="肾科"
-                checked
-              />
-              <input type="radio" name="dept" value="liver" title="肝科" />
-              <input type="radio" name="dept" value="lung" title="肺科" />
-            </div>
-          </div>
-          <div class="mysql hide">
-            <div class="layui-inline">
-              <div class="layui-form-item">
-                <label class="layui-form-label">host</label>
-                <div class="layui-input-block">
-                  <input
-                    type="text"
-                    name="host"
-                    value="localhost"
-                    placeholder="请输入"
-                    class="layui-input"
-                    lay-verify="host"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="layui-inline">
-              <div class="layui-form-item">
-                <label class="layui-form-label">port</label>
-                <div class="layui-input-block">
-                  <input
-                    type="text"
-                    name="port"
-                    value="3306"
-                    placeholder="请输入"
-                    class="layui-input"
-                    lay-verify="port"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="layui-inline">
-              <div class="layui-form-item">
-                <label class="layui-form-label">user</label>
-                <div class="layui-input-block">
-                  <input
-                    type="text"
-                    name="user"
-                    value="root"
-                    placeholder="请输入"
-                    class="layui-input"
-                    lay-verify="user"
-                  />
-                </div>
-              </div>
-            </div>
-            <div></div>
-            <!-- 换行用 -->
-            <div class="layui-inline">
-              <div class="layui-form-item">
-                <label class="layui-form-label">password</label>
-                <div class="layui-input-block">
-                  <input
-                    type="password"
-                    name="passwd"
-                    value="000000"
-                    placeholder="请输入"
-                    class="layui-input"
-                    lay-verify="password"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="layui-inline">
-              <div class="layui-form-item">
-                <label class="layui-form-label">db</label>
-                <div class="layui-input-block">
-                  <input
-                    type="text"
-                    name="db"
-                    value="medicaldb"
-                    placeholder="请输入"
-                    class="layui-input"
-                    lay-verify="db"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="layui-inline SqlServer">
-              <div class="layui-form-item">
-                <label class="layui-form-label">charset</label>
-                <div class="layui-input-block">
-                  <input
-                    type="text"
-                    name="charset"
-                    value="utf8"
-                    placeholder="请输入"
-                    class="layui-input"
-                    lay-verify="charset"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="layui-form-item">
-            <div class="layui-inline local">
-              <label class="layui-form-label">病例信息表</label>
-              <div class="layui-input-inline">
-                <input
-                  type="text"
-                  name="fileName"
-                  id="selectFileName"
-                  autocomplete="off"
-                  placeholder="未选择文件"
-                  class="layui-input file_icon"
-                  readonly="readonly"
-                  lay-verify="patient_info"
-                />
-                <i class="layui-icon input_clear" data-relate-input="file"
-                  >&#x1006;</i
-                >
-                <!-- &#x1007; -->
-              </div>
-            </div>
-            <div class="layui-inline mysql hide">
-              <label class="layui-form-label">病例信息表名</label>
-              <div class="layui-input-inline">
-                <input
-                  type="text"
-                  name="patient_info_table"
-                  placeholder="请输入"
-                  class="layui-input"
-                  lay-verify="patient_table_name"
-                />
-              </div>
-            </div>
-            <div class="layui-inline local">
-              <!--					<input type="file" name="pulseFile" class="file">-->
-              <a href="javascript:;" class="file"
-                >点击选择文件
-                <input
-                  type="file"
-                  name="infoFile"
-                  id="selectFile"
-                  class="file"
-                  title=""
-                  data-name="file"
-                />
-              </a>
-            </div>
-            <div class="layui-inline local">
-              <label class="layui-form-label">编码</label>
+    <div class="container">
+      <div class="self-panel">
+        <div style="padding: 15px">
+          <fieldset
+            class="layui-elem-field layui-field-title"
+          >
+            <legend>数据导入</legend>
+          </fieldset>
+          <form name="myForm" class="layui-form layui-form-pane">
+            <div class="layui-form-item constrain_width" pane="">
+              <label class="layui-form-label">数据来源</label>
               <div class="layui-input-block">
-                <select name="patient_info_file_encoding">
-                  <option value="utf-8" selected>utf-8</option>
-                  <option value="utf-16 le">utf-16 le</option>
-                </select>
+                <input
+                  type="radio"
+                  name="data_source"
+                  value="local"
+                  title="本地"
+                  lay-filter="show"
+                  checked
+                />
+                <input
+                  type="radio"
+                  name="data_source"
+                  value="MySQL"
+                  title="Mysql"
+                  lay-filter="show"
+                />
+                <input
+                  type="radio"
+                  name="data_source"
+                  value="SqlServer"
+                  title="SqlServer"
+                  lay-filter="show"
+                />
               </div>
             </div>
-          </div>
-          <div class="layui-form-item">
-            <div class="layui-inline local">
-              <label class="layui-form-label">脉搏数据目录</label>
-              <div class="layui-input-inline">
+            <div class="layui-form-item constrain_width" pane="">
+              <label class="layui-form-label">科室</label>
+              <div class="layui-input-block">
                 <input
-                  type="text"
-                  name="fileName"
-                  id="selectDirName"
-                  autocomplete="off"
-                  placeholder="未选择文件"
-                  class="layui-input file_icon"
-                  readonly="readonly"
-                  lay-verify="pulse_dir"
+                  type="radio"
+                  name="dept"
+                  value="kidney"
+                  title="肾科"
+                  checked
                 />
-                <i class="layui-icon input_clear" data-relate-input="fileDir"
-                  >&#x1006;</i
+                <input type="radio" name="dept" value="liver" title="肝科" />
+                <input type="radio" name="dept" value="lung" title="肺科" />
+              </div>
+            </div>
+            <div class="mysql hide">
+              <div class="layui-inline">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">host</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="host"
+                      value="localhost"
+                      placeholder="请输入"
+                      class="layui-input"
+                      lay-verify="host"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">port</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="port"
+                      value="3306"
+                      placeholder="请输入"
+                      class="layui-input"
+                      lay-verify="port"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">user</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="user"
+                      value="root"
+                      placeholder="请输入"
+                      class="layui-input"
+                      lay-verify="user"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div></div>
+              <!-- 换行用 -->
+              <div class="layui-inline">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">password</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="password"
+                      name="passwd"
+                      value="000000"
+                      placeholder="请输入"
+                      class="layui-input"
+                      lay-verify="password"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="layui-inline">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">db</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="db"
+                      value="medicaldb"
+                      placeholder="请输入"
+                      class="layui-input"
+                      lay-verify="db"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="layui-inline SqlServer">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">charset</label>
+                  <div class="layui-input-block">
+                    <input
+                      type="text"
+                      name="charset"
+                      value="utf8"
+                      placeholder="请输入"
+                      class="layui-input"
+                      lay-verify="charset"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline local">
+                <label class="layui-form-label">病例信息表</label>
+                <div class="layui-input-inline">
+                  <input
+                    type="text"
+                    name="fileName"
+                    id="selectFileName"
+                    autocomplete="off"
+                    placeholder="未选择文件"
+                    class="layui-input file_icon"
+                    readonly="readonly"
+                    lay-verify="patient_info"
+                  />
+                  <i class="layui-icon input_clear" data-relate-input="file"
+                    >&#x1006;</i
+                  >
+                  <!-- &#x1007; -->
+                </div>
+              </div>
+              <div class="layui-inline mysql hide">
+                <label class="layui-form-label">病例信息表名</label>
+                <div class="layui-input-inline">
+                  <input
+                    type="text"
+                    name="patient_info_table"
+                    placeholder="请输入"
+                    class="layui-input"
+                    lay-verify="patient_table_name"
+                  />
+                </div>
+              </div>
+              <div class="layui-inline local">
+                <!--					<input type="file" name="pulseFile" class="file">-->
+                <a href="javascript:;" class="file"
+                  >点击选择文件
+                  <input
+                    type="file"
+                    name="infoFile"
+                    id="selectFile"
+                    class="file"
+                    title=""
+                    data-name="file"
+                  />
+                </a>
+              </div>
+              <div class="layui-inline local">
+                <label class="layui-form-label">编码</label>
+                <div class="layui-input-block">
+                  <select name="patient_info_file_encoding">
+                    <option value="utf-8" selected>utf-8</option>
+                    <option value="utf-16 le">utf-16 le</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline local">
+                <label class="layui-form-label">脉搏数据目录</label>
+                <div class="layui-input-inline">
+                  <input
+                    type="text"
+                    name="fileName"
+                    id="selectDirName"
+                    autocomplete="off"
+                    placeholder="未选择文件"
+                    class="layui-input file_icon"
+                    readonly="readonly"
+                    lay-verify="pulse_dir"
+                  />
+                  <i class="layui-icon input_clear" data-relate-input="fileDir"
+                    >&#x1006;</i
+                  >
+                </div>
+              </div>
+              <div class="layui-inline mysql hide">
+                <label class="layui-form-label">脉搏表命名规则</label>
+                <div class="layui-input-inline">
+                  <input
+                    type="text"
+                    name="pulse_table_na_rule"
+                    value="病例编号"
+                    class="layui-input"
+                    lay-verify="pulse_table"
+                  />
+                </div>
+              </div>
+              <div class="layui-inline local">
+                <!--					<input type="file" name="pulseFile" class="file">-->
+                <a href="javascript:;" class="file"
+                  >点击选择目录
+                  <input
+                    type="file"
+                    name="pulseDir"
+                    id="selectDir"
+                    class="file"
+                    data-name="fileDir"
+                    title=""
+                    webkitdirectory
+                  />
+                </a>
+              </div>
+              <div class="layui-inline local">
+                <label class="layui-form-label">编码</label>
+                <div class="layui-input-block">
+                  <select name="pulse_file_encoding" lay-verify="">
+                    <option value="utf-8">utf-8</option>
+                    <option value="utf-16 le" selected>utf-16 le</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">
+                  导入
+                </button>
+                <button
+                  type="reset"
+                  class="layui-btn layui-btn-primary import_reset"
+                >
+                  重置
+                </button>
+              </div>
+              <div class="layui-inline uploadUi">
+                <div class="layui-progress uploadProgress" lay-filter="upload">
+                  <div class="layui-progress-bar" lay-percent="0%"></div>
+                </div>
+                <span class="uploadZi"
+                  ><i
+                    class="
+                      layui-icon layui-anim layui-anim-rotate layui-anim-loop
+                    "
+                    >&#xe63d;</i
+                  >上传中</span
                 >
               </div>
             </div>
-            <div class="layui-inline mysql hide">
-              <label class="layui-form-label">脉搏表命名规则</label>
-              <div class="layui-input-inline">
-                <input
-                  type="text"
-                  name="pulse_table_na_rule"
-                  value="病例编号"
-                  class="layui-input"
-                  lay-verify="pulse_table"
-                />
-              </div>
-            </div>
-            <div class="layui-inline local">
-              <!--					<input type="file" name="pulseFile" class="file">-->
-              <a href="javascript:;" class="file"
-                >点击选择目录
-                <input
-                  type="file"
-                  name="pulseDir"
-                  id="selectDir"
-                  class="file"
-                  data-name="fileDir"
-                  title=""
-                  webkitdirectory
-                />
-              </a>
-            </div>
-            <div class="layui-inline local">
-              <label class="layui-form-label">编码</label>
-              <div class="layui-input-block">
-                <select name="pulse_file_encoding" lay-verify="">
-                  <option value="utf-8">utf-8</option>
-                  <option value="utf-16 le" selected>utf-16 le</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="layui-form-item">
-            <div class="layui-inline">
-              <button class="layui-btn" lay-submit lay-filter="formDemo">
-                导入
-              </button>
-              <button
-                type="reset"
-                class="layui-btn layui-btn-primary import_reset"
-              >
-                重置
-              </button>
-            </div>
-            <div class="layui-inline uploadUi">
-              <div class="layui-progress uploadProgress" lay-filter="upload">
-                <div class="layui-progress-bar" lay-percent="0%"></div>
-              </div>
-              <span class="uploadZi"
-                ><i
-                  class="
-                    layui-icon layui-anim layui-anim-rotate layui-anim-loop
-                  "
-                  >&#xe63d;</i
-                >上传中</span
-              >
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
+      </div>
+      <div class="explainContainer">
+          <h3>本地数据导入文件格式</h3>
       </div>
     </div>
     <script src="../static/layui/layui.js"></script>
@@ -566,6 +583,23 @@
         data.length = 0;
         el.val("");
       }
+
+      function addExplainImg(info, word) {
+        for(let i = 0; i < info.length; ++i) {
+          const img = $(`
+            <div class="explainBox">
+              <p class="explainWord">${word[i]}</p>
+              <img class="explainImg" src=data:;base64,${info[i]}>
+            </div>
+          `)
+          $explainContainer.append(img);
+        }
+      }
+
+      const imgPath = {{data_json | tojson}};
+      const imgInfo = Object.values(JSON.parse(imgPath));
+      const imgWord = ["肝科信息表", "肾科信息表", "肺科信息表", "脉象文件"];
+      const $explainContainer = $(".explainContainer");
       const sourceMysql = $(".mysql");
       const sourceLocal = $(".local");
       const sourceSqlserver = $(".SqlServer");
@@ -583,6 +617,7 @@
           el: $("#selectDirName"),
         },
       };
+      addExplainImg(imgInfo, imgWord);
     </script>
   </body>
 </html>

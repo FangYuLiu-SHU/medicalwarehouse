@@ -100,6 +100,58 @@ def batch_prediction(num):
     # print(results)
     return results
 
+def sample_prediction(randomList):
+    image_folder_path = './static/data/tongueimage'
+    label_path = './files/merge_pulse_tongue.csv'
+    dataloader = Dataloader(image_folder_path, label_path)
+    num = len(randomList)
+
+    sample_ids, sample_imgs, sample_tongue_colors, sample_moss_colors, sample_img_paths = dataloader.get_sample_test_data(randomList)
+
+    sample_images_tensor = torch.LongTensor(sample_imgs)
+    sample_tongue_colors_tensor = torch.LongTensor(sample_tongue_colors)
+    sample_moss_colors_tensor = torch.LongTensor(sample_moss_colors)
+
+    model_tongue = LeNet5(num_types=4)
+    model_tongue.load_state_dict(torch.load('./files/LeNet_togue_color_predict.pt'))
+    outputs = model_tongue(sample_images_tensor.float())
+    pred_tongue_labels = outputs.detach().max(1)[1]
+    tongue_color_correct = pred_tongue_labels.eq(sample_tongue_colors_tensor).sum()
+    tongue_color_accuracy = float(tongue_color_correct) / num
+    tongue_colors = {0: '淡红', 1: '淡白', 2: '红', 3: '暗紫'}
+    true_tongue_colors = []
+    pred_tongue_colors = []
+    for i in range(num):
+        true_tongue_colors.append(tongue_colors[sample_tongue_colors[i]])
+        pred_tongue_colors.append(tongue_colors[int(pred_tongue_labels[i])])
+    # print(sample_tongue_colors, pred_tongue_labels)
+    # print(true_tongue_colors, pred_tongue_colors)
+
+    model_moss = LeNet5(num_types=2)
+    model_moss.load_state_dict(torch.load('./files/LeNet_moss_color_predict.pt'))
+    outputs = model_moss(sample_images_tensor.float())
+    pred_moss_labels = outputs.detach().max(1)[1]
+    moss_color_correct = pred_moss_labels.eq(sample_moss_colors_tensor).sum()
+    moss_color_accuracy = float(moss_color_correct) / num
+    moss_colors = {0: '白', 1: '黄'}
+    true_moss_colors = []
+    pred_moss_colors = []
+    for i in range(num):
+        true_moss_colors.append(moss_colors[sample_moss_colors[i]])
+        pred_moss_colors.append(moss_colors[int(pred_moss_labels[i])])
+
+    results = {
+        'sample_ids': sample_ids,
+        'sample_img_paths': sample_img_paths,
+        'true_tongue_colors': true_tongue_colors,
+        'pred_tongue_colors': pred_tongue_colors,
+        'true_moss_colors': true_moss_colors,
+        'pred_moss_colors': pred_moss_colors,
+        'tongue_color_accuracy': tongue_color_accuracy,
+        'moss_color_accuracy': moss_color_accuracy
+    }
+    return results
+
 
 def img_stream(img_local_path):
     with open(img_local_path, 'rb') as img_f:

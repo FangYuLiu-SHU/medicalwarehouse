@@ -106,6 +106,31 @@ class Dataloader():
         new_data = pd.concat([Y_smo, X_smo], axis=1)
         print(new_data)
 
+    def get_sample_test_data(self, randomList):
+        patient_ids = []
+        images = []
+        tongue_colors = []
+        moss_colors = []
+        image_paths = []
+        for i in randomList:
+            patient_id = self.pd_labels.loc[i, 'id']
+            tongue_color = self.pd_labels.loc[i, 'tongue_proper_color']
+            moss_color = self.pd_labels.loc[i, 'tongue_moss_color']
+            image_path = os.path.join(self.image_folder_path, patient_id.lower() + '.bmp')
+
+            if os.path.exists(image_path):
+                img_np = self.load_image_data(image_path)
+                # print(img_np)
+                patient_ids.append(patient_id)
+                images.append(img_np)
+                tongue_colors.append(tongue_color)
+                moss_colors.append(moss_color)
+                image_paths.append(image_path)
+            else:
+                print(image_path, "doesn't exist!")
+
+        return patient_ids, images, tongue_colors, moss_colors, image_paths
+
 
 
 if __name__ == '__main__':
