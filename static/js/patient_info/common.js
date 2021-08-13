@@ -26,7 +26,6 @@ function getTable(postData, dir, sign = false, layer = null, msg = "") {
 }
 
 function getPage(total, laypage, dir, queryObj) {
-  debugger
   // 设置分页
   laypage.render({
     elem: queryObj.page_el, // 根据ID定位
