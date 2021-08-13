@@ -164,7 +164,7 @@ function channel_select(data, id, type) {
   const { value } = data;
   $.ajax({
     type: "POST",
-    url: `http://127.0.0.1:5000/channel_data`,
+    url: `channel_data`,
     data: {
       type,
       id,

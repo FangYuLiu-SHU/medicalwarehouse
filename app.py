@@ -12,32 +12,37 @@ from algorithm import kindney_symptom_predict, liver_symptom_predict, lung_sympt
 from algorithm import tongue_color_predict
 from sqlalchemy import create_engine
 import pymssql
+from dbutils.pooled_db import PooledDB
 
 # 连接数据库
 try:
-    db = pymysql.connect(
-             host='58.199.160.140',
-             port=3306,
-             user='root',
-             passwd='000000',
-             db ='medical_dw',
-             charset='utf8'
-             )
+    POOL = PooledDB(
+        creator=pymysql,  # 使用链接数据库的模块
+        maxconnections=6,  # 连接池允许的最大连接数，0和None表示不限制连接数
+        mincached=2,  # 初始化时，链接池中至少创建的空闲的链接，0表示不创建
+        maxcached=5,  # 链接池中最多闲置的链接，0和None不限制
+        maxshared=3,
+        # 链接池中最多共享的链接数量，0和None表示全部共享。PS: 无用，因为pymysql和MySQLdb等模块的 threadsafety都为1，所有值无论设置为多少，_maxcached永远为0，所以永远是所有链接都共享。
+        blocking=True,  # 连接池中如果没有可用连接后，是否阻塞等待。True，等待；False，不等待然后报错
+        maxusage=None,  # 一个链接最多被重复使用的次数，None表示无限制
+        setsession=[],  # 开始会话前执行的命令列表。如：["set datestyle to ...", "set time zone ..."]
+        ping=0,
+        # ping MySQL服务端，检查是否服务可用。# 如：0 = None = never, 1 = default = whenever it is requested, 2 = when a cursor is created, 4 = when a query is executed, 7 = always
+        host='58.199.160.140',
+        port=3306,
+        user='root',
+        password='000000',
+        database='medical_dw',
+        charset='utf8'
+    )
     engine = create_engine("mysql+pymysql://root:000000@58.199.160.140:3306/medical_dw?charset=utf8")
 except:
     print('数据库连接失败！')
     exit(0)
 
-# 使用cursor()方法创建一个游标对象cursor，用于执行SQL语句
-cursor = db.cursor()
-
-# # 关闭数据库连接
-# db.close()
-
 
 app = Flask(__name__)
 app.secret_key = '000000'
-
 
 
 @app.route('/')
@@ -133,9 +138,7 @@ def dataimport():
                 print('Columns do not match!')
                 return 'Columns do not match!'
             pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-            # print(pd_patient_info)
             # 导入病例信息表到数据仓库
-            # print(patient_info_table_name)
             pd_patient_info.to_sql(name=patient_info_table_name, con=engine, if_exists='append', index=False)
 
             # 读取并导入脉象数据
@@ -181,17 +184,21 @@ def kidney_statistic():
     if request.method == "GET":
         # 从数据库获取病人信息表
         try:
-            cursor.execute("SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_kidney_info;")
+            conn = POOL.connection(shareable=False)
+            cursor1 = conn.cursor()
+            cursor1.execute("SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_kidney_info;")
         except:
             print('从服务器获取数据失败')
             return 0
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        query_result = cursor1.fetchall()
+        col_names = pd.DataFrame(list(cursor1.description)).iloc[:,0].tolist()
         pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
 
         data = tool.get_statistic_info(pd_patient_info)
 
         data_json = json.dumps(data)
+        cursor1.close()
+        conn.close()
         # return data_json
         return render_template('datastatistic.html', data_json=data_json)
     elif request.method == "POST":
@@ -203,7 +210,6 @@ def kidney_statistic():
         min_eGFR = request.form.get('min_eGFR')
         max_eGFR = request.form.get('max_eGFR')
         symptoms_type = request.form.get('symptoms_type')
-        # print(gender, symptoms_type, min_age, max_age, min_sc_value, max_sc_value, min_eGFR, max_eGFR)
 
         sql = "SELECT sex, age, serum_creatinine, eGFR, symptoms_type FROM dwd_kidney_info WHERE id IS NOT NULL"
         t = [None, '', 'all']
@@ -223,20 +229,23 @@ def kidney_statistic():
             sql = sql + " AND eGFR>=" + str(max_eGFR)
         if symptoms_type not in t:
             sql = sql + " AND symptoms_type=" + str(symptoms_type)
-        # print(sql)
 
         # 从数据库获取病人信息表
         try:
-            cursor.execute(sql)
+            conn = POOL.connection(shareable=False)
+            cursor1 = conn.cursor()
+            cursor1.execute(sql)
         except:
             print('从服务器获取数据失败')
             return '从服务器获取数据失败'
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        query_result = cursor1.fetchall()
+        col_names = pd.DataFrame(list(cursor1.description)).iloc[:, 0].tolist()
         pd_patient_info = pd.DataFrame(list(query_result), columns=col_names)
-        # print(pd_patient_info)
 
         data = tool.get_statistic_info(pd_patient_info)
+
+        cursor1.close()
+        conn.close()
 
         data_json = json.dumps(data)
         return data_json
@@ -253,15 +262,20 @@ def liver_statistic():
     if request.method == "GET":
         # 从数据库获取病人信息表
         try:
-            cursor.execute("SELECT sex, age, ALT, symptoms_type FROM dwd_liver_info;")
+            conn = POOL.connection(shareable=False)
+            cursor1 = conn.cursor()
+            cursor1.execute("SELECT sex, age, ALT, symptoms_type FROM dwd_liver_info;")
         except:
             print('从服务器获取数据失败')
             return '从服务器获取数据失败'
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        query_result = cursor1.fetchall()
+        col_names = pd.DataFrame(list(cursor1.description)).iloc[:,0].tolist()
         pd_liver_info = pd.DataFrame(list(query_result), columns=col_names)
 
         data = tool.get_liver_statistic_info(pd_liver_info)
+
+        cursor1.close()
+        conn.close()
 
         data_json = json.dumps(data)
         return data_json
@@ -293,17 +307,21 @@ def liver_statistic():
 
         # 从数据库获取病人信息表
         try:
-            cursor.execute(sql)
+            conn = POOL.connection(shareable=False)
+            cursor1 = conn.cursor()
+            cursor1.execute(sql)
         except:
             print('从服务器获取数据失败')
             return '从服务器获取数据失败'
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        query_result = cursor1.fetchall()
+        col_names = pd.DataFrame(list(cursor1.description)).iloc[:, 0].tolist()
         pd_liver_info = pd.DataFrame(list(query_result), columns=col_names)
         # print(pd_liver_info)
 
         data = tool.get_liver_statistic_info(pd_liver_info)
-        # print(data)
+
+        cursor1.close()
+        conn.close()
 
         data_json = json.dumps(data)
         return data_json
@@ -318,14 +336,18 @@ def lung_statistic():
     if request.method == "GET":
         # 从数据库获取病人信息表
         try:
-            cursor.execute("SELECT sex, age, Lung_qi_deficiency, spleen_qi_deficiency, kidney_qi_deficiency FROM dwd_lung_info;")
+            conn = POOL.connection(shareable=False)
+            cursor1 = conn.cursor()
+            cursor1.execute("SELECT sex, age, Lung_qi_deficiency, spleen_qi_deficiency, kidney_qi_deficiency FROM dwd_lung_info;")
         except:
             print('从服务器获取数据失败')
             return '从服务器获取数据失败'
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:,0].tolist()
+        query_result = cursor1.fetchall()
+        col_names = pd.DataFrame(list(cursor1.description)).iloc[:,0].tolist()
         pd_lung_info = pd.DataFrame(list(query_result), columns=col_names)
-        # print(pd_lung_info)
+
+        cursor1.close()
+        conn.close()
 
         data = tool.get_lung_statistic_info(pd_lung_info)
         # print(data)
@@ -359,17 +381,20 @@ def lung_statistic():
 
         # 从数据库获取病人信息表
         try:
-            cursor.execute(sql)
+            conn = POOL.connection(shareable=False)
+            cursor1 = conn.cursor()
+            cursor1.execute(sql)
         except:
             print('从服务器获取数据失败')
             return '从服务器获取数据失败'
-        query_result = cursor.fetchall()
-        col_names = pd.DataFrame(list(cursor.description)).iloc[:, 0].tolist()
+        query_result = cursor1.fetchall()
+        col_names = pd.DataFrame(list(cursor1.description)).iloc[:, 0].tolist()
         pd_lung_info = pd.DataFrame(list(query_result), columns=col_names)
-        # print(pd_lung_info)
+
+        cursor1.close()
+        conn.close()
 
         data = tool.get_lung_statistic_info(pd_lung_info)
-        # print(data)
 
         data_json = json.dumps(data)
         return data_json
@@ -417,12 +442,11 @@ def patient_info_by_condition():
     if symptoms!="":
         sql += "and symptoms_type='" + str(symptoms) + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     sql+="limit "+str(offset)+','+str(limit)
-    # sql_total_count = "select count(*) from dwd_patient_info"  # 总的记录数
-    # cursor.execute(sql_total_count)  # 执行sql语句
-    # patient_total_count = cursor.fetchall()  # 取数据
     cursor.execute(sql)
     data = cursor.fetchall()
     json_data = {}
@@ -436,6 +460,9 @@ def patient_info_by_condition():
         for i in range(len(column_names)):
             one_person[column_names[i][0]] = str(result[i])
         result_data.append(one_person)
+
+    cursor.close()
+    conn.close()
         
     json_data["code"] = str(0)
     json_data['total'] = len(totalQueryData)
@@ -461,6 +488,8 @@ def patient_info_of_pulse_by_id():
     # 填充返回前端table的json数据（肾科）
     idStr="'"+",".join(idSet)+"'"
     sql = "select id,sex,age,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
 
@@ -520,6 +549,9 @@ def patient_info_of_pulse_by_id():
         temp_data['predictType'] = predictType[idSet.index(data[0])]
         result_data.append(temp_data)
 
+    cursor.close()
+    conn.close()
+
     result_data.sort(key=lambda s: s["index"])#要根据原来的（折线）序号index进行排序
     json_data['code'] = str(0)
     json_data['msg'] = ''
@@ -549,6 +581,8 @@ def patient_info_of_kindney_by_id():
     # 填充返回前端table的json数据
     idStr="'"+",".join(idSet)+"'"
     sql = "select id,sex,age,serum_creatinine,eGFR,tongue,pulse,symptoms_type from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     # 填充返回前端table的json数据
@@ -571,6 +605,10 @@ def patient_info_of_kindney_by_id():
             temp_data['symptoms_type'] = '肾阴虚'
         temp_data['predictType'] = predictType[idSet.index(data[0])]
         result_data.append(temp_data)
+
+    cursor.close()
+    conn.close()
+
     json_data['code'] = str(0)
     json_data['msg'] = ''
     json_data['total'] = len(result_data)
@@ -599,6 +637,8 @@ def patient_info_of_liver_by_id():
     # 填充返回前端table的json数据
     idStr="'"+",".join(idSet)+"'"
     sql = "select id,sex,age,ALT,tongue,pulse,symptoms_type from dwd_liver_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     # 填充返回前端table的json数据
@@ -627,6 +667,10 @@ def patient_info_of_liver_by_id():
     endset = offset + int(limit)
     if endset > len(result_data):
         endset = len(result_data)
+
+    cursor.close()
+    conn.close()
+
     json_data['data'] = result_data[offset:endset]
     json_data = json.dumps(json_data)
     return json_data
@@ -651,6 +695,8 @@ def patient_info_of_lung_by_id():
     idStr="'"+",".join(idSet)+"'"
     # idStr="'K0001,K0002,K0003,K0004,K0005,K0006,K0007,K0008,K0009,K0010,K0011'"
     sql = "select id,sex,age,FEV1,FVC,`FEV1%`,FEV1/FVC,PEF,tongue,pulse,Wesmedicine_diagnosis,Lung_qi_deficiency,spleen_qi_deficiency,kidney_qi_deficiency from dwd_lung_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
     # 填充返回前端table的json数据
@@ -694,6 +740,10 @@ def patient_info_of_lung_by_id():
     endset = offset + int(limit)
     if endset > len(result_data):
         endset = len(result_data)
+
+    cursor.close()
+    conn.close()
+
     json_data['data'] = result_data[offset:endset]
     json_data = json.dumps(json_data)
     return json_data
@@ -817,8 +867,12 @@ def pulsePrediction_accuracy():
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
     totalNum=875
-    # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
-    idSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction(testNum,totalNum,cursor)
+
+    conn = POOL.connection(shareable=False)
+    cursor1 = conn.cursor()
+    idSet,predicted,labels,correct,total,accuracy = predict.mulPulsePrediction(testNum,totalNum,cursor1)
+    cursor1.close()
+    conn.close()
     # 方案一：沉细-0 细-1 弦-2 弦细-3 滑-4 濡-5
     pulseType = ['沉细', '细', '弦', '弦细', '滑', '濡']
     predictType=[]
@@ -845,6 +899,8 @@ def pulse_tongue_Prediction():
     testNum=int(selectTestNum)
     totalNum=198#有舌像又有脉象的数据量
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     idSet,properColorSet,mossColorSet,predicted,labels,correct,total,accuracy,tongue_results = predict.mulPulsePrediction2(testNum,totalNum,cursor)
     # 方案一：沉细-0 细-1 弦-2 弦细-3 滑-4 濡-5
     pulseType = ['沉细', '细', '弦', '弦细', '滑', '濡']
@@ -907,6 +963,9 @@ def pulse_tongue_Prediction():
         }
         tongueData.append(pred)
 
+    cursor.close()
+    conn.close()
+
     formData['tongueData'] = tongueData
     newData = json.dumps(formData)  # json.dumps封装
     return newData
@@ -933,6 +992,8 @@ def patient_info_of_pulse_tongue_by_id():
     # 填充返回前端table的json数据（肾科）
     idStr="'"+",".join(idSet)+"'"
     sql = "select id,sex,age,tongue,pulse from dwd_kidney_info where FIND_IN_SET(id,"+idStr+") order by FIND_IN_SET(id,"+idStr+")"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 获得所有符合条件的数据
     totalQueryData = cursor.fetchall()
 
@@ -1051,6 +1112,10 @@ def patient_info_of_pulse_tongue_by_id():
     endset = offset + int(limit)
     if endset > len(result_data):
         endset = len(result_data)
+
+    cursor.close()
+    conn.close()
+
     json_data['data'] = result_data[offset:endset]
     json_data = json.dumps(json_data)
     return json_data
@@ -1096,7 +1161,11 @@ def kindneyPrediction_accuracy():
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     idSet,predictType,labelType,correct,total,accuracy = kindney_symptom_predict.multi_predict(testNum,cursor)
+    cursor.close()
+    conn.close()
     formData = {}
     formData['testNum']=str(testNum)
     formData['num_pos']=correct
@@ -1148,7 +1217,11 @@ def liverPrediction_accuracy():
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     idSet,predictType,labelType,correct,total,accuracy = liver_symptom_predict.multi_predict(testNum,cursor)
+    cursor.close()
+    conn.close()
     formData = {}
     formData['testNum']=str(testNum)
     formData['num_pos']=correct
@@ -1212,7 +1285,11 @@ def lungPrediction_accuracy():
     selectTestNum = request.form.get('selectTestNum')
     testNum=int(selectTestNum)
     # 调用模型验证测试结果(读取文件速度太慢，直接写死用读好的数据)
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     idSet,predictType1,predictType2,predictType3,labelType1,labelType2,labelType3,correct1,correct2,correct3,total,accuracy1,accuracy2,accuracy3 = lung_symptom_predict.multi_predict(testNum,cursor)
+    cursor.close()
+    conn.close()
     formData = {}
     formData['testNum']=str(testNum)
     formData['num_pos1']=correct1
@@ -1245,8 +1322,12 @@ def find_channelNumber():
     elif (type=='lung'):
         sql = "select count(*) from information_schema.COLUMNS where TABLE_SCHEMA='medical_dw' and table_name='ods_lung_pulse_" + str(
             id).casefold() + "'"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 执行sql语句
     res = cursor.fetchall()  # 取数据
+    cursor.close()
+    conn.close()
     json_data={}
     json_data['channelNumber'] = res[0][0]
     print(json_data['channelNumber'])
@@ -1264,8 +1345,12 @@ def channel_data():
         sql = "select `" + str(num) + "` from medical_dw.ods_"+type+"_pulse_" + str(id)
     elif (type == 'lung'):
         sql = "select `" + str(num) + "` from medical_dw.ods_lung_pulse_" + str(id).casefold()
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)  # 执行sql语句
     res = cursor.fetchall()  # 取数据
+    cursor.close()
+    conn.close()
     json_data = {}
     channel_data = []
     for i in res:
@@ -1340,6 +1425,8 @@ def lung_patient_info():
     if pulse != "":
         sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)
     total_data = cursor.fetchall()  # 所有满足条件的数据
     sql += "limit " + str(offset) + ',' + str(limit)
@@ -1352,6 +1439,9 @@ def lung_patient_info():
                       "table_schema = 'medical_dw' ORDER BY ordinal_position"
     cursor.execute(sql_COLUMN_NAME)  # 执行sql语句
     column_names = cursor.fetchall()  # 获取数据
+
+    cursor.close()
+    conn.close()
 
     for result in data:
         one_person = {}
@@ -1399,6 +1489,8 @@ def liver_patient_info():
     if pulse != "":
         sql += "and pulse like '" + "%" + str(pulse) + "%" + "'"
     offset = (int(page) - 1) * int(limit)  # 起始行
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)
     total_data = cursor.fetchall()  # 所有满足条件的数据
     sql += "limit " + str(offset) + ',' + str(limit)
@@ -1410,6 +1502,9 @@ def liver_patient_info():
                       "table_schema = 'medical_dw' ORDER BY ordinal_position"
     cursor.execute(sql_COLUMN_NAME)  # 执行sql语句
     column_names = cursor.fetchall()  # 获取数据
+    cursor.close()
+    conn.close()
+
     for result in data:
         one_person = {}
         for i in range(len(column_names)):
@@ -1466,6 +1561,8 @@ def tongue_batch_pre():
     num = int(request.form.get("num"))
     results = tongue_color_predict.batch_prediction(num)
     tongueData = []
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     for i in range(num):
         patient_id = results['sample_ids'][i]
         sql = ""
@@ -1498,6 +1595,9 @@ def tongue_batch_pre():
         }
         tongueData.append(pred)
 
+    cursor.close()
+    conn.close()
+
     returnData = {"tongueData": tongueData, "tongue_color_accuracy": results['tongue_color_accuracy'],
                   "moss_color_accuracy": results['moss_color_accuracy']}
 
@@ -1520,8 +1620,12 @@ def sigle_patient_info():
     else:
         type = 'liver'
     sql = "SELECT * FROM dwd_"+str(type)+"_info WHERE id='"+str(id)+"'"
+    conn = POOL.connection(shareable=False)
+    cursor = conn.cursor()
     cursor.execute(sql)
     column_name = cursor.fetchone()   # 获取数据
+    cursor.close()
+    conn.close()
     newData={}
     newData['data'] = column_name
     newData['type'] = type

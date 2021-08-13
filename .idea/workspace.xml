@@ -5,8 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df9393c3-68df-43b4-856c-e1a4f8883845" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/static/image/importexamples/kidneyinfo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/image/importexamples/liverinfo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/image/importexamples/lunginfo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/image/importexamples/pulsefiles.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/medicalwarehouse.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/medicalwarehouse.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_27_12_55_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_27_12_55__Default_Changelist_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_28_14_15_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_28_14_15__Default_Changelist_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_29_13_28_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_29_13_28__Default_Changelist_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_29_13_31_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021_7_29_13_31__Default_Changelist_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/TestDataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/TestDataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/predict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/algorithm/tongue_color_predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/algorithm/tongue_color_predict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/files/LSTM_predict_mul.pt" beforeDir="false" afterPath="$PROJECT_DIR$/files/LSTM_predict_mul.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/disease_pre/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/disease_pre/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/patient_info/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/patient_info/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/tongue_pre/update_pre.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/tongue_pre/update_pre.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/datastatistic.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/datastatistic.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/diseasePrediction.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/diseasePrediction.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/fileInput.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/fileInput.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/patient_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/patient_info.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/statistic_kidney.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/statistic_kidney.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/statistic_liver.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/statistic_liver.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/statistic_lung.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/statistic_lung.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/imageloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/imageloader.py" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,9 +51,6 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/app.py" root0="FORCE_HIGHLIGHTING" />
-  </component>
   <component name="ProjectId" id="1vsrmmX6zTR5Ud7tikbBXhEiS3n" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -32,8 +60,26 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/static" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\visual\PyCharm Community Edition 2019.2.3\pythonWorkPlace\medicalwarehouse\static" />
+      <recent name="D:\visual\PyCharm Community Edition 2019.2.3\pythonWorkPlace\medicalwarehouse" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -63,7 +109,10 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="df9393c3-68df-43b4-856c-e1a4f8883845" name="Default Changelist" comment="" />
@@ -74,16 +123,18 @@
     </task>
     <servers />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app.py</url>
-          <line>49</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="returnData" language="Python" />

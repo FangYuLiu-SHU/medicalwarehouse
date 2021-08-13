@@ -30,7 +30,7 @@ layui.use(["form", "element"], function () {
   form.on("submit(doTonguePre)", function () {
     $.ajax({
       type: "POST",
-      url: "http://127.0.0.1:5000/tongue_pre",
+      url: "tongue_pre",
       data: imgData,
       cache: false,
       processData: false,
@@ -202,7 +202,7 @@ layui.use(["form", "layer"], function () {
     layer.load(2);
     $.ajax({
       type: "POST", //请求的方法
-      url: "http://127.0.0.1:5000/tongue_batch_pre",
+      url: "tongue_batch_pre",
       data: {
         num: predictNum,
       },

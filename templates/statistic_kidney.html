@@ -38,7 +38,7 @@
   <div class="layui-body" style="left: 0">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
           <legend>输入肾科患者统计指标</legend>
-            <div style="text-align:right;"><a href="http://127.0.0.1:5000/datastatistic" style="color:gray;font-size:14px;">返回统计主页</a></div>
+            <div style="text-align:right;"><a href="datastatistic" style="color:gray;font-size:14px;">返回统计主页</a></div>
         </fieldset>
             <div id="container2"  style="width:35% ;float: left">
                 <form class="layui-form" action="" method="post" lay-filter="info_display">
@@ -491,7 +491,7 @@
                 return false
             }
             $.ajax({
-                    url:"http://127.0.0.1:5000/datastatistic",
+                    url:"datastatistic",
                     data:data,
                     dataType:"json",
                     type:'POST',

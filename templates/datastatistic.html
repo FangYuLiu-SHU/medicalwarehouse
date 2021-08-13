@@ -39,7 +39,7 @@
           <div class="layui-tab-content"  >
             <div class="layui-tab-item layui-show">
                 <div id="container1" style="width:100%;height:100%">
-                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_kidney" style="color:red;font-size:14px;">详细请点击</a></div>
+                    <div style="text-align:right;"><a href="statistic_kidney" style="color:red;font-size:14px;">详细请点击</a></div>
                     <div id="liver1" style="width: 10%; height: 100%;float: left"></div>
                   <div id="symptom_kidney" style="width: 450px; height:  280px;float: left">症状统计</div>
                   <div id="sex_kidney" style="width: 450px; height:  280px;float: left">性别分布</div>
@@ -50,7 +50,7 @@
             </div>
             <div class="layui-tab-item ">
                 <div id="container2" style="width:100%;height:100%">
-                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_liver"  style="color:red;font-size:14px;">详细请点击</a></div>
+                    <div style="text-align:right;"><a href="statistic_liver"  style="color:red;font-size:14px;">详细请点击</a></div>
                     <div id="liver2" style="width: 10%; height: 100%;float: left"></div>
                   <div id="symptom_liver" style="width: 650px; height: 280px;float: left">症状统计</div>
                   <div id="sex_liver" style="width: 650px; height: 280px;float: left">性别分布</div>
@@ -61,7 +61,7 @@
             </div>
             <div class="layui-tab-item">
                 <div id="container3" style="width:100%;height:100%">
-                    <div style="text-align:right;"><a href="http://127.0.0.1:5000/statistic_lung" style="color:red;font-size:14px;">详细请点击</a></div>
+                    <div style="text-align:right;"><a href="statistic_lung" style="color:red;font-size:14px;">详细请点击</a></div>
                     <div id="lung1" style="width: 10%; height: 100%;float: left"></div>
                     <div id="lung_symptom_lung_qd" style="width: 450px; height:  280px;float: left">肺气虚患者分布</div>
                     <div id="lung_symptom_spleen_qd" style="width: 450px; height:  280px;float: left">脾气虚患者分布</div>
@@ -537,7 +537,7 @@
       layui.use(['form'], function() {
           var form = layui.form, layer = layui.layer, $ = layui.jquery;
           $.ajax({
-              url: "http://127.0.0.1:5000/liver_statistic",
+              url: "liver_statistic",
               data: orignQuery_liver,
               dataType: "json",
               type: 'GET',
@@ -871,7 +871,7 @@
       layui.use(['form'], function() {
           var form = layui.form, layer = layui.layer, $ = layui.jquery;
           $.ajax({
-              url: "http://127.0.0.1:5000/lung_statistic",
+              url: "lung_statistic",
               data: orignQuery_lung,
               dataType: "json",
               type: 'GET',
