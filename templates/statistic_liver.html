@@ -117,9 +117,7 @@
                   },
                   series: [
                       {
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                          color:["#5470c6","#ec5151"],
                           type: 'pie',
                           radius: '60%',
                           tooltip:{
@@ -169,6 +167,7 @@
                       formatter:'{b}:{c}人,，占比{d}%'
                       },
                           // name: '访问来源',
+                          color:["#5470c6","#ec5151"],
                           type: 'pie',
                           radius: '60%',
                           label: {
@@ -268,10 +267,7 @@
                             type: 'bar',
                             itemStyle: {
                                   color:function(params) {
-                                        let colorList = [
-                                            "#c80101",
-                                            "#4d4f4f",
-                                        ];
+                                        let colorList = ["#5470c6","#ec5151"];
                                         if(Number(params.value[0]) <= 40){
                                           return colorList[1]
                                         }else{
@@ -284,9 +280,9 @@
                                     color: new echarts.graphic.LinearGradient(
                                         0, 0, 0, 1,
                                         [
-                                {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                {offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                         ]
                                     )
                                 }

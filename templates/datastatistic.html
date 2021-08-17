@@ -176,10 +176,7 @@
                     type: 'bar',
                     itemStyle: {
                         color:function(params) {
-		                    let colorList = [
-		                        "#c80101",
-		                        "#4d4f4f",
-		                    ];
+		                    let colorList = ["#5470c6","#ec5151"];
 		                    if(Number(params.value[0]) >= 80 && Number(params.value[0]) <= 120){
 		                      return colorList[1]
 		                    }else{
@@ -192,9 +189,9 @@
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                    {offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                 ]
                             )
                         }
@@ -293,10 +290,7 @@
                     type: 'bar',
                     itemStyle: {
                         color:function(params) {
-		                    let colorList = [
-		                        "#c80101",
-		                        "#4d4f4f",
-		                    ];
+		                    let colorList = ["#5470c6","#ec5151"];
 		                    if(Number(params.value[0]) >= 33 && Number(params.value[0]) <= 103){
 		                      return colorList[1]
 		                    }else{
@@ -309,9 +303,9 @@
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                    {offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                 ]
                             )
                         }
@@ -403,9 +397,9 @@
                         color: new echarts.graphic.LinearGradient(
                             0, 0, 0, 1,
                             [
-                                {offset: 0, color: '#f33c3c'},
-                                {offset: 0.5, color: '#da1414'},
-                                {offset: 1, color: '#9f0404'}
+                                {offset: 0, color: "#ec5151"},
+                                {offset: 0.5, color: "#ec5151"},
+                                {offset: 1, color: "#ec5151"}
                             ]
                         )
                     },
@@ -414,9 +408,9 @@
                             color: new echarts.graphic.LinearGradient(
                                 0, 0, 0, 1,
                                 [
-                                    {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                                               {offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                 ]
                             )
                         }
@@ -448,9 +442,10 @@
                       trigger:'item',
                   formatter:'{b}:{c}人,，占比{d}%'
                   },
-                  {#color:[#}
-                  {#          "#5470c6","#ec5151"#}
-                  {#        ],#}
+                  color:["#5470c6","#ec5151"],
+                  // {#color:[#}
+                  // {#          "#5470c6","#ec5151"#}
+                  // {#        ],#},
                   type: 'pie',
                   radius: '60%',
                   label: {
@@ -492,9 +487,7 @@
           },
           series: [
               {
-                  {#color:[#}
-                  {#          "#5470c6","#ec5151"#}
-                  {#        ],#}
+                    color:["#5470c6","#ec5151"],
                   tooltip:{
                       trigger:'item',
                   formatter:'{b}:{c}人,，占比{d}%'
@@ -633,10 +626,7 @@
                             type: 'bar',
                             itemStyle: {
                                      color:function(params) {
-                                        let colorList = [
-                                            "#c80101",
-                                            "#4d4f4f",
-                                        ];
+                                        let colorList = ["#5470c6","#ec5151"];
                                         if(Number(params.value[0]) <= 40){
                                           return colorList[1]
                                         }else{
@@ -648,10 +638,9 @@
                                 itemStyle: {
                                     color: new echarts.graphic.LinearGradient(
                                         0, 0, 0, 1,
-                                        [
-                                    {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                        [{offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                         ]
                                     )
                                 }
@@ -740,10 +729,9 @@
                             itemStyle: {
                                 color: new echarts.graphic.LinearGradient(
                                     0, 0, 0, 1,
-                                    [
-                                        {offset: 0, color: '#f33c3c'},
-                                {offset: 0.5, color: '#da1414'},
-                                {offset: 1, color: '#9f0404'}
+                                       [                {offset: 0, color: "#ec5151"},
+                                {offset: 0.5, color: "#ec5151"},
+                                {offset: 1, color: "#ec5151"},
                                     ]
                                 )
                             },
@@ -752,9 +740,9 @@
                                     color: new echarts.graphic.LinearGradient(
                                         0, 0, 0, 1,
                                         [
-                                    {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                            {offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                         ]
                                     )
                                 }
@@ -781,9 +769,7 @@
                   },
                   series: [
                       {
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                        color:["#5470c6","#ec5151"],
                           tooltip:{
                           trigger:'item',
                       formatter:'{b}:{c}人,，占比{d}%'
@@ -829,9 +815,7 @@
                   },
                   series: [
                       {
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                          color:["#5470c6","#ec5151"],
                           type: 'pie',
                           radius: '60%',
                           tooltip:{
@@ -952,9 +936,9 @@
                                 color: new echarts.graphic.LinearGradient(
                                     0, 0, 0, 1,
                                     [
-                                {offset: 0, color: '#f33c3c'},
-                                {offset: 0.5, color: '#da1414'},
-                                {offset: 1, color: '#9f0404'}
+                                                                {offset: 0, color: "#ec5151"},
+                                {offset: 0.5, color: "#ec5151"},
+                                {offset: 1, color: "#ec5151"}
                                     ]
                                 )
                             },
@@ -963,9 +947,9 @@
                                     color: new echarts.graphic.LinearGradient(
                                         0, 0, 0, 1,
                                         [
-                                    {offset: 0, color: '#5889f1'},
-                                    {offset: 0.7, color: '#2153e6'},
-                                    {offset: 1, color: '#052ee3'}
+                                            {offset: 0, color: '#f1a258'},
+                                    {offset: 0.7, color: '#e67321'},
+                                    {offset: 1, color: '#ee5420'}
                                         ]
                                     )
                                 }
@@ -992,10 +976,7 @@
                   },
                   series: [
                       {
-                          // name: '访问来源',
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                           color:["#5470c6","#ec5151"],
                           tooltip:{
                               trigger:'item',
                           formatter:'{b}:{c}人,，占比{d}%'
@@ -1039,10 +1020,7 @@
                       left: 'left',
                   },
                   series: [
-                      {
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                      {color:["#5470c6","#ec5151"],
                      tooltip:{
                           trigger:'item',
                       formatter:'{b}:{c}人,，占比{d}%'
@@ -1088,9 +1066,7 @@
                   },
                   series: [
                       {
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                         color:["#5470c6","#ec5151"],
                           type: 'pie',
                           radius: '60%',
                           tooltip:{
@@ -1140,9 +1116,7 @@
                           trigger:'item',
                       formatter:'{b}:{c}人,，占比{d}%'
                       },
-                          {#color:[#}
-                          {#  "#5470c6","#ec5151"#}
-                          {#],#}
+                          color:["#5470c6","#ec5151"],
                           type: 'pie',
                           radius: '60%',
                         label: {
