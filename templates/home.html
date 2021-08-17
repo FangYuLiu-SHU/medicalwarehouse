@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css" />
+    <style>
+      .container {
+        height: 100vh;
+        display: flex;
+      }
+      .loginBox {
+        margin: auto;
+        box-sizing: border-box;
+        width: 400px;
+        height: 500px;
+        padding-top: 50px;
+        border: 1px solid #000;
+        text-align: center;
+      }
+      .title {
+          margin-bottom: 10px;
+      }
+      .inputBox {
+        width: 80%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+      }
+      .inputBox label {
+          font-size: 16px;
+          margin-bottom: 10px;
+      }
+      .inputText {
+          box-sizing: border-box;
+          width: 100%;
+          height: 35px;
+          line-height: 35px;
+          padding-left: 5px;
+          margin-bottom: 15px;
+          font-size: 16px;
+      }
+      .loginBtn {
+          width: 80%;
+          margin: auto;
+          font-size: 20px;
+          padding: 7px 0;
+          color: #fff;
+          background-color: #009688;
+          cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="loginBox">
+        <h1 class="title">医疗系统</h1>
+        <div class="username inputBox">
+            <label for="user">用户名：</label>
+            <input class="inputText" type="text" id="user" value="admin"/>
+        </div>
+        <div class="password inputBox">
+            <label for="password">密码</label>
+            <input class="inputText" type="password" id="password" value="123456"/>
+        </div>
+        <div class="loginBtn">登录</div>
+      </div>
+    </div>
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/jquery.cookie.js"></script>
+    <script>
+        const $input = $(".inputText");
+        const $loginBtn = $(".loginBtn");
+        $loginBtn.on("click", () => {
+            location.href="/mainPage";
+            $.cookie("name", "testAccount");
+        })
+    </script>
+  </body>
+</html>

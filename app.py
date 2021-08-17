@@ -47,6 +47,10 @@ app.secret_key = '000000'
 
 @app.route('/')
 def hello_world():
+    return render_template('home.html')
+
+@app.route('/mainPage')
+def main_page():
     return render_template('index.html')
 
 # 数据导入
