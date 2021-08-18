@@ -49,6 +49,15 @@ app.secret_key = '000000'
 def hello_world():
     return render_template('home.html')
 
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    user = request.form.get('user')
+    password = request.form.get('password')
+    if user == 'test' and password == 'lib615604':
+        return '验证通过'
+    else:
+        return '用户名或密码错误'
+
 @app.route('/mainPage')
 def main_page():
     return render_template('index.html')
