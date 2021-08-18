@@ -226,8 +226,8 @@
                     <div class="layui-input-inline">
                         <select name="selectNumber" id="id_selectPulseNumber" lay-verify="required"
                                 lay-filter="selectNum" class="select">
-                            <option value="20" selected="selected">20</option>
-                            <option value="50">50</option>
+<!--                            <option value="20">20</option>-->
+                            <option value="50" selected="selected">50</option>
                             <option value="100">100</option>
                         </select>
                     </div>
@@ -375,8 +375,8 @@
                     <div class="layui-input-inline">
                         <select name="pulseTongueSelectNumber" id="id_selectPulseTongueNumber" lay-verify="required"
                                 lay-filter="selectNum" class="select">
-                            <option value="20" selected="selected">20</option>
-                            <option value="50">50</option>
+<!--                            <option value="20">20</option>-->
+                            <option value="50" selected="selected">50</option>
                             <option value="100">100</option>
                         </select>
                     </div>
@@ -2251,7 +2251,7 @@
                         }
                         rowToolEvent1(id,type,cols);
                     });
-                    PredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>脉象预测准确率：' + (newData.accuracy * 100).toFixed(2) + '%&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;舌象预测准确率：' + (newData.tongue_accuracy * 100).toFixed(2) + '%</b></h2>';
+                    PredictDisplay.innerHTML = '<h2 class="layui-timeline-title"><b>脉象预测准确率：' + (newData.accuracy * 100).toFixed(2) + '%&nbsp;&nbsp;&nbsp;&nbsp;舌象预测准确率：' + (newData.tongue_accuracy * 100).toFixed(2) + '%</b></h2>';
                     //设置layui datatable的某一行的颜色
                     //DivId:datatable父div的 id;RowIndex:行序列号；Color：颜色字符串，如'#FF3030'
                     function Layui_SetDataTableRowColor2(DivId, Color1, Color2, Color3, Color4, Color5, Color6, Color7){
